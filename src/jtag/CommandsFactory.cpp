@@ -51,11 +51,13 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, int address) {
 //
 //    break;
 //
-//    case WRITE_BYTE:
-//
-//    cmd->set_type(JTAG::WRITE_BYTE);
-//
-//    break;
+        case WRITE_BYTE:
+
+                cmd->move_to(jtag::TAP_IRSHIFT);
+
+                cmd->write_ir(0xE); //1110 = IDCODE IR
+
+                break;
 //
 //    case WRITE_WORD:
 //
