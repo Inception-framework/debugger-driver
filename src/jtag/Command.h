@@ -52,7 +52,7 @@ public:
 
 								void move_to (tap_state_t state);
 
-								void write_ir (uint16_t ir);
+								void write_ir (uint8_t ir);
 
 								const char* command_name ();
 

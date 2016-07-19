@@ -57,18 +57,19 @@ void Command::move_to (tap_state_t state) {
 
         for (i = 0; i < tms_scan_bits; i++) {
 
-                byte = (tms_scan >> i) & 1 ? (1 << 0) : 0;
+                byte = tms_scan & (1u << i) ? (1 << 0) : 0;
                 this->buffer.push_back (byte);
         }
 
+        Jtag::current_state = state;
 }
 
-void Command::write_ir (uint16_t ir) {
+void Command::write_ir (uint8_t ir) {
 
         uint32_t j;
         uint8_t byte;
 
-        for(j=0; j<16; j++) {
+        for(j=0; j<4; j++) {
 
             byte = ir & (1u << j) ? (1 << 1) : 0;
 
