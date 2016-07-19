@@ -15,6 +15,7 @@
 #include "../jtag/Command.h"
 
 #include <thread>
+#include <mutex>
 
 #define _LOG_ALL
 #include "../colored.h"
@@ -36,6 +37,7 @@ public:
 								void process_jtag_queue (void);
 
 								static int sent;
+
 };
 
 #endif /* PRODUCER_H_ */

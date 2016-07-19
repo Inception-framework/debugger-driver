@@ -16,7 +16,9 @@
 #ifdef _LOG_NO_COLOR
   #define __LOG_COLOR(CLR,CTX,TXT,args ...) printf("  %s : " # TXT " \n",CTX, ## args)
 #else
-  #define __LOG_COLOR(CLR,CTX,TXT,args ...) printf("\033[%sm[%s]\r\n   \033[%sm %s \033[m\n",__LOG_COLOR_YELLOW,CTX,CLR,TXT, ## args)
+  #define __LOG_COLOR(CLR,CTX,TXT,args ...) printf("\033[%sm[%s]\r\n  \033[%sm " # TXT " \033[m\n",__LOG_COLOR_YELLOW,CTX,CLR, ## args)
+
+//#define __LOG_COLOR(CLR,CTX,TXT,args ...) printf("\033[%sm[%s]\r\n   \033[%sm %s \033[m\n",__LOG_COLOR_YELLOW,CTX,CLR,TXT, ## args)
 #endif
 
 #ifdef _LOG_ALL

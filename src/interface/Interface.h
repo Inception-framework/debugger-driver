@@ -14,6 +14,7 @@
 
 #include <queue>
 #include <thread>
+#include <mutex>
 
 class Interface {
 
@@ -30,6 +31,12 @@ public:
 
 								virtual void process_jtag_queue (void) = 0;
 
+								void lock ();
+
+								void unlock ();
+
+								void wait ();
+
 protected:
 
 								std::queue<jtag::Command*> queue;
@@ -39,6 +46,8 @@ protected:
 								bool is_running;
 
 								Device::USBDevice* device;
+
+								std::mutex locker;
 };
 
 #endif

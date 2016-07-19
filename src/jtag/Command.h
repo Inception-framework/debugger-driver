@@ -54,7 +54,11 @@ public:
 
 								void write_ir (uint16_t ir);
 
-								const char* command_name();
+								const char* command_name ();
+
+								uint8_t* get_buffer ();
+
+								uint32_t size ();
 
 private:
 								void set_type (COMMAND_TYPE type);

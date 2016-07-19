@@ -22,9 +22,9 @@ void Consumer::add_cmd_to_queue (jtag::Command* cmd) {
 
 void Consumer::start () {
 
-  this->task = std::thread(&Consumer::process_jtag_queue, this);
-
   this->is_running = true;
+
+  this->task = std::thread(&Consumer::process_jtag_queue, this);
 
 }
 

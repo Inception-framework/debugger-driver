@@ -20,6 +20,14 @@ Command::~Command () {
         // TODO Auto-generated destructor stub
 }
 
+uint8_t* Command::get_buffer () {
+  return (uint8_t*)this->buffer.data ();
+}
+
+uint32_t Command::size () {
+  return this->buffer.size ();
+}
+
 void Command::add_command (uint32_t tms, uint32_t tdi, uint32_t trst, uint32_t srst) {
 
   uint8_t byte = 0;
@@ -29,7 +37,7 @@ void Command::add_command (uint32_t tms, uint32_t tdi, uint32_t trst, uint32_t s
   byte += (trst << 2);
   byte += (srst << 3);
 
-  this->buffer.push_back(byte);
+  this->buffer.push_back (byte);
 }
 
 
@@ -41,7 +49,7 @@ void Command::move_to (tap_state_t state) {
 
         int i;
         int tms = 0;
-        int bit;
+        uint8_t byte;
 
         uint8_t tms_scan = Jtag::tap_get_tms_path(Jtag::current_state, state);
 
@@ -49,8 +57,8 @@ void Command::move_to (tap_state_t state) {
 
         for (i = 0; i < tms_scan_bits; i++) {
 
-                bit = (tms_scan >> i) & 1 ? (1 << 0) : 0;
-                this->buffer.push_back(tms);
+                byte = (tms_scan >> i) & 1 ? (1 << 0) : 0;
+                this->buffer.push_back (byte);
         }
 
 }
@@ -58,9 +66,14 @@ void Command::move_to (tap_state_t state) {
 void Command::write_ir (uint16_t ir) {
 
         uint32_t j;
+        uint8_t byte;
 
-        for(j=0; j<16; j++) //For each bit as byte
-                this->buffer.push_back( ir & (1u << j) ? (1 << 1) : 0);
+        for(j=0; j<16; j++) {
+
+            byte = ir & (1u << j) ? (1 << 1) : 0;
+
+            this->buffer.push_back (byte);
+        }
 
 }
 

@@ -80,6 +80,8 @@ private:
 
 								uint32_t buffer_limit;
 
+								uint32_t size;
+
 								libusb_device **devs;
 };
 

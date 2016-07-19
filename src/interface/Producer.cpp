@@ -21,15 +21,20 @@ Producer::~Producer () {
 
 void Producer::add_cmd_to_queue (jtag::Command* cmd) {
 
-								this->queue.push(cmd);
+								this->lock ();
 
+								this->queue.push (cmd);
+
+								puts(" Command added to the queue");
+
+								this->unlock ();
 }
 
 void Producer::start () {
 
-								this->task = std::thread(&Producer::process_jtag_queue, this);
-
 								this->is_running = true;
+
+								//this->task = std::thread (&Producer::process_jtag_queue, this);
 
 }
 
@@ -42,23 +47,36 @@ void Producer::stop () {
 void Producer::process_jtag_queue (void) {
 
 								jtag::Command* cmd = NULL;
-								//uint32_t size;
+								//uint32_t size;s
 
-								while( this->is_running == true ) {
+								INFO("Interface"," Producer started");
+
+								//while( this->is_running == true ) {
 
 																/* The producer goal is to use the maximum of the USB3 bandwidth */
-																while( (!this->queue.empty()) ) {
+																if( this->queue.empty () == false ) {
 
-																								cmd = this->queue.front();
+																								puts("Producer processes command");
 
-																								this->queue.pop();
+																								this->lock ();
 
-																								INFO("Interface","Sending command %s ...", cmd->command_name());
+																								cmd = this->queue.front ();
+
+																								printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name (), cmd->size ());
+																								for (int i=0; i<cmd->size (); i++)
+																									printf("%02x", cmd->get_buffer ()[i]);
+																								printf("\r\n");
 
 																								//if ( size == 1024 )
-																								this->device.download (cmd->get_buffer () );
+																								this->device->download (cmd->get_buffer (), cmd->size () );
+
+																								this->queue.pop ();
+
+																								this->unlock ();
+
+																								delete cmd;
 
 																								Producer::sent++;
 																}
-								}
+								//}
 }

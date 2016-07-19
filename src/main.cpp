@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
 	INFO("Init","Avatar gateway version 1.0");
 
 	Command* cmd;
+	uint8_t stopped = NULL;
 
 	INFO("Device","Initializing superspeed device ...");
 	Device::USBDevice* fx3 = new Device::USBDevice (0x04B4, 0x00F0, 0);
@@ -48,13 +49,23 @@ int main(int argc, char* argv[]) {
 	INFO("Command","Creating RESET command ...");
 	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::RESET, 0);
 	producer->add_cmd_to_queue (cmd);
+	producer->process_jtag_queue ();
 
 	INFO("Command","Creating IDCODE command ...");
-	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::READ_BYTE, 0x20000000);
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::IDCODE, 0);
 	producer->add_cmd_to_queue (cmd);
+	producer->process_jtag_queue ();
+
+	INFO("User", "Press any key to shutdown Avatar");
+	while (stopped == NULL) {
+		std::cin >> stopped;
+	}
+
 
 	INFO("Interface","Shutting down interfaces ...");
 	producer->stop ();
+	//producer->wait();
+
 	consumer->stop ();
 
 	INFO("Device","Closing device connection ...");

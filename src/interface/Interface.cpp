@@ -16,3 +16,15 @@ Interface::Interface (Device::USBDevice* device) {
 Interface::~Interface () {
 	// TODO Auto-generated destructor stub
 }
+
+void Interface::lock () {
+  this->locker.lock ();
+}
+
+void Interface::unlock () {
+  this->locker.unlock ();
+}
+
+void Interface::wait () {
+	this->task.join ();
+}
