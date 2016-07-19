@@ -71,11 +71,16 @@ void Command::write_ir (uint8_t ir) {
 
         for(j=0; j<4; j++) {
 
-            byte = ir & (1u << j) ? (1 << 1) : 0;
+            byte = 0;
+            byte += ir & (1u << j) ? (1 << 1) : 0;
+
+            if( j == 3 )
+              byte += (1 << 0);
 
             this->buffer.push_back (byte);
         }
 
+        Jtag::current_state = TAP_IREXIT1;
 }
 
 const char* Command::command_name()
