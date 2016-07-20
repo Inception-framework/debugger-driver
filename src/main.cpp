@@ -51,10 +51,10 @@ int main(int argc, char* argv[]) {
 	producer->add_cmd_to_queue (cmd);
 	producer->process_jtag_queue ();
 
-	// INFO("Command","Creating IDCODE command ...");
-	// cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::WRITE_U32, 0xABABABAB, 0x20000000);
-	// producer->add_cmd_to_queue (cmd);
-	// producer->process_jtag_queue ();
+	INFO("Command","Creating WRITE_U32 command ...");
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::WRITE_U32, 0xABABABAB, 0x20000000);
+	producer->add_cmd_to_queue (cmd);
+	producer->process_jtag_queue ();
 
 	INFO("Command","Creating IDCODE command ...");
 	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::IDCODE, 0, 0);

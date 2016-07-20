@@ -85,15 +85,15 @@ void Command::write_ir (uint8_t ir) {
         Jtag::current_state = TAP_IRPAUSE;
 }
 
-void Command::write_dr (uint32_t dr) {
+void Command::write_dr (uint32_t* dr, uint32_t size) {
 
         uint32_t j;
         uint8_t byte;
 
-        for(j=0; j<32; j++) {
+        for(j=0; j<size; j++) {
 
             byte = 0;
-            byte += dr & (1u << j) ? (1 << 1) : 0;
+            byte += dr[(j / 32)] & (1u << j) ? (1 << 1) : 0;
 
             if( j == 31 )
               byte += (1 << 0); // set tms

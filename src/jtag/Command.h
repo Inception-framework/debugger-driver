@@ -38,6 +38,7 @@ command_name_mapping[] = {
 								{ WRITE_BYTE, "WRITE_BYTE", },
 								{ WRITE_WORD, "WRITE_WORD", },
 								{ WRITE_HALFWORD, "WRITE_HALFWORD", },
+								{ WRITE_U32, "WRITE U32", },
 								{ IDCODE, "IDCODE", },
 };
 
@@ -55,7 +56,7 @@ public:
 
 								void write_ir (uint8_t ir);
 
-								void write_dr (uint32_t dr);
+								void write_dr (uint32_t* dr, uint32_t size);
 
 								const char* command_name ();
 

@@ -25,6 +25,8 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, uint32_t datai
         jtag::Command* cmd = new jtag::Command(type);
         uint32_t data, tar_value, csw_value;
 
+        uint32_t ap_register[2];
+
         switch(type) {
 
         case RESET:
@@ -52,28 +54,34 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, uint32_t datai
                 cmd->move_to(jtag::TAP_DRSHIFT);
 
                 data = DPAP_WRITE | CSW_ADDR;
-                cmd->write_dr(data);
-                cmd->write_dr(csw_value);
+                ap_register [0] = data;
+                ap_register [1] = csw_value;
+
+                cmd->write_dr(ap_register, 35);
 
                 // set tar register value
                 cmd->move_to(jtag::TAP_DRSHIFT);
 
                 data = DPAP_WRITE | TAR_ADDR;
-                cmd->write_dr(data);
-                cmd->write_dr(tar_value);
+                ap_register [0] = data;
+                ap_register [1] = tar_value;
+
+                cmd->write_dr(ap_register, 35);
 
                 // set DRW register value
                 cmd->move_to(jtag::TAP_DRSHIFT);
 
                 data = datain | DRW_ADDR;
-                cmd->write_dr(data);
-                cmd->write_dr(tar_value);
+                ap_register [0] = data;
+                ap_register [1] = datain;
+
+                cmd->write_dr(ap_register, 35);
 
                 cmd->move_to(jtag::TAP_RESET);
 
                 // clock 255 times
                 for(int i=0; i<255; i++)
-                        cmd->add_command(0,0,0,0);
+                        cmd->add_command(1,0,0,0);
 
                 break;
 
