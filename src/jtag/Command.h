@@ -22,7 +22,8 @@ typedef enum COMMAND_TYPE {
 								WRITE_BYTE=4,
 								WRITE_WORD=5,
 								WRITE_HALFWORD=6,
-								IDCODE=7
+								IDCODE=7,
+								WRITE_U32=8,
 }COMMAND_TYPE;
 
 static const struct command_name_mapping {
@@ -53,6 +54,8 @@ public:
 								void move_to (tap_state_t state);
 
 								void write_ir (uint8_t ir);
+
+								void write_dr (uint32_t dr);
 
 								const char* command_name ();
 

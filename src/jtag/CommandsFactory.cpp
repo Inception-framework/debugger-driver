@@ -14,9 +14,16 @@ CommandsFactory::CommandsFactory () {
 CommandsFactory::~CommandsFactory () {
 }
 
-jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, int address) {
+/*
+ *  The JTAG-DP register accessed depends on both:
+   •       - The Instruction Register (IR) value for the DAP access
+   •       - A[3:2] from the address field of the DAP acces
+ *
+ */
+jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, uint32_t datain, uint32_t address) {
 
         jtag::Command* cmd = new jtag::Command(type);
+        uint32_t data, tar_value, csw_value;
 
         switch(type) {
 
@@ -28,49 +35,48 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, int address) {
                         cmd->add_command(1,0,0,0);
 
                 break;
-//
-//    case READ_BYTE:
-//
-//      cmd->move_state(STATE_IR);
-//
-//      cmd->write_ir(APACC);
-//
-//      cmd->set_type(JTAG::READ_BYTE);
-//
-//    break;
-//
-//    case READ_WORD:
-//
-//    cmd->set_type(JTAG::READ_WORD);
-//
-//    break;
-//
-//    case READ_HALFWORD:
-//
-//    cmd->set_type(JTAG::READ_HALFWORD);
-//
-//    break;
-//
-        case WRITE_BYTE:
 
+        case WRITE_U32:
+
+                // Set the correct JTAG-DP
                 cmd->move_to(jtag::TAP_IRSHIFT);
+                cmd->write_ir(0xA); //1010 = DPACC IR
 
-                cmd->write_ir(0xE); //1110 = IDCODE IR
+                // CSW register value
+                csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE | CSW_MASTER_DEBUG | CSW_HPROT;
+
+                // tar register value
+                tar_value = address & 0xFFFFFFF0;
+
+                // set csw register value
+                cmd->move_to(jtag::TAP_DRSHIFT);
+
+                data = DPAP_WRITE | CSW_ADDR;
+                cmd->write_dr(data);
+                cmd->write_dr(csw_value);
+
+                // set tar register value
+                cmd->move_to(jtag::TAP_DRSHIFT);
+
+                data = DPAP_WRITE | TAR_ADDR;
+                cmd->write_dr(data);
+                cmd->write_dr(tar_value);
+
+                // set DRW register value
+                cmd->move_to(jtag::TAP_DRSHIFT);
+
+                data = datain | DRW_ADDR;
+                cmd->write_dr(data);
+                cmd->write_dr(tar_value);
+
+                cmd->move_to(jtag::TAP_RESET);
+
+                // clock 255 times
+                for(int i=0; i<255; i++)
+                        cmd->add_command(0,0,0,0);
 
                 break;
-//
-//    case WRITE_WORD:
-//
-//    cmd->set_type(JTAG::WRITE_WORD);
-//
-//    break;
-//
-//    case WRITE_HALFWORD:
-//
-//    cmd->set_type(JTAG::WRITE_HALFWORD);
-//
-//    break;
-//
+
         case IDCODE:
                 /*
                  * The IDCODE command :
@@ -79,6 +85,8 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, int address) {
                 cmd->move_to(jtag::TAP_IRSHIFT);
 
                 cmd->write_ir(0xE); //1110 = IDCODE IR
+
+                /* TODO : solve move_to mistake*/
 
                 //cmd->move_to(jtag::TAP_DRSHIFT);
                 cmd->add_command(0,0,0,0);

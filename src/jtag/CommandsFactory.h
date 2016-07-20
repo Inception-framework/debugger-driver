@@ -17,7 +17,7 @@ public:
         CommandsFactory ();
         virtual ~CommandsFactory ();
 
-        static jtag::Command* CreateCommand (COMMAND_TYPE type, int address);
+        static jtag::Command* CreateCommand (COMMAND_TYPE type, uint32_t data, uint32_t address);
 };
 
 #endif /* JTAG_COMMANDSFACTORY_H_ */

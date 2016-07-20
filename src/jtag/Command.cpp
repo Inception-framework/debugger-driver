@@ -75,7 +75,26 @@ void Command::write_ir (uint8_t ir) {
             byte += ir & (1u << j) ? (1 << 1) : 0;
 
             if( j == 3 )
-              byte += (1 << 0);
+              byte += (1 << 0); // set tms
+
+            this->buffer.push_back (byte);
+        }
+
+        Jtag::current_state = TAP_IREXIT1;
+}
+
+void Command::write_dr (uint32_t dr) {
+
+        uint32_t j;
+        uint8_t byte;
+
+        for(j=0; j<32; j++) {
+
+            byte = 0;
+            byte += dr & (1u << j) ? (1 << 1) : 0;
+
+            if( j == 31 )
+              byte += (1 << 0); // set tms
 
             this->buffer.push_back (byte);
         }

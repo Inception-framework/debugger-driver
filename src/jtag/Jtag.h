@@ -14,27 +14,6 @@
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))
 
-/*typedef enum JTAG_STATE {
-        TEST_LOGIC_RESET= 0,
-        IDLE            = 1,
-
-        SELECT_DR_SCAN  = 2,
-        CAPTURE_DR      = 3,
-        SHIFT_DR        = 4,
-        EXIT1_DR        = 5,
-        PAUSE_DR        = 6,
-        EXIT2_DR        = 7,
-        UPDATE_DR       = 8,
-
-        SELECT_IR_SCAN  = 9,
-        CAPTURE_IR      = 10,
-        SHIFT_IR        = 11,
-        EXIT1_IR        = 12,
-        PAUSE_IR        = 13,
-        EXIT2_IR        = 14,
-        UPDATE_IR       = 15,
-   }JTAG_STATE;*/
-
 namespace jtag {
 
 /*
@@ -75,6 +54,46 @@ typedef enum tap_state {
         TAP_IRCAPTURE = 0xe,
         TAP_RESET = 0x0f,
 } tap_state_t;
+
+#define CSW_ADDR 0x00
+#define TAR_ADDR 0x04
+#define DRW_ADDR 0x0C
+
+#define DPAP_WRITE    0
+#define DPAP_READ 1
+
+/* Fields of the MEM-AP's CSW register */
+#define CSW_8BIT    0
+#define CSW_16BIT   1
+#define CSW_32BIT   2
+#define CSW_ADDRINC_MASK    (3UL << 4)
+#define CSW_ADDRINC_OFF     0UL
+#define CSW_ADDRINC_SINGLE  (1UL << 4)
+#define CSW_ADDRINC_PACKED  (2UL << 4)
+#define CSW_DEVICE_EN       (1UL << 6)
+#define CSW_TRIN_PROG       (1UL << 7)
+#define CSW_SPIDEN          (1UL << 23)
+/* 30:24 - implementation-defined! */
+#define CSW_HPROT           (1UL << 25) /* ? */
+#define CSW_MASTER_DEBUG    (1UL << 29) /* ? */
+#define CSW_SPROT           (1UL << 30)
+#define CSW_DBGSWENABLE     (1UL << 31)
+
+typedef enum mem_ap_reg {
+        /* MEM-AP register addresses */
+        MEM_AP_REG_CSW    = 0x00,
+        MEM_AP_REG_TAR    = 0x04,
+        MEM_AP_REG_TAR64  = 0x08, /* RW: Large Physical Address Extension */
+        MEM_AP_REG_DRW    = 0x0C, /* RW: Data Read/Write register */
+        MEM_AP_REG_BD0    = 0x10, /* RW: Banked Data register 0-3 */
+        MEM_AP_REG_BD1    = 0x14,
+        MEM_AP_REG_BD2    = 0x18,
+        MEM_AP_REG_BD3    = 0x1C,
+        MEM_AP_REG_MBT    = 0x20, /* --: Memory Barrier Transfer register */
+        MEM_AP_REG_BASE64 = 0xF0, /* RO: Debug Base Address (LA) register */
+        MEM_AP_REG_CFG    = 0xF4, /* RO: Configuration register */
+        MEM_AP_REG_BASE   = 0xF8, /* RO: Debug Base Address register */
+}MEM_AP_REG;
 
 /* tap_move[i][j]: tap movement command to go from state i to state j
  * encodings of i and j are what tap_move_ndx() reports.
