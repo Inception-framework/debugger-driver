@@ -86,24 +86,12 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, uint32_t datai
 
                 cmd->write_ir(0xE); //1110 = IDCODE IR
 
-                /* TODO : solve move_to mistake*/
-
-                //cmd->move_to(jtag::TAP_DRSHIFT);
-                cmd->add_command(0,0,0,0);
-                cmd->add_command(1,0,0,0);
-                cmd->add_command(1,0,0,0);
-                cmd->add_command(1,0,0,0);
-                cmd->add_command(0,0,0,0);
-                cmd->add_command(0,0,0,0);
+                cmd->move_to(jtag::TAP_DRSHIFT);
 
                 for(int i=0; i<32; i++)
                         cmd->add_command(0,0,0,0);
 
-                cmd->add_command(1,0,0,0);
-                cmd->add_command(0,0,0,0);
-                cmd->add_command(1,0,0,0);
-                cmd->add_command(1,0,0,0);
-                cmd->add_command(1,0,0,0);
+                cmd->move_to(jtag::TAP_RESET);
 
                 break;
         }

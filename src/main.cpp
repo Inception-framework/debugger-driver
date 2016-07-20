@@ -46,18 +46,18 @@ int main(int argc, char* argv[]) {
 	* So If a big file has to be send, one command object is give to the Producer that sends it following the USB3 limitation
 	*/
 
-	INFO("Command","Creating IDCODE command ...");
-	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::WRITE_U32, "abcd", 0x20000000);
-	producer->add_cmd_to_queue (cmd);
-	producer->process_jtag_queue ();
-
 	INFO("Command","Creating RESET command ...");
-	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::RESET, 0);
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::RESET, 0, 0);
 	producer->add_cmd_to_queue (cmd);
 	producer->process_jtag_queue ();
 
+	// INFO("Command","Creating IDCODE command ...");
+	// cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::WRITE_U32, 0xABABABAB, 0x20000000);
+	// producer->add_cmd_to_queue (cmd);
+	// producer->process_jtag_queue ();
+
 	INFO("Command","Creating IDCODE command ...");
-	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::IDCODE, 0);
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::IDCODE, 0, 0);
 	producer->add_cmd_to_queue (cmd);
 	producer->process_jtag_queue ();
 

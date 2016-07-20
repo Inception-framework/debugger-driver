@@ -80,7 +80,9 @@ void Command::write_ir (uint8_t ir) {
             this->buffer.push_back (byte);
         }
 
-        Jtag::current_state = TAP_IREXIT1;
+        this->add_command (0, 0, 0, 0);
+
+        Jtag::current_state = TAP_IRPAUSE;
 }
 
 void Command::write_dr (uint32_t dr) {
@@ -99,7 +101,9 @@ void Command::write_dr (uint32_t dr) {
             this->buffer.push_back (byte);
         }
 
-        Jtag::current_state = TAP_IREXIT1;
+        this->add_command (0, 0, 0, 0);
+
+        Jtag::current_state = TAP_DRPAUSE;
 }
 
 const char* Command::command_name()
