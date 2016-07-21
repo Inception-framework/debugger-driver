@@ -15,10 +15,11 @@
 #include "Jtag.h"
 
 typedef enum COMMAND_TYPE {
-								RESET=0,
-								IDCODE=1,
-								WRITE_U32=2,
-								READ_U32=3,
+								RESET     = 0,
+								IDCODE    = 1,
+								WRITE_U32 = 2,
+								READ_U32  = 3,
+								SELECT    = 4,
 }COMMAND_TYPE;
 
 static const struct command_name_mapping {

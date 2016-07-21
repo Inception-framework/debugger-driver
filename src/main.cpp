@@ -25,6 +25,7 @@ int main(int argc, char* argv[]) {
 
 	Command* cmd;
 	uint8_t stopped = NULL;
+	std::vector<uint32_t> arg;
 
 	INFO("Device","Initializing superspeed device ...");
 	Device::USBDevice* fx3 = new Device::USBDevice (0x04B4, 0x00F0, 0);
@@ -46,26 +47,34 @@ int main(int argc, char* argv[]) {
 	* So If a big file has to be send, one command object is give to the Producer that sends it following the USB3 limitation
 	*/
 
+	// commands.pack (cmd);
+
 	INFO("Command","Creating RESET command ...");
-	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::RESET, 0, 0);
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::RESET, arg);
 	producer->add_cmd_to_queue (cmd);
-	producer->process_jtag_queue ();
+
+	INFO("Command","Creating Select command ...");
+	arg.push_back(0x0C);
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::SELECT, arg);
+	producer->add_cmd_to_queue (cmd);
 
 	INFO("Command","Creating WRITE_U32 command ...");
-	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::WRITE_U32, 0xABABABAB, 0x20000000);
+	arg.push_back(0xABABABAB);
+	arg.push_back(0x20000000);
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::WRITE_U32, arg);
 	producer->add_cmd_to_queue (cmd);
-	producer->process_jtag_queue ();
 
 	INFO("Command","Creating IDCODE command ...");
-	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::IDCODE, 0, 0);
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::IDCODE, arg);
 	producer->add_cmd_to_queue (cmd);
+
+	INFO("Command","Superspeed Jtag dongle is going to transmit commands ...");
 	producer->process_jtag_queue ();
 
 	INFO("User", "Press any key to shutdown Avatar");
 	while (stopped == NULL) {
 		std::cin >> stopped;
 	}
-
 
 	INFO("Interface","Shutting down interfaces ...");
 	producer->stop ();
