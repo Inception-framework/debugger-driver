@@ -31,7 +31,7 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, vector<uint32_
         case SELECT:
 
                 if ( CommandsFactory::check_arg ( argv, 1) == true )
-                        CommandsFactory::select (cmd, (uint32_t*)argv.at(0));
+                        CommandsFactory::select (cmd, argv.at(0));
                 else
                         ALERT ("CommandsFactory", "SELECT args missing");
 
@@ -47,7 +47,7 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, vector<uint32_
         case READ_U32:
 
                 if ( check_arg ( argv, 1) == true )
-                        CommandsFactory::read_u32 (cmd, (uint32_t*)argv.at(0));
+                        CommandsFactory::read_u32 (cmd, argv.at(0));
                 else
                         ALERT ("CommandsFactory", "READ_U32 args missing");
 
@@ -56,7 +56,7 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, vector<uint32_
         case WRITE_U32:
 
                 if ( check_arg( argv, 2) == true )
-                        CommandsFactory::write_u32 (cmd, (uint32_t*)argv.at(0), (uint32_t*)argv.at(0));
+                        CommandsFactory::write_u32 (cmd, argv.at(0), argv.at(0));
                 else
                         ALERT ("CommandsFactory", "WRITE_U32 args missing");
 
@@ -92,7 +92,7 @@ bool CommandsFactory::check_arg (vector<uint32_t>& argv, uint32_t required) {
         return true;
 }
 
-void CommandsFactory::select (jtag::Command* cmd, uint32_t* bank_id) {
+void CommandsFactory::select (jtag::Command* cmd, uint32_t bank_id) {
         uint32_t header;
         uint32_t ap_register[2];
 
@@ -105,13 +105,13 @@ void CommandsFactory::select (jtag::Command* cmd, uint32_t* bank_id) {
 
         header = DPAP_WRITE | SEL_ADDR;
         ap_register [0] = header;
-        ap_register [1] = *bank_id;
+        ap_register [1] = bank_id;
         cmd->write_dr(ap_register, 35);
 
         cmd->move_to(jtag::TAP_RESET);
 }
 
-void CommandsFactory::read_u32 (jtag::Command* cmd, uint32_t* address) {
+void CommandsFactory::read_u32 (jtag::Command* cmd, uint32_t address) {
 
         uint32_t header, tar_value, csw_value;
 
@@ -125,7 +125,7 @@ void CommandsFactory::read_u32 (jtag::Command* cmd, uint32_t* address) {
         csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE | CSW_MASTER_DEBUG | CSW_HPROT;
 
         // tar register value
-        tar_value = *address & 0xFFFFFFF0;
+        tar_value = address & 0xFFFFFFF0;
 
         // set csw register value
         cmd->move_to(jtag::TAP_DRSHIFT);
@@ -153,7 +153,7 @@ void CommandsFactory::read_u32 (jtag::Command* cmd, uint32_t* address) {
                 cmd->add_command(1,0,0,0);
 }
 
-void CommandsFactory::write_u32 (jtag::Command* cmd, uint32_t* address, uint32_t* datain) {
+void CommandsFactory::write_u32 (jtag::Command* cmd, uint32_t address, uint32_t datain) {
 
         uint32_t header, tar_value, csw_value;
         uint32_t ap_register[2];
@@ -166,7 +166,7 @@ void CommandsFactory::write_u32 (jtag::Command* cmd, uint32_t* address, uint32_t
         csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE | CSW_MASTER_DEBUG | CSW_HPROT;
 
         // tar register value
-        tar_value = *address & 0xFFFFFFF0;
+        tar_value = address & 0xFFFFFFF0;
 
         // set csw register value
         cmd->move_to(jtag::TAP_DRSHIFT);
@@ -191,7 +191,7 @@ void CommandsFactory::write_u32 (jtag::Command* cmd, uint32_t* address, uint32_t
 
         header = DRW_ADDR;
         ap_register [0] = header;
-        ap_register [1] = *datain;
+        ap_register [1] = datain;
 
         cmd->write_dr(ap_register, 35);
 

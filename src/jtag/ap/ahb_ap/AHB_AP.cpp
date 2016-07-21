@@ -11,7 +11,7 @@ namespace jtag {
 
 AHB_AP::AHB_AP () : AccessPort("AHB_AP") {
 
-        this->select_register = 0x00000000;
+        this->select_register = 0x00000010;
 
 }
 
