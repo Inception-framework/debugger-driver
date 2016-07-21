@@ -16,6 +16,7 @@
 #include "interface/Producer.h"
 #include "interface/Consumer.h"
 
+#include "jtag/ap/ahb_ap/AHB_AP.h"
 
 using namespace jtag;
 
@@ -24,6 +25,7 @@ int main(int argc, char* argv[]) {
 	INFO("Init","Avatar gateway version 1.0");
 
 	Command* cmd;
+	AccessPort* ap;
 	uint8_t stopped = NULL;
 	std::vector<uint32_t> arg;
 
@@ -54,7 +56,9 @@ int main(int argc, char* argv[]) {
 	producer->add_cmd_to_queue (cmd);
 
 	INFO("Command","Creating Select command ...");
-	arg.push_back(0x0C);
+	ap = new AHB_AP ();
+
+	arg.push_back(ap->select());
 	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::SELECT, arg);
 	producer->add_cmd_to_queue (cmd);
 
