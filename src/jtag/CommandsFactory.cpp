@@ -94,9 +94,22 @@ bool CommandsFactory::check_arg (vector<uint32_t>& argv, uint32_t required) {
 }
 
 void CommandsFactory::select (jtag::Command* cmd, uint32_t* bank_id) {
+        uint32_t header;
+        uint32_t ap_register[2];
 
-        uint32_t select_value;
+        // Set the correct JTAG-DP
+        cmd->move_to(jtag::TAP_IRSHIFT);
+        cmd->write_ir(0xA);   //1010 = DPACC IR
 
+        // set select register value
+        cmd->move_to(jtag::TAP_DRSHIFT);
+
+        header = DPAP_WRITE | SEL_ADDR;
+        ap_register [0] = header;
+        ap_register [1] = *bank_id;
+        cmd->write_dr(ap_register, 35);
+
+        cmd->move_to(jtag::TAP_RESET);
 }
 
 void CommandsFactory::read_u32 (jtag::Command* cmd, uint32_t* address) {
@@ -133,7 +146,6 @@ void CommandsFactory::read_u32 (jtag::Command* cmd, uint32_t* address) {
 
         cmd->write_dr(ap_register, 35);
 
-        cmd->write_dr(ap_register, 35);
 
         cmd->move_to(jtag::TAP_RESET);
 
