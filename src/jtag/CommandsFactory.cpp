@@ -31,10 +31,9 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, vector<uint32_
         case SELECT:
 
                 if ( CommandsFactory::check_arg ( argv, 1) == true )
-
                         CommandsFactory::select (cmd, (uint32_t*)argv.at(0));
-
-                ALERT ("CommandsFactory", "SELECT args missing");
+                else
+                        ALERT ("CommandsFactory", "SELECT args missing");
 
                 break;
 
@@ -49,17 +48,17 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, vector<uint32_
 
                 if ( check_arg ( argv, 1) == true )
                         CommandsFactory::read_u32 (cmd, (uint32_t*)argv.at(0));
-
-                ALERT ("CommandsFactory", "READ_U32 args missing");
+                else
+                        ALERT ("CommandsFactory", "READ_U32 args missing");
 
                 break;
 
         case WRITE_U32:
 
-                if ( check_arg( argv, 2) == false )
+                if ( check_arg( argv, 2) == true )
                         CommandsFactory::write_u32 (cmd, (uint32_t*)argv.at(0), (uint32_t*)argv.at(0));
-
-                ALERT ("CommandsFactory", "WRITE_U32 args missing");
+                else
+                        ALERT ("CommandsFactory", "WRITE_U32 args missing");
 
                 break;
 
