@@ -38,6 +38,9 @@ jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, uint32_t datai
 
                 break;
 
+        case READ_U32:
+
+
         case WRITE_U32:
 
                 // Set the correct JTAG-DP

@@ -16,14 +16,9 @@
 
 typedef enum COMMAND_TYPE {
 								RESET=0,
-								READ_BYTE=1,
-								READ_WORD=2,
-								READ_HALFWORD =3,
-								WRITE_BYTE=4,
-								WRITE_WORD=5,
-								WRITE_HALFWORD=6,
-								IDCODE=7,
-								WRITE_U32=8,
+								IDCODE=1,
+								WRITE_U32=2,
+								READ_U32=3,
 }COMMAND_TYPE;
 
 static const struct command_name_mapping {
@@ -32,12 +27,7 @@ static const struct command_name_mapping {
 }
 command_name_mapping[] = {
 								{ RESET, "RESET", },
-								{ READ_BYTE, "READ_BYTE", },
-								{ READ_WORD, "READ_WORD", },
-								{ READ_HALFWORD, "READ_HALFWORD", },
-								{ WRITE_BYTE, "WRITE_BYTE", },
-								{ WRITE_WORD, "WRITE_WORD", },
-								{ WRITE_HALFWORD, "WRITE_HALFWORD", },
+								{ READ_U32, "READ U32", },
 								{ WRITE_U32, "WRITE U32", },
 								{ IDCODE, "IDCODE", },
 };
