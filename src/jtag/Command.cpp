@@ -90,20 +90,15 @@ void Command::write_dr (uint32_t* dr, uint32_t size) {
         uint32_t j;
         uint8_t byte;
 
-        for(j=0; j<4; j++) {
-
-          byte = 0;
-          byte += dr[0] & (1u << j) ? (1 << 1) : 0;
-
-          this->buffer.push_back (byte);
-        }
+        for(j=0; j<4; j++)
+          this->buffer.push_back (dr[0] & (1u << j) ? (1 << 1) : 0);
 
         for(j=4; j<size; j++) {
 
             byte = 0;
             byte += dr[1] & (1u << j) ? (1 << 1) : 0;
 
-            if( j == 31 )
+            if( j == (size-1) )
               byte += (1 << 0); // set tms
 
             this->buffer.push_back (byte);

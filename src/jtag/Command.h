@@ -62,6 +62,7 @@ private:
 
 								COMMAND_TYPE type;
 
+								static uint32_t tdo;
 };
 
 } /* namespace JTAG */

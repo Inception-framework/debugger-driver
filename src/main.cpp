@@ -54,6 +54,7 @@ int main(int argc, char* argv[]) {
 	INFO("Command","Creating RESET command ...");
 	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::RESET, arg);
 	producer->add_cmd_to_queue (cmd);
+	producer->process_jtag_queue ();
 
 	INFO("Command","Creating Select command ...");
 	ap = new AHB_AP ();
@@ -61,16 +62,19 @@ int main(int argc, char* argv[]) {
 	arg.push_back(ap->select());
 	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::SELECT, arg);
 	producer->add_cmd_to_queue (cmd);
+	producer->process_jtag_queue ();
 
 	INFO("Command","Creating WRITE_U32 command ...");
 	arg.push_back(0xABABABAB);
 	arg.push_back(0x20000000);
 	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::WRITE_U32, arg);
 	producer->add_cmd_to_queue (cmd);
+	producer->process_jtag_queue ();
 
 	INFO("Command","Creating IDCODE command ...");
 	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::IDCODE, arg);
 	producer->add_cmd_to_queue (cmd);
+	producer->process_jtag_queue ();
 
 	INFO("Command","Superspeed Jtag dongle is going to transmit commands ...");
 	producer->process_jtag_queue ();
