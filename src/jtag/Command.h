@@ -47,13 +47,15 @@ public:
 
 								void write_ir (uint8_t ir);
 
-								void write_dr (uint32_t* dr, uint32_t size);
+								void write_dr (uint8_t RnW, uint8_t address, uint32_t datain);
 
 								const char* command_name ();
 
 								uint8_t* get_buffer ();
 
 								uint32_t size ();
+
+								void wait (uint32_t cycles);
 
 private:
 								void set_type (COMMAND_TYPE type);

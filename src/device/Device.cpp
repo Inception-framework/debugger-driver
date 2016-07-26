@@ -164,8 +164,6 @@ void USBDevice::write () {
 								int32_t transferred;
 								int32_t attempt = 0;
 
-								printf("Device", "will send %d ", this->size);
-
 								do {
 																if( (retval = libusb_bulk_transfer(this->handle,
 																																																			0x1,

@@ -18,15 +18,26 @@
 
 #include "jtag/ap/ahb_ap/AHB_AP.h"
 
+#include "jtag/Command_test.cpp"
+
 using namespace jtag;
 
 int main(int argc, char* argv[]) {
 
 	INFO("Init","Avatar gateway version 1.0");
 
+	if ( argc > 3 ) {
+
+		CommandTest ().test ();
+
+		return 0;
+
+	}
+
+
 	Command* cmd;
 	AccessPort* ap;
-	uint8_t stopped = NULL;
+	uint8_t stopped = 0;
 	std::vector<uint32_t> arg;
 
 	INFO("Device","Initializing superspeed device ...");
@@ -64,6 +75,11 @@ int main(int argc, char* argv[]) {
 	producer->add_cmd_to_queue (cmd);
 	producer->process_jtag_queue ();
 
+	INFO("Command","Creating IDCODE command ...");
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::IDCODE, arg);
+	producer->add_cmd_to_queue (cmd);
+	producer->process_jtag_queue ();
+
 	INFO("Command","Creating WRITE_U32 command ...");
 	arg.push_back(0xABABABAB);
 	arg.push_back(0x20000000);
@@ -71,8 +87,9 @@ int main(int argc, char* argv[]) {
 	producer->add_cmd_to_queue (cmd);
 	producer->process_jtag_queue ();
 
-	INFO("Command","Creating IDCODE command ...");
-	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::IDCODE, arg);
+	INFO("Command","Creating READ_U32 command ...");
+	arg.push_back(0x20000000);
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::READ_U32, arg);
 	producer->add_cmd_to_queue (cmd);
 	producer->process_jtag_queue ();
 
@@ -80,7 +97,7 @@ int main(int argc, char* argv[]) {
 	producer->process_jtag_queue ();
 
 	INFO("User", "Press any key to shutdown Avatar");
-	while (stopped == NULL) {
+	while (stopped == 0) {
 		std::cin >> stopped;
 	}
 

@@ -20,8 +20,6 @@ namespace jtag {
  * The DPACC scan chain is used to access the CTRL/STAT, SELECT and RDBUFF DP registers
  * The APACC scan chain is used to access registers in the currently-selected AP register bank
  */
-#define DPACC 0xb1010
-#define APACC 0xb1011
 
 #define JTAG_OK 0xb010
 #define JTAG_WAIT 0xb001
@@ -133,12 +131,12 @@ typedef const struct tms_sequences tms_table[6][6];
 const struct tms_sequences tms_seqs[6][6] = {
         /* to state: */
         /*	RESET		     IDLE			      DRSHIFT			    DRPAUSE					IRSHIFT					IRPAUSE */ /* from state: */
-        {B8(1111111, 7), B8(0000000, 7),B8(0010111, 7), B8(0001010, 7), B8(0011011, 7), B8(0010110, 7)}, /* RESET */
+        {B8(1111111, 7), B8(0000000, 7),B8(0010, 4),    B8(01010, 5), B8(0011011, 7), B8(0010110, 7)}, /* RESET */
         {B8(1111111, 7), B8(0000000, 7),B8(001, 3),     B8(0101, 4),    B8(0011, 4),    B8(01011, 5)}, /* IDLE */
         {B8(1111111, 7), B8(011, 3),    B8(00111, 5),   B8(01, 2),      B8(001111, 6),  B8(0101111, 7)}, /* DRSHIFT */
-        {B8(1111111, 7), B8(011, 3),    B8(01, 2),      B8(0, 1),       B8(001111, 6),  B8(0101111, 7)}, /* DRPAUSE */
+        {B8(1111111, 7), B8(011, 3),    B8(00111, 5),      B8(0, 1),       B8(001111, 6),  B8(0101111, 7)}, /* DRPAUSE */
         {B8(1111111, 7), B8(011, 3),    B8(00111, 5),   B8(010111, 6),  B8(001111, 6),  B8(01, 2)}, /* IRSHIFT */
-        {B8(1111111, 7), B8(011, 3),    B8(00111, 5),   B8(010111, 6),  B8(01, 2),      B8(0, 1)} /* IRPAUSE */
+        {B8(1111111, 7), B8(011, 3),    B8(00111, 5),   B8(010111, 6),  B8(001111, 6),      B8(0, 1)} /* IRPAUSE */
 };
 
 
