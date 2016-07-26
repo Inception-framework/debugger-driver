@@ -47,7 +47,8 @@ void Producer::stop () {
 void Producer::process_jtag_queue (void) {
 
 								jtag::Command* cmd = NULL;
-								//uint32_t size;s
+								//uint32_t size;ss
+
 
 								INFO("Interface"," Producer started");
 
@@ -62,10 +63,10 @@ void Producer::process_jtag_queue (void) {
 
 																								cmd = this->queue.front ();
 
-																								printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name (), cmd->size ());
+																								/*printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name (), cmd->size ());
 																								for (int i=0; i<cmd->size (); i++)
 																									printf("%02x", cmd->get_buffer ()[i]);
-																								printf("\r\n");
+																								printf("\r\n");*/
 
 																								//if ( size == 1024 )
 																								this->device->download (cmd->get_buffer (), cmd->size () );
