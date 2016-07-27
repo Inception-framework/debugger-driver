@@ -9,23 +9,16 @@
 
 namespace jtag {
 
-AHB_AP::AHB_AP () : AccessPort("AHB_AP") {
+AHB_AP::AHB_AP() : AccessPort("AHB_AP") { this->select_register = 0x00000000; }
 
-        this->select_register = 0x00000000;
-
+AHB_AP::~AHB_AP() {
+  // TODO Auto-generated destructor stub
 }
 
-AHB_AP::~AHB_AP () {
-        // TODO Auto-generated destructor stub
+uint32_t AHB_AP::select() {
+
+  AccessPort::select(this);
+
+  return this->select_register;
 }
-
-uint32_t AHB_AP::select () {
-
-        AccessPort::select (this);
-
-
-        return this->select_register;
-
-}
-
 }

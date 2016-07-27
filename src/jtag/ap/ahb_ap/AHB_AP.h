@@ -17,11 +17,11 @@ namespace jtag {
 
 class AHB_AP : public AccessPort {
 public:
-        AHB_AP ();
+  AHB_AP();
 
-        virtual ~AHB_AP ();
+  virtual ~AHB_AP();
 
-        uint32_t select();
+  uint32_t select();
 };
 
 } /* namespace JTAG */

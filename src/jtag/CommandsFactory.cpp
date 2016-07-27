@@ -9,12 +9,9 @@
 
 using namespace std;
 
-CommandsFactory::CommandsFactory () {
+CommandsFactory::CommandsFactory() {}
 
-}
-
-CommandsFactory::~CommandsFactory () {
-}
+CommandsFactory::~CommandsFactory() {}
 
 /*
  *  The JTAG-DP register accessed depends on both:
@@ -22,178 +19,188 @@ CommandsFactory::~CommandsFactory () {
    •       - A[3:2] from the address field of the DAP acces
  *
  */
-jtag::Command* CommandsFactory::CreateCommand (COMMAND_TYPE type, vector<uint32_t>& argv) {
+jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
+                                              vector<uint32_t> &argv) {
 
-        jtag::Command* cmd = new jtag::Command(type);
+  jtag::Command *cmd = new jtag::Command(type);
 
-        switch(type) {
+  switch (type) {
 
-        case SELECT:
+  case SELECT:
 
-                if ( CommandsFactory::check_arg ( argv, 1) == true )
-                        CommandsFactory::select (cmd, argv.at(0));
-                else
-                        ALERT ("CommandsFactory", "SELECT args missing");
+    if (CommandsFactory::check_arg(argv, 1) == true)
+      CommandsFactory::select(cmd, argv.at(0));
+    else
+      ALERT("CommandsFactory", "SELECT args missing");
 
-                break;
+    break;
 
-        case RESET:
+  case RESET:
 
-                for(int i=0; i<5; i++)
-                        cmd->add_command(1,0,0,0);
+    for (int i = 0; i < 5; i++)
+      cmd->add_command(1, 0, 0, 0);
 
-                break;
+    break;
 
-        case READ_U32:
+  case READ_U32:
 
-                if ( check_arg ( argv, 1) == true )
-                        CommandsFactory::read_u32 (cmd, argv.at(0));
-                else
-                        ALERT ("CommandsFactory", "READ_U32 args missing");
+    if (check_arg(argv, 1) == true)
+      CommandsFactory::read_u32(cmd, argv.at(0));
+    else
+      ALERT("CommandsFactory", "READ_U32 args missing");
 
-                break;
+    break;
 
-        case WRITE_U32:
+  case WRITE_U32:
 
-                if ( check_arg( argv, 2) == true )
-                        CommandsFactory::write_u32 (cmd, argv.at(0), argv.at(1));
-                else
-                        ALERT ("CommandsFactory", "WRITE_U32 args missing");
+    if (check_arg(argv, 2) == true)
+      CommandsFactory::write_u32(cmd, argv.at(0), argv.at(1));
+    else
+      ALERT("CommandsFactory", "WRITE_U32 args missing");
 
-                break;
+    break;
 
-        case IDCODE:
+  case IDCODE:
 
-                cmd->move_to(jtag::TAP_IRSHIFT);
+    cmd->move_to(jtag::TAP_IRSHIFT);
 
-                cmd->write_ir(0xE); //1110 = IDCODE IR
+    cmd->write_ir(0xE); // 1110 = IDCODE IR
 
-                cmd->move_to(jtag::TAP_DRSHIFT);
+    cmd->move_to(jtag::TAP_DRSHIFT);
 
-                for(int i=0; i<32; i++)
-                        cmd->add_command(0,0,0,0);
+    for (int i = 0; i < 32; i++)
+      cmd->add_command(0, 0, 0, 0);
 
-                cmd->move_to(jtag::TAP_RESET);
+    cmd->move_to(jtag::TAP_RESET);
 
-                break;
+    break;
 
-        case ACTIVE:
+  case ACTIVE:
 
-                cmd->move_to(jtag::TAP_IRSHIFT);
+    cmd->move_to(jtag::TAP_IRSHIFT);
 
-                cmd->write_ir(DPACC);
+    cmd->write_ir(DPACC);
 
-                cmd->move_to(jtag::TAP_DRSHIFT);
+    cmd->move_to(jtag::TAP_DRSHIFT);
 
-                cmd->write_dr(DPAP_WRITE, CTRL_STAT, 0x80000000);
+    cmd->write_dr(DPAP_WRITE, CTRL_STAT, 0x80000000);
 
-                // wait
-                for(int i=0; i<30; i++)
-                        cmd->add_command(0,0,0,0);
+    // wait
+    for (int i = 0; i < 30; i++)
+      cmd->add_command(0, 0, 0, 0);
 
-                cmd->move_to(jtag::TAP_DRSHIFT);
-                cmd->write_dr(DPAP_READ, CTRL_STAT, 0x00000000);
+    cmd->move_to(jtag::TAP_DRSHIFT);
+    cmd->write_dr(DPAP_READ, CTRL_STAT, 0x00000000);
 
-                cmd->move_to(jtag::TAP_RESET);
+    cmd->move_to(jtag::TAP_RESET);
 
-                break;
-        }
+    break;
+  }
 
-        argv.clear ();
+  argv.clear();
 
-        return cmd;
-
+  return cmd;
 }
 
-bool CommandsFactory::check_arg (vector<uint32_t>& argv, uint32_t required) {
+bool CommandsFactory::check_arg(vector<uint32_t> &argv, uint32_t required) {
 
-        if( argv.size() != required )
-                return false;
+  if (argv.size() != required)
+    return false;
 
-        return true;
+  return true;
 }
 
-void CommandsFactory::select (jtag::Command* cmd, uint32_t bank_id) {
+void CommandsFactory::select(jtag::Command *cmd, uint32_t bank_id) {
 
-        uint32_t header;
-        uint32_t ap_register[2];
+  uint32_t header;
+  uint32_t ap_register[2];
 
-        // Set the correct JTAG-DP
-        cmd->move_to(jtag::TAP_IRSHIFT);
-        cmd->write_ir(DPACC);   //1010 = DPACC IR
+  uint32_t sel = (bank_id << 24);
 
-        // set select register value
-        cmd->move_to(jtag::TAP_DRSHIFT);
+  // Set the correct JTAG-DP
+  cmd->move_to(jtag::TAP_IRSHIFT);
+  cmd->write_ir(DPACC); // 1010 = DPACC IR
 
-        cmd->write_dr(DPAP_WRITE, SEL_ADDR, bank_id);
+  // set select register value
+  cmd->move_to(jtag::TAP_DRSHIFT);
 
-        cmd->move_to(jtag::TAP_RESET);
+  cmd->write_dr(DPAP_WRITE, SEL_ADDR, sel);
+
+  cmd->move_to(jtag::TAP_RESET);
 }
 
-void CommandsFactory::read_u32 (jtag::Command* cmd, uint32_t address) {
+void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
 
-        // uint32_t header, csw_value;
+  // uint32_t header, csw_value;
 
-        uint32_t ap_register[2];
+  uint32_t ap_register[2];
 
-        // Set the correct JTAG-DP
-        cmd->move_to(jtag::TAP_IRSHIFT);
-        cmd->write_ir(APACC);   //1011 = APACC IR
+  // Set the correct JTAG-DP
+  cmd->move_to(jtag::TAP_IRSHIFT);
+  cmd->write_ir(APACC); // 1011 = APACC IR
 
-        // CSW register value
-        // csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE | CSW_MASTER_DEBUG | CSW_HPROT;
+  // CSW register value
+  // csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE |
+  // CSW_MASTER_DEBUG | CSW_HPROT;
 
-        // set csw register value
-        cmd->move_to(jtag::TAP_DRSHIFT);
-        cmd->write_dr(DPAP_READ, CSW_ADDR, 0);
-        for(int i=0; i<30; i++)
-                cmd->add_command(0,0,0,0);
+  // set csw register value
+  cmd->move_to(jtag::TAP_DRSHIFT);
+  cmd->write_dr(DPAP_READ, CSW_ADDR, 0);
+  for (int i = 0; i < 30; i++)
+    cmd->add_command(0, 0, 0, 0);
 
-        // set tar register value
-        cmd->move_to(jtag::TAP_DRSHIFT);
-        cmd->write_dr(DPAP_WRITE, TAR_ADDR, address);
-        for(int i=0; i<30; i++)
-                cmd->add_command(0,0,0,0);
+  // set tar register value
+  cmd->move_to(jtag::TAP_DRSHIFT);
+  cmd->write_dr(DPAP_WRITE, TAR_ADDR, address);
+  for (int i = 0; i < 30; i++)
+    cmd->add_command(0, 0, 0, 0);
 
-        // set drw register value
-        cmd->move_to(jtag::TAP_DRSHIFT);
-        cmd->write_dr(DPAP_READ, DRW_ADDR, 0);
-        for(int i=0; i<30; i++)
-                cmd->add_command(0,0,0,0);
+  // set drw register value
+  cmd->move_to(jtag::TAP_DRSHIFT);
+  cmd->write_dr(DPAP_READ, DRW_ADDR, 0);
+  for (int i = 0; i < 30; i++)
+    cmd->add_command(0, 0, 0, 0);
 
-        cmd->move_to(jtag::TAP_RESET);
+  cmd->move_to(jtag::TAP_RESET);
 }
 
-void CommandsFactory::write_u32 (jtag::Command* cmd, uint32_t address, uint32_t datain) {
+void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
+                                uint32_t datain) {
 
-        uint32_t header, csw_value;
-        uint32_t ap_register[2];
+  uint32_t header, csw_value;
+  uint32_t ap_register[2];
 
-        // Set the correct JTAG-DP
-        cmd->move_to(jtag::TAP_IRSHIFT);
-        cmd->write_ir(APACC); //1011 = APACC IR
+  // Set the correct JTAG-DP
+  cmd->move_to(jtag::TAP_IRSHIFT);
+  cmd->write_ir(APACC); // 1011 = APACC IR
 
-        // CSW register value
-        csw_value = 0x22000012; //CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE | CSW_MASTER_DEBUG | CSW_SPROT | CSW_ADDRINC_SINGLE | CSW_SPIDEN;
-        printf("CSW = 0x%08x", csw_value);
+  // CSW register value
+  csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE | CSW_MASTER_DEBUG |
+              CSW_SPROT | CSW_ADDRINC_SINGLE | CSW_SPIDEN;
+  printf("CSW = 0x%08x\n\n", csw_value);
 
-        // set csw register value
-        cmd->move_to(jtag::TAP_DRSHIFT);
-        cmd->write_dr(DPAP_WRITE, CSW_ADDR, csw_value);
-        for(int i=0; i<30; i++)
-                cmd->add_command(0,0,0,0);
+  // set csw register value
+  cmd->move_to(jtag::TAP_DRSHIFT);
+  cmd->write_dr(DPAP_WRITE, CSW_ADDR, csw_value);
+  for (int i = 0; i < 60; i++)
+    cmd->add_command(0, 0, 0, 0);
 
-        // set tar register value
-        cmd->move_to(jtag::TAP_DRSHIFT);
-        cmd->write_dr(DPAP_WRITE, TAR_ADDR, address);
-        for(int i=0; i<30; i++)
-                cmd->add_command(0,0,0,0);
+  cmd->move_to(jtag::TAP_DRSHIFT);
+  cmd->write_dr(DPAP_READ, CSW_ADDR, 0);
+  for (int i = 0; i < 30; i++)
+    cmd->add_command(0, 0, 0, 0);
 
-        // set DRW register value
-        cmd->move_to(jtag::TAP_DRSHIFT);
-        cmd->write_dr(DPAP_WRITE, DRW_ADDR, datain);
-        for(int i=0; i<30; i++)
-                cmd->add_command(0,0,0,0);
+  // set tar register value
+  cmd->move_to(jtag::TAP_DRSHIFT);
+  cmd->write_dr(DPAP_WRITE, TAR_ADDR, address);
+  for (int i = 0; i < 30; i++)
+    cmd->add_command(0, 0, 0, 0);
 
-        cmd->move_to(jtag::TAP_RESET);
+  // set DRW register value
+  cmd->move_to(jtag::TAP_DRSHIFT);
+  cmd->write_dr(DPAP_WRITE, DRW_ADDR, datain);
+  for (int i = 0; i < 30; i++)
+    cmd->add_command(0, 0, 0, 0);
+
+  cmd->move_to(jtag::TAP_RESET);
 }

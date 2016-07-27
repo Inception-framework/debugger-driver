@@ -14,30 +14,28 @@
 
 #include "../jtag/Command.h"
 
-#include <thread>
 #include <mutex>
+#include <thread>
 
 #define _LOG_ALL
 #include "../colored.h"
 
-class Producer  : public Interface {
+class Producer : public Interface {
 
 public:
+  Producer(Device::USBDevice *device);
 
-								Producer(Device::USBDevice* device);
+  virtual ~Producer();
 
-								virtual ~Producer();
+  void start(void);
 
-								void start(void);
+  void stop(void);
 
-								void stop(void);
+  void add_cmd_to_queue(jtag::Command *cmd);
 
-								void add_cmd_to_queue(jtag::Command* cmd);
+  void process_jtag_queue(void);
 
-								void process_jtag_queue (void);
-
-								static int sent;
-
+  static int sent;
 };
 
 #endif /* PRODUCER_H_ */

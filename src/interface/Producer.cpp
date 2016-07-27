@@ -9,75 +9,69 @@
 
 int Producer::sent = 0;
 
-Producer::Producer (Device::USBDevice* device) : Interface(device) {
+Producer::Producer(Device::USBDevice *device) : Interface(device) {
 
-								this->is_running = false;
-
+  this->is_running = false;
 }
 
-Producer::~Producer () {
-								// TODO Auto-generated destructor stub
+Producer::~Producer() {
+  // TODO Auto-generated destructor stub
 }
 
-void Producer::add_cmd_to_queue (jtag::Command* cmd) {
+void Producer::add_cmd_to_queue(jtag::Command *cmd) {
 
-								this->lock ();
+  this->lock();
 
-								this->queue.push (cmd);
+  this->queue.push(cmd);
 
-								puts(" Command added to the queue");
+  puts(" Command added to the queue");
 
-								this->unlock ();
+  this->unlock();
 }
 
-void Producer::start () {
+void Producer::start() {
 
-								this->is_running = true;
+  this->is_running = true;
 
-								//this->task = std::thread (&Producer::process_jtag_queue, this);
-
+  // this->task = std::thread (&Producer::process_jtag_queue, this);
 }
 
-void Producer::stop () {
+void Producer::stop() { this->is_running = false; }
 
-								this->is_running = false;
+void Producer::process_jtag_queue(void) {
 
-}
+  jtag::Command *cmd = NULL;
+  // uint32_t size;ss
 
-void Producer::process_jtag_queue (void) {
+  INFO("Interface", " Producer started");
 
-								jtag::Command* cmd = NULL;
-								//uint32_t size;ss
+  // while( this->is_running == true ) {
 
+  /* The producer goal is to use the maximum of the USB3 bandwidth */
+  if (this->queue.empty() == false) {
 
-								INFO("Interface"," Producer started");
+    puts("Producer processes command");
 
-								//while( this->is_running == true ) {
+    this->lock();
 
-																/* The producer goal is to use the maximum of the USB3 bandwidth */
-																if( this->queue.empty () == false ) {
+    cmd = this->queue.front();
 
-																								puts("Producer processes command");
+    /*printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name (),
+    cmd->size ());
+    for (int i=0; i<cmd->size (); i++)
+            printf("%02x", cmd->get_buffer ()[i]);
+    printf("\r\n");*/
 
-																								this->lock ();
+    // if ( size == 1024 )
+    this->device->download(cmd->get_buffer(), cmd->size());
 
-																								cmd = this->queue.front ();
+    this->queue.pop();
 
-																								/*printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name (), cmd->size ());
-																								for (int i=0; i<cmd->size (); i++)
-																									printf("%02x", cmd->get_buffer ()[i]);
-																								printf("\r\n");*/
+    this->unlock();
 
-																								//if ( size == 1024 )
-																								this->device->download (cmd->get_buffer (), cmd->size () );
+    delete cmd;
 
-																								this->queue.pop ();
-
-																								this->unlock ();
-
-																								delete cmd;
-
-																								Producer::sent++;
-																}
-								//}
+    Producer::sent++;
+  }
+  //}
 }

@@ -3,8 +3,6 @@
 
 #include <exception>
 
-class Exception  : virtual public std::exception {
-
-};
+class Exception : virtual public std::exception {};
 
 #endif /* EXCEPTION_H_ */

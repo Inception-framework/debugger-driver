@@ -15,20 +15,20 @@
 
 class CommandsFactory {
 public:
-        CommandsFactory ();
-        virtual ~CommandsFactory ();
+  CommandsFactory();
+  virtual ~CommandsFactory();
 
-        static jtag::Command* CreateCommand (COMMAND_TYPE type, std::vector<uint32_t>& argv);
+  static jtag::Command *CreateCommand(COMMAND_TYPE type,
+                                      std::vector<uint32_t> &argv);
 
 private:
-        static bool check_arg (std::vector<uint32_t>& argv, uint32_t required );
+  static bool check_arg(std::vector<uint32_t> &argv, uint32_t required);
 
-        static void select (jtag::Command* cmd, uint32_t bank_id);
+  static void select(jtag::Command *cmd, uint32_t bank_id);
 
-        static void read_u32 (jtag::Command* cmd, uint32_t address);
+  static void read_u32(jtag::Command *cmd, uint32_t address);
 
-        static void write_u32 (jtag::Command* cmd, uint32_t address, uint32_t data );
-
+  static void write_u32(jtag::Command *cmd, uint32_t address, uint32_t data);
 };
 
 #endif /* JTAG_COMMANDSFACTORY_H_ */

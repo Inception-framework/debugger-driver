@@ -12,42 +12,41 @@
 
 #include "../device/Device.h"
 
+#include <mutex>
 #include <queue>
 #include <thread>
-#include <mutex>
 
 class Interface {
 
 public:
-								Interface (Device::USBDevice* device);
+  Interface(Device::USBDevice *device);
 
-								virtual ~Interface ();
+  virtual ~Interface();
 
-								virtual void start (void) = 0;
+  virtual void start(void) = 0;
 
-								virtual void stop (void) = 0;
+  virtual void stop(void) = 0;
 
-								virtual void add_cmd_to_queue (jtag::Command* cmd) = 0;
+  virtual void add_cmd_to_queue(jtag::Command *cmd) = 0;
 
-								virtual void process_jtag_queue (void) = 0;
+  virtual void process_jtag_queue(void) = 0;
 
-								void lock ();
+  void lock();
 
-								void unlock ();
+  void unlock();
 
-								void wait ();
+  void wait();
 
 protected:
+  std::queue<jtag::Command *> queue;
 
-								std::queue<jtag::Command*> queue;
+  std::thread task;
 
-								std::thread task;
+  bool is_running;
 
-								bool is_running;
+  Device::USBDevice *device;
 
-								Device::USBDevice* device;
-
-								std::mutex locker;
+  std::mutex locker;
 };
 
 #endif

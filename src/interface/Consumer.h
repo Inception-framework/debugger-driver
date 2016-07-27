@@ -17,18 +17,17 @@
 class Consumer : public Interface {
 
 public:
+  Consumer(Device::USBDevice *device);
 
-								Consumer(Device::USBDevice* device);
+  virtual ~Consumer();
 
-								virtual ~Consumer();
+  void start(void);
 
-								void start(void);
+  void stop(void);
 
-								void stop(void);
+  void add_cmd_to_queue(jtag::Command *cmd);
 
-								void add_cmd_to_queue(jtag::Command* cmd);
-
-								void process_jtag_queue (void);
+  void process_jtag_queue(void);
 };
 
 #endif /* CONSUMER_H_ */

@@ -9,22 +9,16 @@
 
 namespace jtag {
 
-JtagAP::JtagAP () : AccessPort("JTAG AP") {
+JtagAP::JtagAP() : AccessPort("JTAG AP") { this->select_register = 0x00000000; }
 
-  this->select_register = 0x00000000;
-
+JtagAP::~JtagAP() {
+  // TODO Auto-generated destructor stub
 }
 
-JtagAP::~JtagAP () {
-        // TODO Auto-generated destructor stub
-}
-
-uint32_t JtagAP::select () {
+uint32_t JtagAP::select() {
 
   AccessPort::select(this);
 
   return this->select_register;
-
 }
-
 }

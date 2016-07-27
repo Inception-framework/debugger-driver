@@ -15,21 +15,21 @@ namespace jtag {
 
 class AccessPort {
 public:
-        AccessPort (std::string name);
+  AccessPort(std::string name);
 
-        virtual ~AccessPort ();
+  virtual ~AccessPort();
 
-        virtual uint32_t select() = 0;
+  virtual uint32_t select() = 0;
 
-        static void select(AccessPort* ap);
+  static void select(AccessPort *ap);
 
 protected:
-        uint32_t select_register;
+  uint32_t select_register;
 
 private:
-        static AccessPort* current_ap;
+  static AccessPort *current_ap;
 
-        std::string name;
+  std::string name;
 };
 
 } /* namespace JTAG */

@@ -17,11 +17,11 @@ namespace jtag {
 
 class JtagAP : public AccessPort {
 public:
-        JtagAP ();
+  JtagAP();
 
-        virtual ~JtagAP ();
+  virtual ~JtagAP();
 
-        uint32_t select();
+  uint32_t select();
 };
 
 } /* namespace JTAG */
