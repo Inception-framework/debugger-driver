@@ -20,6 +20,7 @@ typedef enum COMMAND_TYPE {
 								WRITE_U32 = 2,
 								READ_U32  = 3,
 								SELECT    = 4,
+								ACTIVE    = 5,
 }COMMAND_TYPE;
 
 static const struct command_name_mapping {
@@ -31,6 +32,7 @@ command_name_mapping[] = {
 								{ READ_U32, "READ U32", },
 								{ WRITE_U32, "WRITE U32", },
 								{ IDCODE, "IDCODE", },
+								{ ACTIVE, "ACTIVE"},
 };
 
 namespace jtag {

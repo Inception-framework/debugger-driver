@@ -61,9 +61,13 @@ int main(int argc, char* argv[]) {
 	*/
 
 	// commands.pack (cmd);
-
 	INFO("Command","Creating RESET command ...");
 	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::RESET, arg);
+	producer->add_cmd_to_queue (cmd);
+	producer->process_jtag_queue ();
+
+	INFO("Command","Creating ACTIVE command ...");
+	cmd = CommandsFactory::CreateCommand (COMMAND_TYPE::ACTIVE, arg);
 	producer->add_cmd_to_queue (cmd);
 	producer->process_jtag_queue ();
 

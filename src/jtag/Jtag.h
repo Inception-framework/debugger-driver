@@ -56,10 +56,11 @@ typedef enum tap_state {
 #define APACC 0xB
 #define DPACC 0xA
 
-#define CSW_ADDR ( 0x00 << 1)
-#define TAR_ADDR ( 0x04 << 1)
-#define DRW_ADDR ( 0x0C << 1)
-#define SEL_ADDR ( 0x08 << 1)
+#define CSW_ADDR  ( 0x00 )
+#define TAR_ADDR  ( 0x04 )
+#define DRW_ADDR  ( 0x0C )
+#define SEL_ADDR  ( 0x08 )
+#define CTRL_STAT ( 0x04 )
 
 #define DPAP_WRITE 0
 #define DPAP_READ  1
