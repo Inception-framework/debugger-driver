@@ -131,6 +131,8 @@ void Command::write_dr(uint8_t RnW, uint8_t address, uint32_t datain) {
 
   this->buffer.push_back(datain & (1u << 31) ? (1 << 1) | (1 << 0) : (1 << 0));
 
+  this->buffer.push_back(0);
+
   Jtag::current_state = TAP_DRPAUSE;
 }
 

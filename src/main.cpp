@@ -94,14 +94,15 @@ int main(int argc, char *argv[]) {
   producer->add_cmd_to_queue(cmd);
   producer->process_jtag_queue();
 
-  // INFO("Command", "Creating READ_U32 command ...");
-  // arg.push_back(0x20000000);
-  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
-  // producer->add_cmd_to_queue(cmd);
-  // producer->process_jtag_queue();
-
-  INFO("Command", "Superspeed Jtag dongle is going to transmit commands ...");
+  INFO("Command", "Creating READ_U32 command ...");
+  arg.push_back(0x20000000);
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
+  producer->add_cmd_to_queue(cmd);
   producer->process_jtag_queue();
+
+  // INFO("Command", "Superspeed Jtag dongle is going to transmit commands
+  // ...");
+  // producer->process_jtag_queue();
 
   // INFO("User", "Press any key to shutdown Avatar");
   // while (stopped == 0) {
