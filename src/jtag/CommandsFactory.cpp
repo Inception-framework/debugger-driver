@@ -54,7 +54,7 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
   case WRITE_U32:
 
     if (check_arg(argv, 2) == true)
-      CommandsFactory::write_u32(cmd, argv.at(0), argv.at(1));
+      CommandsFactory::write_u32(cmd, argv.at(1), argv.at(0));
     else
       ALERT("CommandsFactory", "WRITE_U32 args missing");
 
@@ -172,8 +172,8 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
   cmd->write_ir(APACC); // 1011 = APACC IR
 
   // CSW register value
-  csw_value = 0x23000042; // CSW_32BIT | CSW_ADDRINC_OFF |
-                          // CSW_DBGSWENABLE |
+  csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE; /// 0x23000042;
+  // CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE;
   // CSW_MASTER_DEBUG |
   // CSW_SPROT | CSW_ADDRINC_SINGLE | CSW_SPIDEN;
   printf("CSW = 0x%08x\n\n", csw_value);
