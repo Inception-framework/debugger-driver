@@ -7,9 +7,31 @@
 
 #include "Consumer.h"
 
-Consumer::Consumer(Device::USBDevice *device) : Interface(device) {}
+#include "../Decoder.h"
+#include "../device/Device.h"
+#include "../jtag/Command.h"
+
+Consumer::Consumer(Device::USBDevice *device) : Interface(device) {
+
+  this->decoder = decoder;
+}
 
 Consumer::~Consumer() {}
+
+void Consumer::add_decoder(Decoder *decoder) {
+
+  this->decoders.push_back(decoder);
+}
+
+void Consumer::notify(jtag::Command *cmd) {
+
+  std::vector<Decoder *>::iterator it;
+
+  for (it = decoders.begin(); it != decoders.end(); ++it) {
+
+    (*it)->add_cmd_to_queue(cmd);
+  }
+}
 
 void Consumer::add_cmd_to_queue(jtag::Command *cmd) {
 
@@ -46,13 +68,11 @@ void Consumer::process_jtag_queue(void) {
 
       cmd = this->queue.front();
 
-      this->device->upload(cmd->get_output_buffer(), cmd->size());
+      // this->device->upload(cmd->get_in_buffer(), cmd->size());
 
-      this->decoder->add_cmd_to_queue(cmd);
+      this->notify(cmd);
 
       this->queue.pop();
-
-      delete cmd;
     }
 
     this->unlock();

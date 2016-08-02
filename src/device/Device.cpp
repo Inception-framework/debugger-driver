@@ -153,33 +153,32 @@ void USBDevice::init(void) {
   return;
 }
 
-void USBDevice::write() {
+void USBDevice::io(uint8_t endpoint) {
 
   int32_t retval;
   int32_t transferred;
   int32_t attempt = 0;
 
   do {
-    if ((retval = libusb_bulk_transfer(this->handle, 0x1, this->buffer,
+    if ((retval = libusb_bulk_transfer(this->handle, endpoint, this->buffer,
                                        this->size, &transferred, 1)) != 0) {
       ALERT("Device", libusb_error_name(retval));
 
       switch (retval) {
       case LIBUSB_ERROR_TIMEOUT:
-        ALERT("Device", "Avatar driver failed to write : timeout error");
+        ALERT("Device", "USB driver failed : timeout error");
         break;
       case LIBUSB_ERROR_PIPE:
-        ALERT("Device", "Avatar driver failed to write : pipe error");
+        ALERT("Device", "USB driver failed : pipe error");
         break;
       case LIBUSB_ERROR_OVERFLOW:
-        ALERT("Device", "Avatar driver failed to write : overflow");
+        ALERT("Device", "USB driver failed : overflow");
         break;
       case LIBUSB_ERROR_NO_DEVICE:
-        ALERT("Device", "Avatar driver failed to write : no device");
+        ALERT("Device", "USB driver failed : no device");
         break;
       default:
-        ALERT("Device", "Avatar driver failed to write : error code %d ",
-              retval);
+        ALERT("Device", "USB driver failed : error code %d ", retval);
         break;
       }
       sleep(2);
@@ -203,7 +202,7 @@ void USBDevice::download(uint8_t *data, uint32_t size) {
 
   this->size = size;
 
-  this->write();
+  this->io(0x1);
 }
 
 void USBDevice::upload(uint8_t *data, uint32_t size) {
@@ -212,6 +211,6 @@ void USBDevice::upload(uint8_t *data, uint32_t size) {
 
   this->size = size;
 
-  // this->data = this->read ();
+  this->io(0x81);
 }
 }

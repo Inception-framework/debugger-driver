@@ -66,18 +66,22 @@ public:
 
   const char *command_name();
 
-  uint8_t *get_buffer();
+  uint8_t *get_out_buffer();
+
+  uint8_t *get_in_buffer();
 
   uint32_t size();
 
   void wait(uint32_t cycles);
 
-  void again();
+  int32_t again();
 
 private:
   void set_type(COMMAND_TYPE type);
 
-  std::vector<uint8_t> buffer;
+  std::vector<uint8_t> out_buffer;
+
+  std::vector<uint8_t> in_buffer;
 
   COMMAND_TYPE type;
 

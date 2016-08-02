@@ -52,7 +52,7 @@ private:
 
   void jtag_libusb_close();
 
-  void write();
+  void io(uint8_t endpoint);
 
   libusb_device *dev; /* USBDevice */
 
@@ -79,6 +79,8 @@ private:
   uint32_t buffer_limit;
 
   uint32_t size;
+
+  uint8_t endpoint;
 
   libusb_device **devs;
 };

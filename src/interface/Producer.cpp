@@ -9,7 +9,11 @@
 
 int Producer::sent = 0;
 
-Producer::Producer(Device::USBDevice *device) : Interface(device) {}
+Producer::Producer(Device::USBDevice *device, Consumer *consumer)
+    : Interface(device) {
+
+  this->consumer = consumer;
+}
 
 Producer::~Producer() {}
 
@@ -51,15 +55,17 @@ void Producer::process_jtag_queue(void) {
 
       printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name(),
              cmd->size());
-      for (unsigned int i = 0; i < cmd->size(); i++)
-        printf("%02x", cmd->get_buffer()[i]);
-      printf("\r\n");
+      // for (unsigned int i = 0; i < cmd->size(); i++)
+      //   printf("%02x", cmd->get_buffer()[i]);
+      // printf("\r\n");
 
-      this->device->download(cmd->get_buffer(), cmd->size());
+      this->device->download(cmd->get_out_buffer(), cmd->size());
 
       this->queue.pop();
 
-      delete cmd;
+      // delete cmd;
+
+      this->consumer->add_cmd_to_queue(cmd);
 
       Producer::sent++;
     }

@@ -8,11 +8,8 @@
 #ifndef CONSUMER_H_
 #define CONSUMER_H_
 
+#include "../Decoder.h"
 #include "Interface.h"
-
-#include "../device/Device.h"
-
-#include <thread>
 
 class Consumer : public Interface {
 
@@ -28,6 +25,15 @@ public:
   void add_cmd_to_queue(jtag::Command *cmd);
 
   void process_jtag_queue(void);
+
+  void add_decoder(Decoder *decoder);
+
+private:
+  void notify(jtag::Command *cmd);
+
+  Decoder *decoder;
+
+  std::vector<Decoder *> decoders;
 };
 
 #endif /* CONSUMER_H_ */

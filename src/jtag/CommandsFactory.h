@@ -8,10 +8,13 @@
 #ifndef JTAG_COMMANDSFACTORY_H_
 #define JTAG_COMMANDSFACTORY_H_
 
-#include <iostream>
-#include <vector>
+#define _LOG_ALL
+#include "../colored.h"
 
 #include "Command.h"
+
+#include <iostream>
+#include <vector>
 
 class CommandsFactory {
 public:

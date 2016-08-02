@@ -12,18 +12,12 @@
 
 #include "../device/Device.h"
 
-#include "../jtag/Command.h"
-
-#include <mutex>
-#include <thread>
-
-#define _LOG_ALL
-#include "../colored.h"
+#include "Consumer.h"
 
 class Producer : public Interface {
 
 public:
-  Producer(Device::USBDevice *device);
+  Producer(Device::USBDevice *device, Consumer *consumer);
 
   virtual ~Producer();
 
@@ -36,6 +30,9 @@ public:
   void process_jtag_queue(void);
 
   static int sent;
+
+private:
+  Consumer *consumer;
 };
 
 #endif /* PRODUCER_H_ */
