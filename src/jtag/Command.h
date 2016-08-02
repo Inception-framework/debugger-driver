@@ -39,7 +39,12 @@ static const struct command_name_mapping {
     {
         IDCODE, "IDCODE",
     },
-    {ACTIVE, "ACTIVE"},
+    {
+        ACTIVE, "ACTIVE",
+    },
+    {
+        SELECT, "SELECT",
+    },
 };
 
 namespace jtag {
