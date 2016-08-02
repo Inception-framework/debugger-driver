@@ -44,6 +44,8 @@ void Producer::process_jtag_queue(void) {
 
   jtag::Command *cmd = NULL;
 
+  uint32_t size;
+
   while (this->is_running) {
 
     this->lock();
@@ -59,13 +61,15 @@ void Producer::process_jtag_queue(void) {
       //   printf("%02x", cmd->get_buffer()[i]);
       // printf("\r\n");
 
-      this->device->download(cmd->get_out_buffer(), cmd->size());
+      size = cmd->size();
+
+      this->device->download(cmd->get_out_buffer(), &size);
 
       this->queue.pop();
 
-      // delete cmd;
-
       this->consumer->add_cmd_to_queue(cmd);
+
+      // std::this_thread::sleep_for(std::chrono::seconds(2));
 
       Producer::sent++;
     }

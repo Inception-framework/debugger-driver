@@ -43,6 +43,8 @@ public:
 private:
   void process_jtag_queue(void);
 
+  bool check(jtag::Command *cmd);
+
   std::queue<jtag::Command *> queue;
 
   std::thread task;

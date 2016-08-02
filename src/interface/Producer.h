@@ -14,6 +14,9 @@
 
 #include "Consumer.h"
 
+#include <chrono>
+#include <thread>
+
 class Producer : public Interface {
 
 public:

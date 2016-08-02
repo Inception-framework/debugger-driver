@@ -54,9 +54,9 @@ int main(int argc, char *argv[]) {
   * that sends it following the USB3 limitation
   */
 
-  INFO("Command", "Creating RESET command ...");
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
-  producer->add_cmd_to_queue(cmd);
+  // INFO("Command", "Creating RESET command ...");
+  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
+  // producer->add_cmd_to_queue(cmd);
 
   INFO("Command", "Creating ACTIVE command ...");
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::ACTIVE, arg);

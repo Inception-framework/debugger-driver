@@ -60,6 +60,8 @@ void Consumer::process_jtag_queue(void) {
 
   jtag::Command *cmd = NULL;
 
+  uint32_t size;
+
   while (this->is_running) {
 
     this->lock();
@@ -68,7 +70,11 @@ void Consumer::process_jtag_queue(void) {
 
       cmd = this->queue.front();
 
-      // this->device->upload(cmd->get_in_buffer(), cmd->size());
+      size = cmd->size();
+
+      std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+      this->device->upload(cmd->get_in_buffer(), &size);
 
       this->notify(cmd);
 

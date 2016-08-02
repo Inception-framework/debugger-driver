@@ -50,9 +50,7 @@ void Decoder::process_jtag_queue(void) {
         printf("%02x", cmd->get_in_buffer()[i]);
       printf("\r\n");
 
-      if (true /*this->check_ack(cmd)*/) {
-
-        this->queue.pop();
+      if (this->check(cmd)) {
 
         delete cmd;
       } else {
@@ -61,10 +59,21 @@ void Decoder::process_jtag_queue(void) {
 
         this->producer->add_cmd_to_queue(cmd);
       }
+      this->queue.pop();
     }
 
     this->unlock();
   }
 
   printf("\r\n############ Decoder down #################\r\n");
+}
+
+bool Decoder::check(jtag::Command *cmd) {
+
+  uint8_t *data = cmd->get_in_buffer();
+
+  if ((data[0] & ((1u << 0))) && (data[0] & (~(1u << 1))) &&
+      (data[0] & ((1u << 2))))
+    return true;
+  return false;
 }

@@ -11,8 +11,6 @@ USBDevice::USBDevice(uint16_t vid, uint16_t pid, uint32_t interface) {
   this->interface = interface;
 
   this->buffer_limit = 1024;
-
-  this->size = 0;
 }
 
 USBDevice::~USBDevice() {
@@ -153,15 +151,15 @@ void USBDevice::init(void) {
   return;
 }
 
-void USBDevice::io(uint8_t endpoint) {
+uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
 
   int32_t retval;
   int32_t transferred;
   int32_t attempt = 0;
 
   do {
-    if ((retval = libusb_bulk_transfer(this->handle, endpoint, this->buffer,
-                                       this->size, &transferred, 1)) != 0) {
+    if ((retval = libusb_bulk_transfer(this->handle, endpoint, buffer, size,
+                                       &transferred, 0)) != 0) {
       ALERT("Device", libusb_error_name(retval));
 
       switch (retval) {
@@ -185,32 +183,23 @@ void USBDevice::io(uint8_t endpoint) {
       attempt++;
     } else
       break;
-  } while (attempt < 6);
+  } while (attempt < 2);
 
-  if (attempt >= 6) {
+  if (attempt >= 2) {
     ALERT("Device",
           "Avatar driver failed to communicate with device ... 6 attempts");
-    // exit(-1);
   }
 
-  return;
+  return transferred;
 }
 
-void USBDevice::download(uint8_t *data, uint32_t size) {
+void USBDevice::download(uint8_t *data, uint32_t *size) {
 
-  this->buffer = data;
-
-  this->size = size;
-
-  this->io(0x1);
+  *size = this->io(0x01, data, *size);
 }
 
-void USBDevice::upload(uint8_t *data, uint32_t size) {
+void USBDevice::upload(uint8_t *data, uint32_t *size) {
 
-  this->buffer = data;
-
-  this->size = size;
-
-  this->io(0x81);
+  *size = this->io(0x81, data, *size);
 }
 }
