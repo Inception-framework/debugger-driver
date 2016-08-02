@@ -187,7 +187,8 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
 
   if (attempt >= 2) {
     ALERT("Device",
-          "Avatar driver failed to communicate with device ... 6 attempts");
+          "Avatar driver failed to communicate with device ... endpoint : %02x",
+          endpoint);
   }
 
   return transferred;
