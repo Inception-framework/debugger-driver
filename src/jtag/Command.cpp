@@ -40,8 +40,8 @@ void Command::move_to(tap_state_t state) {
   int tms = 0;
   uint8_t byte;
 
-  printf("From %s to %s ", Jtag::tap_state_name(Jtag::current_state),
-         Jtag::tap_state_name(state));
+  // printf("From %s to %s ", Jtag::tap_state_name(Jtag::current_state),
+  //        Jtag::tap_state_name(state));
 
   uint8_t tms_scan = Jtag::tap_get_tms_path(Jtag::current_state, state);
 
@@ -53,9 +53,9 @@ void Command::move_to(tap_state_t state) {
     byte = tms_scan & (1u << i) ? (1 << 0) : 0;
     this->buffer.push_back(byte);
 
-    printf("%01x ", byte);
+    // printf("%01x ", byte);
   }
-  printf("\n\n");
+  // printf("\n\n");
 
   Jtag::current_state = state;
 }
