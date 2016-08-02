@@ -47,7 +47,7 @@ void Decoder::process_jtag_queue(void) {
       printf("\r\n[*] Decoding command %s %dB...\n", cmd->command_name(),
              cmd->size());
       for (unsigned int i = 0; i < cmd->size(); i++)
-        printf("%02x", cmd->get_in_buffer()[i]);
+        printf("%1x", cmd->get_in_buffer()[i] & (1u << 0));
       printf("\r\n");
 
       if (this->check(cmd)) {
