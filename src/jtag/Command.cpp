@@ -9,7 +9,12 @@
 
 namespace jtag {
 
-Command::Command(COMMAND_TYPE type) { this->type = type; }
+Command::Command(COMMAND_TYPE type) {
+
+  this->type = type;
+
+  this->attempts = 0;
+}
 
 Command::~Command() {
   // TODO Auto-generated destructor stub
@@ -146,5 +151,7 @@ const char *Command::command_name() {
   }
   return "???";
 }
+
+void Command::again() { this->again++; }
 
 } /* namespace JTAG */

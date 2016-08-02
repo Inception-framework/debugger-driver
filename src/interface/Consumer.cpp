@@ -7,16 +7,18 @@
 
 #include "Consumer.h"
 
-Consumer::Consumer(Device::USBDevice *device) : Interface(device) {
+Consumer::Consumer(Device::USBDevice *device) : Interface(device) {}
 
-  this->is_running = false;
+Consumer::~Consumer() {}
+
+void Consumer::add_cmd_to_queue(jtag::Command *cmd) {
+
+  this->lock();
+
+  this->queue.push(cmd);
+
+  this->unlock();
 }
-
-Consumer::~Consumer() {
-  // TODO Auto-generated destructor stub
-}
-
-void Consumer::add_cmd_to_queue(jtag::Command *cmd) {}
 
 void Consumer::start() {
 
@@ -25,10 +27,36 @@ void Consumer::start() {
   this->task = std::thread(&Consumer::process_jtag_queue, this);
 }
 
-void Consumer::stop() { this->is_running = false; }
+void Consumer::stop() {
+
+  this->is_running = false;
+
+  this->wait();
+}
 
 void Consumer::process_jtag_queue(void) {
 
-  while (this->is_running == true) {
+  jtag::Command *cmd = NULL;
+
+  while (this->is_running) {
+
+    this->lock();
+
+    if (this->queue.empty() == false) {
+
+      cmd = this->queue.front();
+
+      this->device->upload(cmd->get_output_buffer(), cmd->size());
+
+      this->decoder->add_cmd_to_queue(cmd);
+
+      this->queue.pop();
+
+      delete cmd;
+    }
+
+    this->unlock();
   }
+
+  printf("\r\n############ Consumer down #################\r\n");
 }

@@ -72,6 +72,8 @@ public:
 
   void wait(uint32_t cycles);
 
+  void again();
+
 private:
   void set_type(COMMAND_TYPE type);
 
@@ -80,6 +82,8 @@ private:
   COMMAND_TYPE type;
 
   static uint32_t tdo;
+
+  uint32_t attempts;
 };
 
 } /* namespace JTAG */
