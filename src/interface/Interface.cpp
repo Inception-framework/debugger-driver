@@ -7,7 +7,12 @@
 
 #include "Interface.h"
 
-Interface::Interface(Device::USBDevice *device) { this->device = device; }
+Interface::Interface(Device::USBDevice *device) {
+
+  this->device = device;
+
+  this->is_running = false;
+}
 
 Interface::~Interface() {
   // TODO Auto-generated destructor stub
