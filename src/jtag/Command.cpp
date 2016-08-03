@@ -131,12 +131,7 @@ void Command::write_dr(uint8_t RnW, uint8_t address, uint32_t datain) {
   uint8_t byte;
   uint32_t pos = this->out_buffer.size();
 
-  // buf_set_u32(&cmd->out_addr_buf, 0, 3, (0x8 >> 1) & 0x6) | (cmd->RnW &
-  // 0x1));
-
   byte = ((address >> 1) & 0x6) | (RnW & 0x1);
-
-  // this->out_buffer.push_back ( RnW == 1 ? (1 << 1) : 0 );
 
   for (j = 0; j < 3; j++)
     this->out_buffer.push_back(byte & (1u << j) ? (1 << 1) : 0);
