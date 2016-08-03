@@ -129,6 +129,7 @@ void Command::write_dr(uint8_t RnW, uint8_t address, uint32_t datain) {
 
   uint32_t j;
   uint8_t byte;
+  uint32_t pos = this->out_buffer.size();
 
   // buf_set_u32(&cmd->out_addr_buf, 0, 3, (0x8 >> 1) & 0x6) | (cmd->RnW &
   // 0x1));
@@ -149,6 +150,8 @@ void Command::write_dr(uint8_t RnW, uint8_t address, uint32_t datain) {
   this->out_buffer.push_back(0);
 
   Jtag::current_state = TAP_DRPAUSE;
+
+  tdo.add(pos, (pos + 34));
 }
 
 const char *Command::command_name() {
@@ -162,6 +165,10 @@ const char *Command::command_name() {
   return "???";
 }
 
+COMMAND_TYPE Command::get_type() { return this->type; }
+
 int32_t Command::again() { return this->attempts++; }
+
+TDO *Command::get_tdo() { return &tdo; }
 
 } /* namespace JTAG */

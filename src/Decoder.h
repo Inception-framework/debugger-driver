@@ -43,7 +43,7 @@ public:
 private:
   void process_jtag_queue(void);
 
-  bool check(jtag::Command *cmd);
+  bool decode(jtag::Command *cmd, uint32_t position);
 
   std::queue<jtag::Command *> queue;
 

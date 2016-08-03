@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "Jtag.h"
+#include "TDO.h"
 
 typedef enum COMMAND_TYPE {
   RESET = 0,
@@ -66,6 +67,8 @@ public:
 
   const char *command_name();
 
+  COMMAND_TYPE get_type();
+
   uint8_t *get_out_buffer();
 
   uint8_t *get_in_buffer();
@@ -76,6 +79,10 @@ public:
 
   int32_t again();
 
+  TDO *get_tdo();
+
+  COMMAND_TYPE type;
+
 private:
   void set_type(COMMAND_TYPE type);
 
@@ -83,11 +90,9 @@ private:
 
   std::vector<uint8_t> in_buffer;
 
-  COMMAND_TYPE type;
-
-  static uint32_t tdo;
-
   uint32_t attempts;
+
+  TDO tdo;
 };
 
 } /* namespace JTAG */
