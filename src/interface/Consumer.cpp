@@ -72,8 +72,6 @@ void Consumer::process_jtag_queue(void) {
 
       size = cmd->size();
 
-      std::this_thread::sleep_for(std::chrono::milliseconds(200));
-
       this->device->upload(cmd->get_in_buffer(), &size);
 
       this->notify(cmd);

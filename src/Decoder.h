@@ -45,6 +45,12 @@ private:
 
   bool decode(jtag::Command *cmd, uint32_t position);
 
+  uint32_t tdo_to_int(uint8_t *data, uint32_t length);
+
+  bool process(jtag::Command *cmd);
+
+  bool check_ack(uint8_t *data);
+
   std::queue<jtag::Command *> queue;
 
   std::thread task;

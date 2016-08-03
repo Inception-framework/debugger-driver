@@ -176,7 +176,7 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
   // CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE;
   // CSW_MASTER_DEBUG |
   // CSW_SPROT | CSW_ADDRINC_SINGLE | CSW_SPIDEN;
-  printf("CSW = 0x%08x\n\n", csw_value);
+  // printf("CSW = 0x%08x\n\n", csw_value);
 
   // set csw register value
   cmd->move_to(jtag::TAP_DRSHIFT);

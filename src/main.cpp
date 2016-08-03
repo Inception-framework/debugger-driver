@@ -54,9 +54,9 @@ int main(int argc, char *argv[]) {
   * that sends it following the USB3 limitation
   */
 
-  // INFO("Command", "Creating RESET command ...");
-  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
-  // producer->add_cmd_to_queue(cmd);
+  INFO("Command", "Creating RESET command ...");
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
+  producer->add_cmd_to_queue(cmd);
 
   INFO("Command", "Creating ACTIVE command ...");
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::ACTIVE, arg);
@@ -90,9 +90,11 @@ int main(int argc, char *argv[]) {
     std::cin >> stopped;
   }
 
-  INFO("Interface", "Shutting down interfaces ...");
+  INFO("Interface", "Shutting down interface Producer ...");
   producer->stop();
+  INFO("Interface", "Shutting down interface Consumer ...");
   consumer->stop();
+  INFO("Interface", "Shutting down Decoder ...");
   decoder->stop();
 
   INFO("Device", "Closing device connection ...");

@@ -45,49 +45,73 @@ void Decoder::process_jtag_queue(void) {
 
       cmd = this->queue.front();
 
-      printf("\r\n[*] Decoding command %s %dB...\n", cmd->command_name(),
-             cmd->size());
-
-      if (this->decode(cmd, 0)) {
-        delete cmd;
-      } else if (cmd->type != RESET) {
-
-        cmd->again();
-
-        this->producer->add_cmd_to_queue(cmd);
-      }
+      this->process(cmd);
 
       this->queue.pop();
     }
 
     this->unlock();
   }
-
   printf("\r\n############ Decoder down #################\r\n");
+}
+
+bool Decoder::process(jtag::Command *cmd) {
+
+  if (this->decode(cmd, 0))
+
+    delete cmd;
+
+  /*} else if (cmd->type != RESET) {
+
+    cmd->again();
+
+    this->producer->add_cmd_to_queue(cmd);
+
+  }*/
 }
 
 bool Decoder::decode(jtag::Command *cmd, uint32_t position) {
 
-  uint32_t begin, end;
-
-  uint8_t *data = cmd->get_in_buffer();
-
   if (cmd->get_tdo()->size() <= position)
     return false;
 
-  begin = cmd->get_tdo()->at(position)->begin;
-  end = cmd->get_tdo()->at(position)->end;
+  uint8_t *data = cmd->get_in_buffer();
 
-  for (unsigned int i = begin; i <= end; i++)
-    printf("%1x", data[i] & (1u << 0));
-  printf("\r\n");
+  uint32_t begin = cmd->get_tdo()->at(position)->begin;
 
-  if ((data[begin] & ((1u << 0))) && (data[begin + 1] & (~(1u << 1))) &&
-      (data[begin + 2] & ((1u << 2))))
+  uint32_t length = cmd->get_tdo()->at(position)->end;
+
+  uint32_t value = 0;
+
+  value = this->tdo_to_int(&data[begin], length);
+
+  printf("\r\n[*] Decoding command %s %dB... : 0x%08x \n", cmd->command_name(),
+         cmd->size(), value);
+
+  if (cmd->get_type() == READ_U32 || cmd->get_type() == WRITE_U32)
+    if (!this->check_ack(&data[begin]))
+      return false;
+
+  if (cmd->get_tdo()->size() > ++position)
+    return this->decode(cmd, position);
+
+  return true;
+}
+
+uint32_t Decoder::tdo_to_int(uint8_t *data, uint32_t length) {
+
+  uint32_t decoded_value = 0;
+
+  for (unsigned int i = 0; i <= length; i++)
+    decoded_value += (data[i] & (1u << 0)) << i;
+
+  return decoded_value;
+}
+
+bool Decoder::check_ack(uint8_t *data) {
+  if ((data[0] & ((1u << 0))) && (data[1] & (~(1u << 1))) &&
+      (data[2] & ((1u << 2))))
     return false;
 
-  if (cmd->get_tdo()->size() > position + 1)
-    return this->decode(cmd, position + 1);
-  else
-    return true;
+  return true;
 }
