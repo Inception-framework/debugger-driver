@@ -45,7 +45,7 @@ private:
 
   bool decode(jtag::Command *cmd, uint32_t position);
 
-  uint32_t tdo_to_int(uint8_t *data, uint32_t length);
+  uint32_t tdo_to_int(uint8_t *data);
 
   bool process(jtag::Command *cmd);
 

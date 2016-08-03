@@ -79,11 +79,14 @@ bool Decoder::decode(jtag::Command *cmd, uint32_t position) {
 
   uint32_t begin = cmd->get_tdo()->at(position)->begin;
 
-  uint32_t length = cmd->get_tdo()->at(position)->end;
+  uint32_t end = cmd->get_tdo()->at(position)->end - begin;
 
   uint32_t value = 0;
 
-  value = this->tdo_to_int(&data[begin], length);
+  if (end == 34)
+    value = this->tdo_to_int(&data[begin]);
+  else
+    ALERT("Decoder", "Unable to decode value of length %dB", end);
 
   printf("\r\n[*] Decoding command %s %dB... : 0x%08x \n", cmd->command_name(),
          cmd->size(), value);
@@ -98,17 +101,21 @@ bool Decoder::decode(jtag::Command *cmd, uint32_t position) {
   return true;
 }
 
-uint32_t Decoder::tdo_to_int(uint8_t *data, uint32_t length) {
+uint32_t Decoder::tdo_to_int(uint8_t *data) {
 
   uint32_t decoded_value = 0;
 
-  for (unsigned int i = 0; i <= length; i++)
+  for (unsigned int i = 0; i < 32; i++) {
+    // printf("%1x", (data[i] & (1u << 0)));
     decoded_value += (data[i] & (1u << 0)) << i;
+  }
+  puts("\r\n");
 
   return decoded_value;
 }
 
 bool Decoder::check_ack(uint8_t *data) {
+
   if ((data[0] & ((1u << 0))) && (data[1] & (~(1u << 1))) &&
       (data[2] & ((1u << 2))))
     return false;
