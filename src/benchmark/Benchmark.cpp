@@ -18,6 +18,9 @@ void Benchmark::stop() {
 
 float Benchmark::score() {
 
-  printf("Time to process : %02f",
-         1.0 * (stop_time - start_time) / CLOCKS_PER_SEC);
+  float score = 1.0 * (stop_time - start_time) / CLOCKS_PER_SEC;
+
+  printf("Time to process : %02f", score);
+
+  return score;
 }

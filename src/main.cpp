@@ -5,6 +5,7 @@
  *      Author: noname
  */
 #include "main.h"
+#include "benchmark/Benchmark.h"
 #include "jtag/Command_test.cpp"
 
 using namespace jtag;
@@ -74,18 +75,25 @@ int main(int argc, char *argv[]) {
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
   producer->add_cmd_to_queue(cmd);
 
-  for (int i = 0; i < 10000; i++) {
-    INFO("Command", "Creating WRITE_U32 command ...");
+  INFO("Command", "Creating 100 000 WRITE_U32 commands ...");
+  Benchmark::start();
+  for (int i = 0; i < 100000; i++) {
     arg.push_back(0xffffffff);
     arg.push_back(0x20000000);
     cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::WRITE_U32, arg);
     producer->add_cmd_to_queue(cmd);
+  }
+  Benchmark::stop();
 
-    INFO("Command", "Creating READ_U32 command ...");
+  INFO("Command", "Creating 100 000 READ_U32 commands ...");
+  Benchmark::start();
+  for (int i = 0; i < 100000; i++) {
+    // INFO("Command", "Creating WRITE_U32 command ...");
     arg.push_back(0x20000000);
     cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
     producer->add_cmd_to_queue(cmd);
   }
+  Benchmark::stop();
 
   INFO("User", "Press any key to shutdown Avatar");
   while (stopped == 0) {

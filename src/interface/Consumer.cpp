@@ -72,7 +72,7 @@ void Consumer::process_jtag_queue(void) {
 
       size = cmd->size();
 
-      this->device->upload(cmd->get_in_buffer(), &size);
+      // this->device->upload(cmd->get_in_buffer(), &size);
 
       this->notify(cmd);
 

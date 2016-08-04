@@ -3,8 +3,6 @@
 #include "interface/Producer.h"
 #include "jtag/TDO.h"
 
-#include "benchmark/Benchmark.h"
-
 Decoder::Decoder(Producer *producer) : Interface(NULL) {
 
   this->producer = producer;
@@ -37,8 +35,6 @@ void Decoder::stop() {
 
 void Decoder::process_jtag_queue(void) {
 
-  uint32_t i = 0;
-
   jtag::Command *cmd = NULL;
 
   while (this->is_running) {
@@ -51,12 +47,7 @@ void Decoder::process_jtag_queue(void) {
 
       this->process(cmd);
 
-      i++;
-
       this->queue.pop();
-
-      if (i >= 2004)
-        Benchmark::stop();
     }
 
     this->unlock();
@@ -97,8 +88,9 @@ bool Decoder::decode(jtag::Command *cmd, uint32_t position) {
   else
     ALERT("Decoder", "Unable to decode value of length %dB", end);
 
-  printf("\r\n[*] Decoding command %s %dB... : 0x%08x \n", cmd->command_name(),
-         cmd->size(), value);
+  // printf("\r\n[*] Decoding command %s %dB... : 0x%08x \n",
+  // cmd->command_name(),
+  //        cmd->size(), value);
 
   if (cmd->get_type() == READ_U32 || cmd->get_type() == WRITE_U32)
     if (!this->check_ack(&data[begin]))
@@ -118,7 +110,7 @@ uint32_t Decoder::tdo_to_int(uint8_t *data) {
     // printf("%1x", (data[i] & (1u << 0)));
     decoded_value += (data[i] & (1u << 0)) << i;
   }
-  puts("\r\n");
+  // puts("\r\n");
 
   return decoded_value;
 }

@@ -7,8 +7,6 @@
 
 #include "Producer.h"
 
-#include "../benchmark/Benchmark.h"
-
 int Producer::sent = 0;
 
 Producer::Producer(Device::USBDevice *device, Consumer *consumer)
@@ -48,8 +46,6 @@ void Producer::process_jtag_queue(void) {
 
   uint32_t size;
 
-  Benchmark::start();
-
   while (this->is_running) {
 
     this->lock();
@@ -58,9 +54,9 @@ void Producer::process_jtag_queue(void) {
     if (this->queue.empty() == false) {
 
       cmd = this->queue.front();
-
-      printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name(),
-             cmd->size());
+      //
+      // printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name(),
+      //        cmd->size());
       // for (unsigned int i = 0; i < cmd->size(); i++)
       //   printf("%02x", cmd->get_buffer()[i]);
       // printf("\r\n");
