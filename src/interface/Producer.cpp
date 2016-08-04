@@ -7,6 +7,8 @@
 
 #include "Producer.h"
 
+#include "../benchmark/Benchmark.h"
+
 int Producer::sent = 0;
 
 Producer::Producer(Device::USBDevice *device, Consumer *consumer)
@@ -45,6 +47,8 @@ void Producer::process_jtag_queue(void) {
   jtag::Command *cmd = NULL;
 
   uint32_t size;
+
+  Benchmark::start();
 
   while (this->is_running) {
 

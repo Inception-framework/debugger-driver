@@ -3,6 +3,8 @@
 #include "interface/Producer.h"
 #include "jtag/TDO.h"
 
+#include "benchmark/Benchmark.h"
+
 Decoder::Decoder(Producer *producer) : Interface(NULL) {
 
   this->producer = producer;
@@ -35,6 +37,8 @@ void Decoder::stop() {
 
 void Decoder::process_jtag_queue(void) {
 
+  uint32_t i = 0;
+
   jtag::Command *cmd = NULL;
 
   while (this->is_running) {
@@ -47,7 +51,12 @@ void Decoder::process_jtag_queue(void) {
 
       this->process(cmd);
 
+      i++;
+
       this->queue.pop();
+
+      if (i >= 2004)
+        Benchmark::stop();
     }
 
     this->unlock();
