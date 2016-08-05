@@ -17,7 +17,10 @@ Command::Command(COMMAND_TYPE type) {
 }
 
 Command::~Command() {
-  // TODO Auto-generated destructor stub
+
+  // delete &out_buffer;
+  // delete &in_buffer;
+  // delete &tdo;
 }
 
 uint8_t *Command::get_out_buffer() {

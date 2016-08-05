@@ -5,6 +5,7 @@
  *      Author: noname
  */
 #include "main.h"
+#include "benchmark/Benchmark.h"
 #include "jtag/Command_test.cpp"
 
 using namespace jtag;
@@ -29,30 +30,15 @@ int main(int argc, char *argv[]) {
   Device::USBDevice *fx3 = new Device::USBDevice(0x04B4, 0x00F0, 0);
   fx3->init();
 
-  INFO("Interface", "Starting consumer thread ...");
-  Consumer *consumer = new Consumer(fx3);
-  consumer->start();
-
   INFO("Interface", "Starting producer thread ...");
-  Producer *producer = new Producer(fx3, consumer);
+  Producer *producer = new Producer(fx3);
   producer->start();
 
   INFO("Decoder", "Starting decoder thread ...");
   Decoder *decoder = new Decoder(producer);
   decoder->start();
 
-  consumer->add_decoder(decoder);
-
-  /*
-  * The producer thread only sends JTAG requests
-  * The consumer thread read tdo ouput and process result : extract data from
-  * jtag protocol
-  *
-  * A Command object contains a binary array which can be directly send to the
-  * device
-  * So If a big file has to be send, one command object is give to the Producer
-  * that sends it following the USB3 limitation
-  */
+  producer->add_decoder(decoder);
 
   INFO("Command", "Creating RESET command ...");
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
@@ -74,31 +60,42 @@ int main(int argc, char *argv[]) {
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
   producer->add_cmd_to_queue(cmd);
 
-  INFO("Command", "Creating WRITE_U32 command ...");
-  arg.push_back(0xFFFFFFFF);
-  arg.push_back(0x20000000);
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::WRITE_U32, arg);
-  producer->add_cmd_to_queue(cmd);
-
-  INFO("Command", "Creating READ_U32 command ...");
-  arg.push_back(0x20000000);
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
-  producer->add_cmd_to_queue(cmd);
-
-  INFO("User", "Press any key to shutdown Avatar");
-  while (stopped == 0) {
-    std::cin >> stopped;
+  INFO("Command", "Creating 100 000 WRITE_U32 commands ...");
+  for (int i = 0; i < 1000000; i++) {
+    arg.push_back(0xffffffff);
+    arg.push_back(0x20000000);
+    cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::WRITE_U32, arg);
+    producer->add_cmd_to_queue(cmd);
   }
+
+  // INFO("Command", "Creating 100 000 READ_U32 commands ...");
+  // for (int i = 0; i < 1000000; i++) {
+  //   // INFO("Command", "Creating WRITE_U32 command ...");
+  //   arg.push_back(0x20000000);
+  //   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
+  //   producer->add_cmd_to_queue(cmd);
+  // }
+
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::EXIT, arg);
+  producer->add_cmd_to_queue(cmd);
+
+  // INFO("User", "Press any key to shutdown Avatar");
+  // while (stopped == 0) {
+  //   std::cin >> stopped;
+  // }
 
   INFO("Interface", "Shutting down interface Producer ...");
   producer->stop();
-  INFO("Interface", "Shutting down interface Consumer ...");
-  consumer->stop();
   INFO("Interface", "Shutting down Decoder ...");
   decoder->stop();
 
   INFO("Device", "Closing device connection ...");
   fx3->quit();
+
+  delete fx3;
+  delete producer;
+  delete decoder;
+  delete ap;
 
   INFO("main", "Avatar was properly closed");
 }

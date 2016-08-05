@@ -12,7 +12,7 @@
 
 #include "../device/Device.h"
 
-#include "Consumer.h"
+#include "../Decoder.h"
 
 #include <chrono>
 #include <thread>
@@ -20,7 +20,7 @@
 class Producer : public Interface {
 
 public:
-  Producer(Device::USBDevice *device, Consumer *consumer);
+  Producer(Device::USBDevice *device);
 
   virtual ~Producer();
 
@@ -34,8 +34,12 @@ public:
 
   static int sent;
 
+  void add_decoder(Decoder *decoder);
+
 private:
-  Consumer *consumer;
+  void notify(jtag::Command *cmd);
+
+  std::vector<Decoder *> decoders;
 };
 
 #endif /* PRODUCER_H_ */
