@@ -13,6 +13,7 @@
 #include <vector>
 
 #include "Jtag.h"
+#include "TDO.h"
 
 typedef enum COMMAND_TYPE {
   RESET = 0,
@@ -39,7 +40,12 @@ static const struct command_name_mapping {
     {
         IDCODE, "IDCODE",
     },
-    {ACTIVE, "ACTIVE"},
+    {
+        ACTIVE, "ACTIVE",
+    },
+    {
+        SELECT, "SELECT",
+    },
 };
 
 namespace jtag {
@@ -61,20 +67,32 @@ public:
 
   const char *command_name();
 
-  uint8_t *get_buffer();
+  COMMAND_TYPE get_type();
+
+  uint8_t *get_out_buffer();
+
+  uint8_t *get_in_buffer();
 
   uint32_t size();
 
   void wait(uint32_t cycles);
 
-private:
-  void set_type(COMMAND_TYPE type);
+  int32_t again();
 
-  std::vector<uint8_t> buffer;
+  TDO *get_tdo();
 
   COMMAND_TYPE type;
 
-  static uint32_t tdo;
+private:
+  void set_type(COMMAND_TYPE type);
+
+  std::vector<uint8_t> out_buffer;
+
+  std::vector<uint8_t> in_buffer;
+
+  uint32_t attempts;
+
+  TDO tdo;
 };
 
 } /* namespace JTAG */

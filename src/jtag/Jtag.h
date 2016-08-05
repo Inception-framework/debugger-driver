@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 
+#define _LOG_ALL
 #include "../colored.h"
 
 #define ARRAY_SIZE(x) (sizeof(x) / sizeof(*(x)))

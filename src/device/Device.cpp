@@ -11,8 +11,6 @@ USBDevice::USBDevice(uint16_t vid, uint16_t pid, uint32_t interface) {
   this->interface = interface;
 
   this->buffer_limit = 1024;
-
-  this->size = 0;
 }
 
 USBDevice::~USBDevice() {
@@ -153,65 +151,56 @@ void USBDevice::init(void) {
   return;
 }
 
-void USBDevice::write() {
+uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
 
   int32_t retval;
   int32_t transferred;
   int32_t attempt = 0;
 
   do {
-    if ((retval = libusb_bulk_transfer(this->handle, 0x1, this->buffer,
-                                       this->size, &transferred, 1)) != 0) {
+    if ((retval = libusb_bulk_transfer(this->handle, endpoint, buffer, size,
+                                       &transferred, 0)) != 0) {
       ALERT("Device", libusb_error_name(retval));
 
       switch (retval) {
       case LIBUSB_ERROR_TIMEOUT:
-        ALERT("Device", "Avatar driver failed to write : timeout error");
+        ALERT("Device", "USB driver failed : timeout error");
         break;
       case LIBUSB_ERROR_PIPE:
-        ALERT("Device", "Avatar driver failed to write : pipe error");
+        ALERT("Device", "USB driver failed : pipe error");
         break;
       case LIBUSB_ERROR_OVERFLOW:
-        ALERT("Device", "Avatar driver failed to write : overflow");
+        ALERT("Device", "USB driver failed : overflow");
         break;
       case LIBUSB_ERROR_NO_DEVICE:
-        ALERT("Device", "Avatar driver failed to write : no device");
+        ALERT("Device", "USB driver failed : no device");
         break;
       default:
-        ALERT("Device", "Avatar driver failed to write : error code %d ",
-              retval);
+        ALERT("Device", "USB driver failed : error code %d ", retval);
         break;
       }
       sleep(2);
       attempt++;
     } else
       break;
-  } while (attempt < 6);
+  } while (attempt < 2);
 
-  if (attempt >= 6) {
+  if (attempt >= 2) {
     ALERT("Device",
-          "Avatar driver failed to communicate with device ... 6 attempts");
-    // exit(-1);
+          "Avatar driver failed to communicate with device ... endpoint : %02x",
+          endpoint);
   }
 
-  return;
+  return transferred;
 }
 
-void USBDevice::download(uint8_t *data, uint32_t size) {
+void USBDevice::download(uint8_t *data, uint32_t *size) {
 
-  this->buffer = data;
-
-  this->size = size;
-
-  this->write();
+  *size = this->io(0x01, data, *size);
 }
 
-void USBDevice::upload(uint8_t *data, uint32_t size) {
+void USBDevice::upload(uint8_t *data, uint32_t *size) {
 
-  this->buffer = data;
-
-  this->size = size;
-
-  // this->data = this->read ();
+  *size = this->io(0x81, data, *size);
 }
 }

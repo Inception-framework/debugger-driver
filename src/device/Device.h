@@ -39,9 +39,9 @@ public:
    */
   void change_gpif();
 
-  void download(uint8_t *data, uint32_t size);
+  void download(uint8_t *data, uint32_t *size);
 
-  void upload(uint8_t *data, uint32_t size);
+  void upload(uint8_t *data, uint32_t *size);
 
 private:
   bool string_descriptor_equal(libusb_device_handle *device, uint8_t str_index,
@@ -52,7 +52,7 @@ private:
 
   void jtag_libusb_close();
 
-  void write();
+  uint32_t io(uint8_t endpoint, uint8_t *buffer, uint32_t size);
 
   libusb_device *dev; /* USBDevice */
 
@@ -72,13 +72,11 @@ private:
 
   unsigned char filler; /* Padding to make struct = 16 bytes */
 
-  uint8_t *buffer;
-
   uint32_t interface;
 
   uint32_t buffer_limit;
 
-  uint32_t size;
+  uint8_t endpoint;
 
   libusb_device **devs;
 };

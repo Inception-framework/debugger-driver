@@ -9,22 +9,19 @@
 
 int Producer::sent = 0;
 
-Producer::Producer(Device::USBDevice *device) : Interface(device) {
+Producer::Producer(Device::USBDevice *device, Consumer *consumer)
+    : Interface(device) {
 
-  this->is_running = false;
+  this->consumer = consumer;
 }
 
-Producer::~Producer() {
-  // TODO Auto-generated destructor stub
-}
+Producer::~Producer() {}
 
 void Producer::add_cmd_to_queue(jtag::Command *cmd) {
 
   this->lock();
 
   this->queue.push(cmd);
-
-  puts(" Command added to the queue");
 
   this->unlock();
 }
@@ -33,45 +30,52 @@ void Producer::start() {
 
   this->is_running = true;
 
-  // this->task = std::thread (&Producer::process_jtag_queue, this);
+  this->task = std::thread(&Producer::process_jtag_queue, this);
 }
 
-void Producer::stop() { this->is_running = false; }
+void Producer::stop() {
+
+  this->is_running = false;
+
+  this->wait();
+}
 
 void Producer::process_jtag_queue(void) {
 
   jtag::Command *cmd = NULL;
-  // uint32_t size;ss
 
-  INFO("Interface", " Producer started");
+  uint32_t size;
 
-  // while( this->is_running == true ) {
-
-  /* The producer goal is to use the maximum of the USB3 bandwidth */
-  if (this->queue.empty() == false) {
-
-    puts("Producer processes command");
+  while (this->is_running) {
 
     this->lock();
 
-    cmd = this->queue.front();
+    /* The producer goal is to use the maximum of the USB3 bandwidth */
+    if (this->queue.empty() == false) {
 
-    /*printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name (),
-    cmd->size ());
-    for (int i=0; i<cmd->size (); i++)
-            printf("%02x", cmd->get_buffer ()[i]);
-    printf("\r\n");*/
+      cmd = this->queue.front();
 
-    // if ( size == 1024 )
-    this->device->download(cmd->get_buffer(), cmd->size());
+      printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name(),
+             cmd->size());
+      // for (unsigned int i = 0; i < cmd->size(); i++)
+      //   printf("%02x", cmd->get_buffer()[i]);
+      // printf("\r\n");
 
-    this->queue.pop();
+      size = cmd->size();
+
+      this->device->download(cmd->get_out_buffer(), &size);
+
+      this->queue.pop();
+
+      this->consumer->add_cmd_to_queue(cmd);
+
+      // std::this_thread::sleep_for(std::chrono::seconds(2));
+
+      Producer::sent++;
+    }
 
     this->unlock();
-
-    delete cmd;
-
-    Producer::sent++;
   }
-  //}
+
+  printf("\r\n############ Producer down #################\r\n");
 }

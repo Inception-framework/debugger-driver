@@ -4,20 +4,7 @@
  *  Created on: Jul 12, 2016
  *      Author: noname
  */
-#include <stdint.h>
-
-#define _LOG_ALL
-#include "colored.h"
-
-#include "jtag/Command.h"
-#include "jtag/CommandsFactory.h"
-
-#include "interface/Consumer.h"
-#include "interface/Interface.h"
-#include "interface/Producer.h"
-
-#include "jtag/ap/ahb_ap/AHB_AP.h"
-
+#include "main.h"
 #include "jtag/Command_test.cpp"
 
 using namespace jtag;
@@ -42,13 +29,19 @@ int main(int argc, char *argv[]) {
   Device::USBDevice *fx3 = new Device::USBDevice(0x04B4, 0x00F0, 0);
   fx3->init();
 
+  INFO("Interface", "Starting consumer thread ...");
+  Consumer *consumer = new Consumer(fx3);
+  consumer->start();
+
   INFO("Interface", "Starting producer thread ...");
-  Interface *producer = new Producer(fx3);
+  Producer *producer = new Producer(fx3, consumer);
   producer->start();
 
-  INFO("Interface", "Starting consumer thread ...");
-  Interface *consumer = new Consumer(fx3);
-  consumer->start();
+  INFO("Decoder", "Starting decoder thread ...");
+  Decoder *decoder = new Decoder(producer);
+  decoder->start();
+
+  consumer->add_decoder(decoder);
 
   /*
   * The producer thread only sends JTAG requests
@@ -61,59 +54,48 @@ int main(int argc, char *argv[]) {
   * that sends it following the USB3 limitation
   */
 
-  // commands.pack (cmd);
   INFO("Command", "Creating RESET command ...");
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
   producer->add_cmd_to_queue(cmd);
-  producer->process_jtag_queue();
 
   INFO("Command", "Creating ACTIVE command ...");
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::ACTIVE, arg);
   producer->add_cmd_to_queue(cmd);
-  producer->process_jtag_queue();
 
   INFO("Command", "Creating Select command ...");
   ap = new AHB_AP();
 
   arg.push_back(ap->select());
-  // arg.push_back(0xA);
 
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SELECT, arg);
   producer->add_cmd_to_queue(cmd);
-  producer->process_jtag_queue();
 
-  // INFO("Command", "Creating IDCODE command ...");
-  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
-  // producer->add_cmd_to_queue(cmd);
-  // producer->process_jtag_queue();
+  INFO("Command", "Creating IDCODE command ...");
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
+  producer->add_cmd_to_queue(cmd);
 
   INFO("Command", "Creating WRITE_U32 command ...");
   arg.push_back(0xFFFFFFFF);
   arg.push_back(0x20000000);
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::WRITE_U32, arg);
   producer->add_cmd_to_queue(cmd);
-  producer->process_jtag_queue();
 
   INFO("Command", "Creating READ_U32 command ...");
   arg.push_back(0x20000000);
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
   producer->add_cmd_to_queue(cmd);
-  producer->process_jtag_queue();
 
-  // INFO("Command", "Superspeed Jtag dongle is going to transmit commands
-  // ...");
-  // producer->process_jtag_queue();
+  INFO("User", "Press any key to shutdown Avatar");
+  while (stopped == 0) {
+    std::cin >> stopped;
+  }
 
-  // INFO("User", "Press any key to shutdown Avatar");
-  // while (stopped == 0) {
-  //   std::cin >> stopped;
-  // }
-
-  INFO("Interface", "Shutting down interfaces ...");
+  INFO("Interface", "Shutting down interface Producer ...");
   producer->stop();
-  // producer->wait();
-
+  INFO("Interface", "Shutting down interface Consumer ...");
   consumer->stop();
+  INFO("Interface", "Shutting down Decoder ...");
+  decoder->stop();
 
   INFO("Device", "Closing device connection ...");
   fx3->quit();

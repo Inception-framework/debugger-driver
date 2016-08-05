@@ -8,13 +8,12 @@
 #ifndef INTERFACE_H_
 #define INTERFACE_H_
 
-#include "../jtag/Command.h"
-
-#include "../device/Device.h"
-
 #include <mutex>
 #include <queue>
 #include <thread>
+
+#include "../device/Device.h"
+#include "../jtag/Command.h"
 
 class Interface {
 
