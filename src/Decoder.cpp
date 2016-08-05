@@ -30,6 +30,7 @@ void Decoder::stop() {
 
   this->is_running = false;
 
+  // if (this->task.joinable())
   this->wait();
 }
 
@@ -42,6 +43,7 @@ void Decoder::process_jtag_queue(void) {
     this->lock();
 
     if (this->queue.empty() == false) {
+      this->unlock();
 
       cmd = this->queue.front();
 
@@ -51,26 +53,24 @@ void Decoder::process_jtag_queue(void) {
         this->is_running = false;
 
       this->queue.pop();
-    }
-
-    this->unlock();
+    } else
+      this->unlock();
   }
   printf("\r\n############ Decoder down #################\r\n");
 }
 
 bool Decoder::process(jtag::Command *cmd) {
 
-  if (this->decode(cmd, 0))
+  if (this->decode(cmd, 0)) {
 
     delete cmd;
 
-  /*} else if (cmd->type != RESET) {
+  } else if (cmd->type != RESET) {
 
     cmd->again();
 
     this->producer->add_cmd_to_queue(cmd);
-
-  }*/
+  }
 }
 
 bool Decoder::decode(jtag::Command *cmd, uint32_t position) {

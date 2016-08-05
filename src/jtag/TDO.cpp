@@ -4,7 +4,11 @@ namespace jtag {
 
 TDO::TDO() {}
 
-TDO::~TDO() {}
+TDO::~TDO() {
+
+  for (int i = 0; i < this->size(); i++)
+    delete this->at(i);
+}
 
 void TDO::add(uint32_t begin, uint32_t end) {
 
