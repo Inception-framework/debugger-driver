@@ -45,7 +45,10 @@ void Decoder::process_jtag_queue(void) {
 
       cmd = this->queue.front();
 
-      this->process(cmd);
+      if (cmd->type != EXIT)
+        this->process(cmd);
+      else
+        this->is_running = false;
 
       this->queue.pop();
     }

@@ -72,9 +72,15 @@ void Consumer::process_jtag_queue(void) {
 
       size = cmd->size();
 
-      // this->device->upload(cmd->get_in_buffer(), &size);
+      if (cmd->type != EXIT)
+        this->device->upload(cmd->get_in_buffer(), &size);
+      else
+        break;
 
       this->notify(cmd);
+
+      // if (cmd->type == EXIT)
+      //   this->is_running = false;
 
       this->queue.pop();
     }

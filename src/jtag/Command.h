@@ -22,6 +22,7 @@ typedef enum COMMAND_TYPE {
   READ_U32 = 3,
   SELECT = 4,
   ACTIVE = 5,
+  EXIT = 6,
 } COMMAND_TYPE;
 
 static const struct command_name_mapping {
@@ -46,6 +47,7 @@ static const struct command_name_mapping {
     {
         SELECT, "SELECT",
     },
+    {EXIT, "EXIT"},
 };
 
 namespace jtag {

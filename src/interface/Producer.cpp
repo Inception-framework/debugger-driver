@@ -63,7 +63,10 @@ void Producer::process_jtag_queue(void) {
 
       size = cmd->size();
 
-      this->device->download(cmd->get_out_buffer(), &size);
+      if (cmd->type != EXIT)
+        this->device->download(cmd->get_out_buffer(), &size);
+      else
+        this->is_running = false;
 
       this->queue.pop();
 

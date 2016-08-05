@@ -77,7 +77,7 @@ int main(int argc, char *argv[]) {
 
   INFO("Command", "Creating 100 000 WRITE_U32 commands ...");
   Benchmark::start();
-  for (int i = 0; i < 100000; i++) {
+  for (int i = 0; i < 1000000; i++) {
     arg.push_back(0xffffffff);
     arg.push_back(0x20000000);
     cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::WRITE_U32, arg);
@@ -85,15 +85,18 @@ int main(int argc, char *argv[]) {
   }
   Benchmark::stop();
 
-  INFO("Command", "Creating 100 000 READ_U32 commands ...");
-  Benchmark::start();
-  for (int i = 0; i < 100000; i++) {
-    // INFO("Command", "Creating WRITE_U32 command ...");
-    arg.push_back(0x20000000);
-    cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
-    producer->add_cmd_to_queue(cmd);
-  }
-  Benchmark::stop();
+  // INFO("Command", "Creating 100 000 READ_U32 commands ...");
+  // Benchmark::start();
+  // for (int i = 0; i < 1000000; i++) {
+  //   // INFO("Command", "Creating WRITE_U32 command ...");
+  //   arg.push_back(0x20000000);
+  //   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
+  //   producer->add_cmd_to_queue(cmd);
+  // }
+  // Benchmark::stop();
+
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::EXIT, arg);
+  producer->add_cmd_to_queue(cmd);
 
   INFO("User", "Press any key to shutdown Avatar");
   while (stopped == 0) {
@@ -109,6 +112,12 @@ int main(int argc, char *argv[]) {
 
   INFO("Device", "Closing device connection ...");
   fx3->quit();
+
+  delete fx3;
+  delete producer;
+  delete consumer;
+  delete decoder;
+  delete ap;
 
   INFO("main", "Avatar was properly closed");
 }
