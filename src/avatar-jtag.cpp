@@ -60,7 +60,7 @@ uint64_t jtag_read(void *opaque, uint64_t address, unsigned size) {
 
   producer->add_cmd_to_queue(cmd);
 
-  return 0;
+  return decoder->process_jtag_queue();
 }
 
 void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size) {

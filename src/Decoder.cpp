@@ -3,7 +3,7 @@
 #include "interface/Producer.h"
 #include "jtag/TDO.h"
 
-Decoder::Decoder(Producer *producer) : Interface(NULL) {
+Decoder::Decoder(Producer *producer) /*: Interface(NULL)*/ {
 
   this->producer = producer;
 }
@@ -12,18 +12,18 @@ Decoder::~Decoder() {}
 
 void Decoder::add_cmd_to_queue(jtag::Command *cmd) {
 
-  this->lock();
+  this->locker.lock();
 
   this->queue.push(cmd);
 
-  this->unlock();
+  this->locker.unlock();
 }
 
 void Decoder::start() {
 
   this->is_running = true;
 
-  this->task = std::thread(&Decoder::process_jtag_queue, this);
+  // this->task = std::thread(&Decoder::process_jtag_queue, this);
 }
 
 void Decoder::stop() {
@@ -31,39 +31,73 @@ void Decoder::stop() {
   this->is_running = false;
 
   // if (this->task.joinable())
-  this->wait();
+  // this->wait();
 }
 
-void Decoder::process_jtag_queue(void) {
+uint64_t Decoder::process_jtag_queue() {
 
   jtag::Command *cmd = NULL;
 
+  uint64_t answer = 0;
+
   while (this->is_running) {
 
-    this->lock();
+    this->locker.lock();
 
     if (this->queue.empty() == false) {
-      this->unlock();
+      this->locker.unlock();
+
+      this->is_running = false;
 
       cmd = this->queue.front();
 
       if (cmd->type != EXIT)
-        this->process(cmd);
+        answer = this->process(cmd);
       else
         this->is_running = false;
 
       this->queue.pop();
     } else
-      this->unlock();
+      this->locker.unlock();
   }
-  printf("\r\n############ Decoder down #################\r\n");
+
+  return answer;
 }
 
-bool Decoder::process(jtag::Command *cmd) {
+// void Decoder::process_jtag_queue(void) {
+//
+//   jtag::Command *cmd = NULL;
+//
+//   while (this->is_running) {
+//
+//     this->lock();
+//
+//     if (this->queue.empty() == false) {
+//       this->unlock();
+//
+//       cmd = this->queue.front();
+//
+//       if (cmd->type != EXIT)
+//         this->process(cmd);
+//       else
+//         this->is_running = false;
+//
+//       this->queue.pop();
+//     } else
+//       this->unlock();
+//   }
+//   printf("\r\n############ Decoder down #################\r\n");
+// }
+
+uint64_t Decoder::process(jtag::Command *cmd) {
 
   if (this->decode(cmd, 0)) {
 
+    uint64_t answer = cmd->get_answers()[0];
+
     delete cmd;
+
+    return answer;
 
   } else if (cmd->type != RESET) {
 
@@ -84,44 +118,55 @@ bool Decoder::decode(jtag::Command *cmd, uint32_t position) {
 
   uint32_t end = cmd->get_tdo()->at(position)->end - begin;
 
-  uint32_t value = 0;
+  Response *response;
 
   if (end == 34)
-    value = this->tdo_to_int(&data[begin]);
+    response = this->tdo_to_int(&data[begin]);
   else
     ALERT("Decoder", "Unable to decode value of length %dB", end);
 
   // printf("\r\n[*] Decoding command %s %dB... : 0x%08x \n",
   // cmd->command_name(),
-  //        cmd->size(), value);
+  //        cmd->size(), value);32
 
   if (cmd->get_type() == READ_U32 || cmd->get_type() == WRITE_U32)
-    if (!this->check_ack(&data[begin]))
+    if (!this->check_ack(response->ack))
       return false;
 
   if (cmd->get_tdo()->size() > ++position)
     return this->decode(cmd, position);
+  else {
+    cmd->add_answer(response->data_in);
+  }
 
   return true;
 }
 
-uint32_t Decoder::tdo_to_int(uint8_t *data) {
+Response *Decoder::tdo_to_int(uint8_t *data) {
 
-  uint32_t decoded_value = 0;
+  uint8_t ack;
+  uint64_t datain;
 
-  for (unsigned int i = 0; i < 32; i++) {
+  for (unsigned int i = 0; i < 3; i++) {
     // printf("%1x", (data[i] & (1u << 0)));
-    decoded_value += (data[i] & (1u << 0)) << i;
+    ack += (data[i] & (1u << 0)) << i;
   }
   // puts("\r\n");
 
-  return decoded_value;
+  for (unsigned int i = 3; i < 35; i++) {
+    // printf("%1x", (data[i] & (1u << 0)));
+    datain += (data[i] & (1u << 0)) << i;
+  }
+  // puts("\r\n");
+
+  Response *response = new Response{ack, datain};
+
+  return response;
 }
 
-bool Decoder::check_ack(uint8_t *data) {
+bool Decoder::check_ack(uint8_t ack) {
 
-  if ((data[0] & ((1u << 0))) && (data[1] & (~(1u << 1))) &&
-      (data[2] & ((1u << 2))))
+  if ((ack & ((1u << 0))) && (ack & (~(1u << 1))) && (ack & ((1u << 2))))
     return false;
 
   return true;

@@ -36,6 +36,10 @@ uint8_t *Command::get_in_buffer() {
 
 uint32_t Command::size() { return this->out_buffer.size(); }
 
+void Command::add_answer(uint64_t answer) { this->answers.push_back(answer); }
+
+uint64_t *Command::get_answers(void) { return this->answers.data(); }
+
 void Command::add_command(uint32_t tms, uint32_t tdi, uint32_t trst,
                           uint32_t srst) {
 

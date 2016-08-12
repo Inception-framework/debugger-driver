@@ -1,8 +1,8 @@
 /*
- * Producer.h
+ * Decoder.h
  *
  *  Created on: Jul 12, 2016
- *      Author: noname
+ *      Author: Nassim Corteggiani
  */
 
 #ifndef DECODER_H_
@@ -21,7 +21,12 @@ class Producer;
 #define _LOG_ALL
 #include "colored.h"
 
-class Decoder : public Interface {
+typedef struct jtag_response {
+  uint8_t ack;
+  uint64_t data_in;
+} Response;
+
+class Decoder /*: public Interface*/ {
 
 public:
   Decoder(Producer *producer);
@@ -40,16 +45,16 @@ public:
   */
   void add_cmd_to_queue(jtag::Command *cmd);
 
-private:
-  void process_jtag_queue(void);
+  uint64_t process_jtag_queue(void);
 
+private:
   bool decode(jtag::Command *cmd, uint32_t position);
 
-  uint32_t tdo_to_int(uint8_t *data);
+  Response *tdo_to_int(uint8_t *data);
 
-  bool process(jtag::Command *cmd);
+  uint64_t process(jtag::Command *cmd);
 
-  bool check_ack(uint8_t *data);
+  bool check_ack(uint8_t data);
 
   std::queue<jtag::Command *> queue;
 
@@ -58,6 +63,8 @@ private:
   bool is_running;
 
   Producer *producer;
+
+  std::mutex locker;
 };
 
 #endif /* DECODER_H_ */

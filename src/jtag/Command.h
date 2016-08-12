@@ -75,6 +75,8 @@ public:
 
   uint8_t *get_in_buffer();
 
+  uint64_t *get_answers();
+
   uint32_t size();
 
   void wait(uint32_t cycles);
@@ -85,12 +87,16 @@ public:
 
   COMMAND_TYPE type;
 
+  void add_answer(uint64_t answer);
+
 private:
   void set_type(COMMAND_TYPE type);
 
   std::vector<uint8_t> out_buffer;
 
   std::vector<uint8_t> in_buffer;
+
+  std::vector<uint64_t> answers;
 
   uint32_t attempts;
 
