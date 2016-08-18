@@ -104,6 +104,8 @@ uint64_t Decoder::process(jtag::Command *cmd) {
     cmd->again();
 
     this->producer->add_cmd_to_queue(cmd);
+
+    return 0;
   }
 }
 
