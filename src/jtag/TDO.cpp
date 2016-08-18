@@ -6,7 +6,7 @@ TDO::TDO() {}
 
 TDO::~TDO() {
 
-  for (int i = 0; i < this->size(); i++)
+  for (unsigned int i = 0; i < this->size(); i++)
     delete this->at(i);
 }
 
