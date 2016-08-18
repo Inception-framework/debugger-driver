@@ -58,7 +58,6 @@ void Command::set_type(COMMAND_TYPE new_type) { this->type = new_type; }
 void Command::move_to(tap_state_t state) {
 
   int i;
-  int tms = 0;
   uint8_t byte;
 
   // printf("From %s to %s ", Jtag::tap_state_name(Jtag::current_state),
@@ -128,7 +127,7 @@ void Command::wait(uint32_t cycles) {
     return;
   }
 
-  for (int i = 0; i < cycles; i++)
+  for (unsigned int i = 0; i < cycles; i++)
     this->out_buffer.push_back(0);
 }
 
