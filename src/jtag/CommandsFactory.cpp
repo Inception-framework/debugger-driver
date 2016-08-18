@@ -113,8 +113,6 @@ bool CommandsFactory::check_arg(vector<uint32_t> &argv, uint32_t required) {
 
 void CommandsFactory::select(jtag::Command *cmd, uint32_t bank_id) {
 
-  uint32_t header;
-
   uint32_t sel = (bank_id << 24);
   sel += (0x0 << 4);
 
@@ -174,7 +172,7 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
 void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
                                 uint32_t datain) {
 
-  uint32_t header, csw_value;
+  uint32_t csw_value;
 
   // Set the correct JTAG-DP
   cmd->move_to(jtag::TAP_IRSHIFT);
