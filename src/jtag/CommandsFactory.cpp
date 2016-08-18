@@ -93,6 +93,9 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
     cmd->move_to(jtag::TAP_IDLE);
 
     break;
+  case EXIT:
+
+    break;
   }
 
   argv.clear();
