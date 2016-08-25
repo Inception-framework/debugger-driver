@@ -5,3 +5,4 @@
 USER_OBJS :=
 
 LIBS := -lpthread -lusb-1.0
+
