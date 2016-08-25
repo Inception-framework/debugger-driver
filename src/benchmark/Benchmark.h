@@ -8,6 +8,8 @@
 #ifndef BENCHMARK_H_
 #define BENCHMARK_H_
 
+#include <sstream>
+#include <string>
 #include <time.h>
 
 class Benchmark {
@@ -17,15 +19,31 @@ public:
 
   virtual ~Benchmark();
 
-  static void start();
+  static void init(void);
 
-  static void stop();
+  static void start(void);
 
-  static float score();
+  static void stop(void);
 
-  static clock_t start_time;
+  static std::string to_string(void);
 
-  static clock_t stop_time;
+  static void inc_nread(void);
+
+  static void inc_nwrite(void);
+private:
+  static uint32_t get_tick_count(void);
+
+  static struct timespec start_time;
+
+  static struct timespec end_time;
+
+  static struct timespec total_io_time;
+
+  static unsigned long long mem_reads;
+
+  static unsigned long long mem_writes;
+
+  static unsigned int start_tick_count;
 };
 
 #endif /* BENCHMARK_H_ */
