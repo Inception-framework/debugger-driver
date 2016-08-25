@@ -163,7 +163,7 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
   do {
     if ((retval = libusb_bulk_transfer(this->handle, endpoint, buffer, size,
                                        &transferred, 0)) != 0) {
-      ALERT("Device", libusb_error_name(retval));
+      ALERT("Device", "%s", libusb_error_name(retval));
 
       switch (retval) {
       case LIBUSB_ERROR_TIMEOUT:
