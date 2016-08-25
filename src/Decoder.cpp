@@ -101,6 +101,8 @@ uint64_t Decoder::process(jtag::Command *cmd) {
 
   } else if (cmd->type != RESET) {
 
+    ALERT("Decoder", "Wrong TDO format ...");
+
     cmd->again();
 
     this->producer->add_cmd_to_queue(cmd);
@@ -126,10 +128,6 @@ bool Decoder::decode(jtag::Command *cmd, uint32_t position) {
     response = this->tdo_to_int(&data[begin]);
   else
     ALERT("Decoder", "Unable to decode value of length %dB", end);
-
-  // printf("\r\n[*] Decoding command %s %dB... : 0x%08x \n",
-  // cmd->command_name(),
-  //        cmd->size(), value);32
 
   if (cmd->get_type() == READ_U32 || cmd->get_type() == WRITE_U32)
     if (!this->check_ack(response->ack))
