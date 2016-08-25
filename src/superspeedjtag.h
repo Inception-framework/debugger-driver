@@ -23,12 +23,21 @@ typedef struct superspeed_jtag {
 extern "C" {
 #endif
 
-extern void *jtag_init(void);
+void *jtag_init(void);
 
-extern uint64_t jtag_read(void *opaque, uint64_t address, unsigned size);
+uint64_t jtag_read(void *opaque, uint64_t address, unsigned size);
 
-extern void jtag_write(void *opaque, uint64_t address, uint64_t value,
-                       unsigned size);
+void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size);
+
+void benchmark_start(void);
+
+void benchmark_stop(void);
+
+void benchmark_to_string(void);
+
+void benckmark_inc_nread(void);
+
+void benckmark_inc_nwrite(void);
 
 #if defined(__cplusplus)
 }

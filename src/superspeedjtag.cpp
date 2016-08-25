@@ -1,6 +1,26 @@
 #include "superspeedjtag.h"
 
+#include "benchmark/Benchmark.h"
+#include <string>
+
 using namespace jtag;
+
+void benchmark_start() { Benchmark::start(); }
+
+void benchmark_stop() { Benchmark::stop(); }
+
+void benckmark_inc_nread() { Benchmark::inc_nread(); }
+
+void benckmark_inc_nwrite() { Benchmark::inc_nwrite(); }
+
+void benchmark_to_string() {
+
+  std::string str = Benchmark::to_string();
+
+  const char *c_str = str.c_str();
+
+  INFO("Benchmark", "%s", c_str);
+}
 
 void *jtag_init(void) {
 
@@ -34,11 +54,14 @@ void *jtag_init(void) {
   ap = new AHB_AP();
 
   arg.push_back(ap->select());
-
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SELECT, arg);
   producer->add_cmd_to_queue(cmd);
 
   SuperspeedJtag *sj = new SuperspeedJtag{fx3, producer, decoder};
+
+  Benchmark::init();
+
+  INFO("Device", "Avatar ready !");
 
   return (void *)sj;
 }
