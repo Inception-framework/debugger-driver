@@ -1,1 +1,5 @@
-/Debug/
+*.o
+*.d
+*.so
+
+src/Debug/superspeed-jtag
