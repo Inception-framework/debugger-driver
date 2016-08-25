@@ -25,10 +25,10 @@ extern "C" {
 
 void *jtag_init(void);
 
-uint64_t jtag_read(void *opaque, uint64_t address, unsigned size);
+uint32_t jtag_read(void *opaque, uint64_t address, uint64_t &value,
+  unsigned size);
 
 void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size);
-
 void benchmark_start(void);
 
 void benchmark_stop(void);

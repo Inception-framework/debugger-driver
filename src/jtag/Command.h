@@ -67,40 +67,37 @@ public:
 
   void write_dr(uint8_t RnW, uint8_t address, uint32_t datain);
 
-  const char *command_name();
+  const char *command_name(void);
 
-  COMMAND_TYPE get_type();
+  COMMAND_TYPE get_type(void);
 
-  uint8_t *get_out_buffer();
+  uint8_t *get_out_buffer(void);
 
-  uint8_t *get_in_buffer();
+  uint8_t *get_in_buffer(void);
 
-  uint64_t *get_answers();
-
-  uint32_t size();
+  uint32_t size(void);
 
   void wait(uint32_t cycles);
 
-  int32_t again();
+  uint8_t again(void);
 
-  TDO *get_tdo();
+  uint8_t decode(uint64_t *value);
 
   COMMAND_TYPE type;
-
-  void add_answer(uint64_t answer);
 
 private:
   void set_type(COMMAND_TYPE type);
 
   std::vector<uint8_t> out_buffer;
 
-  std::vector<uint8_t> in_buffer;
+  uint8_t ack;
 
-  std::vector<uint64_t> answers;
+  uint32_t datain;
 
-  uint32_t attempts;
+  uint8_t attempts;
 
   TDO tdo;
+
 };
 
 } /* namespace JTAG */

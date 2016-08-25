@@ -21,11 +21,6 @@ class Producer;
 #define _LOG_ALL
 #include "colored.h"
 
-typedef struct jtag_response {
-  uint8_t ack;
-  uint64_t data_in;
-} Response;
-
 class Decoder /*: public Interface*/ {
 
 public:
@@ -45,14 +40,10 @@ public:
   */
   void add_cmd_to_queue(jtag::Command *cmd);
 
-  uint64_t process_jtag_queue(void);
+  uint32_t process_jtag_queue(uint64_t*);
 
 private:
-  bool decode(jtag::Command *cmd, uint32_t position);
-
-  Response *tdo_to_int(uint8_t *data);
-
-  uint64_t process(jtag::Command *cmd);
+  uint32_t process(jtag::Command *cmd, uint64_t *value);
 
   bool check_ack(uint8_t data);
 

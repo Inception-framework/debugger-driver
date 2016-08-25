@@ -195,21 +195,21 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
   // for (int i = 0; i < 30; i++)
   //   cmd->add_command(0, 0, 0, 0);
   cmd->move_to(jtag::TAP_IDLE);
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i < 30; i++)
     cmd->add_command(0, 0, 0, 0);
 
   // set tar register value
   cmd->move_to(jtag::TAP_DRSHIFT);
   cmd->write_dr(DPAP_WRITE, TAR_ADDR, address);
   cmd->move_to(jtag::TAP_IDLE);
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i < 30; i++)
     cmd->add_command(0, 0, 0, 0);
 
   // set DRW register value
   cmd->move_to(jtag::TAP_DRSHIFT);
   cmd->write_dr(DPAP_WRITE, DRW_ADDR, datain);
   cmd->move_to(jtag::TAP_IDLE);
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i < 30; i++)
     cmd->add_command(0, 0, 0, 0);
 
   // cmd->move_to(jtag::TAP_DRSHIFT);

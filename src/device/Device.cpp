@@ -148,8 +148,8 @@ void USBDevice::init(void) {
     return;
   }
 
-  libusb_clear_halt(this->handle, 0x81);
-  libusb_clear_halt(this->handle, 0x01);
+  // libusb_clear_halt(this->handle, 0x81);
+  // libusb_clear_halt(this->handle, 0x01);
 
   return;
 }

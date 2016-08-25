@@ -24,21 +24,18 @@ Command::~Command() {
 }
 
 uint8_t *Command::get_out_buffer() {
+
   return (uint8_t *)this->out_buffer.data();
 }
 
 uint8_t *Command::get_in_buffer() {
 
-  this->in_buffer.resize(this->out_buffer.size());
+  tdo.resize(out_buffer.size());
 
-  return (uint8_t *)this->in_buffer.data();
+  return (uint8_t *)tdo.tdo_ptr();
 }
 
 uint32_t Command::size() { return this->out_buffer.size(); }
-
-void Command::add_answer(uint64_t answer) { this->answers.push_back(answer); }
-
-uint64_t *Command::get_answers(void) { return this->answers.data(); }
 
 void Command::add_command(uint32_t tms, uint32_t tdi, uint32_t trst,
                           uint32_t srst) {
@@ -168,8 +165,14 @@ const char *Command::command_name() {
 
 COMMAND_TYPE Command::get_type() { return this->type; }
 
-int32_t Command::again() { return this->attempts++; }
+uint8_t Command::again() { return ++this->attempts; }
 
-TDO *Command::get_tdo() { return &tdo; }
+uint8_t Command::decode(uint64_t *value) {
+
+  if (type == READ_U32 || type == WRITE_U32)
+    return tdo.decode(value);
+  else
+    return -1;
+}
 
 } /* namespace JTAG */

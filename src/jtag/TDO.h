@@ -19,6 +19,12 @@ typedef struct pair {
   uint32_t end;
 } Pair;
 
+typedef struct tdo_packet {
+  uint8_t ack;
+  uint64_t data_in;
+} TDO_PACKET;
+
+
 class TDO : public std::vector<Pair *> {
 public:
   TDO();
@@ -26,6 +32,23 @@ public:
   virtual ~TDO();
 
   void add(uint32_t begin, uint32_t end);
+
+  uint8_t decode(uint64_t *value);
+
+  void resize(uint32_t new_size);
+
+  uint8_t* tdo_ptr();
+
+private:
+
+  uint8_t decode_recursivly(uint32_t position, uint64_t *value);
+
+  TDO_PACKET *tdo_to_int(uint32_t position);
+
+  bool check_ack(uint8_t ack);
+
+  std::vector<uint8_t> data;
+
 };
 
 } /* namespace JTAG */

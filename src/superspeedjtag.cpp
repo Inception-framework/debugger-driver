@@ -38,7 +38,6 @@ void *jtag_init(void) {
 
   INFO("Decoder", "Starting decoder thread ...");
   Decoder *decoder = new Decoder(producer);
-  decoder->start();
 
   producer->add_decoder(decoder);
 
@@ -66,7 +65,8 @@ void *jtag_init(void) {
   return (void *)sj;
 }
 
-uint64_t jtag_read(void *opaque, uint64_t address, unsigned size) {
+uint32_t jtag_read(void *opaque, uint64_t address, uint64_t &value,
+                   unsigned size) {
 
   Command *cmd;
   std::vector<uint32_t> arg;
@@ -81,7 +81,7 @@ uint64_t jtag_read(void *opaque, uint64_t address, unsigned size) {
 
   sj->producer->add_cmd_to_queue(cmd);
 
-  return sj->decoder->process_jtag_queue();
+  return sj->decoder->process_jtag_queue(&value);
 }
 
 void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size) {

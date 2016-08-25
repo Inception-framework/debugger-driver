@@ -23,8 +23,9 @@ int main(int argc, char *argv[]) {
 
   Command *cmd;
   AccessPort *ap;
-  uint8_t stopped = 0;
+  // uint8_t stopped = 0;
   std::vector<uint32_t> arg;
+  uint64_t value;
 
   INFO("Device", "Initializing superspeed device ...");
   Device::USBDevice *fx3 = new Device::USBDevice(0x04B4, 0x00F0, 0);
@@ -36,7 +37,6 @@ int main(int argc, char *argv[]) {
 
   INFO("Decoder", "Starting decoder thread ...");
   Decoder *decoder = new Decoder(producer);
-  decoder->start();
 
   producer->add_decoder(decoder);
 
@@ -61,11 +61,18 @@ int main(int argc, char *argv[]) {
   producer->add_cmd_to_queue(cmd);
 
   INFO("Command", "Creating 100 000 WRITE_U32 commands ...");
-  for (int i = 0; i < 1000000; i++) {
+  for (int i = 0; i < 100000; i++) {
+
     arg.push_back(0xffffffff);
     arg.push_back(0x20000000);
     cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::WRITE_U32, arg);
     producer->add_cmd_to_queue(cmd);
+    decoder->process_jtag_queue(&value);
+
+    arg.push_back(0x20000000);
+    cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
+    producer->add_cmd_to_queue(cmd);
+    decoder->process_jtag_queue(&value);
   }
 
   // INFO("Command", "Creating 100 000 READ_U32 commands ...");
@@ -86,8 +93,6 @@ int main(int argc, char *argv[]) {
 
   INFO("Interface", "Shutting down interface Producer ...");
   producer->stop();
-  INFO("Interface", "Shutting down Decoder ...");
-  decoder->stop();
 
   INFO("Device", "Closing device connection ...");
   fx3->quit();
