@@ -23,6 +23,8 @@ typedef enum COMMAND_TYPE {
   SELECT = 4,
   ACTIVE = 5,
   EXIT = 6,
+  TRACE = 7,
+  UNTRACE = 8,
 } COMMAND_TYPE;
 
 static const struct command_name_mapping {
@@ -48,6 +50,8 @@ static const struct command_name_mapping {
         SELECT, "SELECT",
     },
     {EXIT, "EXIT"},
+    {EXIT, "TRACE"},
+    {EXIT, "UNTRACE"},
 };
 
 namespace jtag {

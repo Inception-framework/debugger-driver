@@ -33,6 +33,14 @@ private:
 
   static void write_u32(jtag::Command *cmd, uint32_t address, uint32_t data);
 
+  static void active(jtag::Command *cmd);
+
+  static void trace(jtag::Command *cmd);
+
+  static void untrace(jtag::Command *cmd);
+
+  static void idcode(jtag::Command *cmd);
+
   static bool first_io;
 
 };

@@ -34,7 +34,7 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
 
       CommandsFactory::select(cmd, argv.at(0));
 
-      CommandsFactory::first_io == true;
+      CommandsFactory::first_io = true;
     } else
       ALERT("CommandsFactory", "SELECT args missing");
 
@@ -45,7 +45,7 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
     for (int i = 0; i < 5; i++)
       cmd->add_command(1, 0, 0, 0);
 
-    CommandsFactory::first_io == true;
+    CommandsFactory::first_io = true;
 
     break;
 
@@ -68,44 +68,18 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
     break;
 
   case IDCODE:
-
-    cmd->move_to(jtag::TAP_IRSHIFT);
-
-    cmd->write_ir(0xE); // 1110 = IDCODE IR
-
-    cmd->move_to(jtag::TAP_DRSHIFT);
-    cmd->write_dr(DPAP_READ, 0, 0);
-
-    cmd->move_to(jtag::TAP_IDLE);
-
-    CommandsFactory::first_io == true;
-
+    CommandsFactory::idcode(cmd);
     break;
-
   case ACTIVE:
-
-    cmd->move_to(jtag::TAP_IRSHIFT);
-
-    cmd->write_ir(DPACC);
-
-    cmd->move_to(jtag::TAP_DRSHIFT);
-
-    cmd->write_dr(DPAP_WRITE, CTRL_STAT, 0x50000000);
-
-    // wait
-    for (int i = 0; i < 30; i++)
-      cmd->add_command(0, 0, 0, 0);
-
-    // cmd->move_to(jtag::TAP_DRSHIFT);
-    // cmd->write_dr(DPAP_READ, CTRL_STAT, 0x00000000);
-    //
-    cmd->move_to(jtag::TAP_IDLE);
-
-    CommandsFactory::first_io == true;
-
+    CommandsFactory::active(cmd);
     break;
   case EXIT:
-
+    break;
+  case TRACE:
+    CommandsFactory::trace(cmd);
+    break;
+  case UNTRACE:
+    CommandsFactory::untrace(cmd);
     break;
   }
 
@@ -120,6 +94,38 @@ bool CommandsFactory::check_arg(vector<uint32_t> &argv, uint32_t required) {
     return false;
 
   return true;
+}
+
+void CommandsFactory::idcode(jtag::Command *cmd) {
+
+  cmd->move_to(jtag::TAP_IRSHIFT);
+
+  cmd->write_ir(0xE); // 1110 = IDCODE IR
+
+  cmd->move_to(jtag::TAP_DRSHIFT);
+  cmd->write_dr(DPAP_READ, 0, 0);
+
+  cmd->move_to(jtag::TAP_IDLE);
+
+  CommandsFactory::first_io = true;
+}
+
+void CommandsFactory::active(jtag::Command *cmd) {
+
+  cmd->move_to(jtag::TAP_IRSHIFT);
+
+  cmd->write_ir(DPACC);
+
+  cmd->move_to(jtag::TAP_DRSHIFT);
+
+  cmd->write_dr(DPAP_WRITE, CTRL_STAT, 0x50000000);
+
+  for (int i = 0; i < 30; i++)
+    cmd->add_command(0, 0, 0, 0);
+
+  cmd->move_to(jtag::TAP_IDLE);
+
+  CommandsFactory::first_io = true;
 }
 
 void CommandsFactory::select(jtag::Command *cmd, uint32_t bank_id) {
@@ -160,7 +166,7 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
     for (int i = 0; i < 15; i++)
       cmd->add_command(0, 0, 0, 0);
 
-    CommandsFactory::first_io == false;
+    CommandsFactory::first_io = false;
   }
 
   // set tar register value
@@ -216,7 +222,7 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
     for (int i = 0; i < 15; i++)
       cmd->add_command(0, 0, 0, 0);
 
-    CommandsFactory::first_io == false;
+    CommandsFactory::first_io = false;
   }
 
   // set tar register value
