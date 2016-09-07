@@ -25,7 +25,7 @@ extern "C" {
 
 void *jtag_init(void);
 
-uint32_t jtag_read(void *opaque, uint64_t address, uint64_t &value,
+int32_t jtag_read(void *opaque, uint64_t address, uint64_t *value,
   unsigned size);
 
 void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size);

@@ -81,7 +81,7 @@ public:
 
   uint8_t again(void);
 
-  uint8_t decode(uint64_t *value);
+  int8_t decode(uint64_t *value);
 
   COMMAND_TYPE type;
 

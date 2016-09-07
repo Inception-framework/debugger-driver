@@ -37,6 +37,23 @@ void Producer::stop() {
   this->wait();
 }
 
+void Producer::synchrone_process(jtag::Command *cmd, uint64_t *value) {
+
+  uint32_t size;
+
+  size = cmd->size();
+
+  if (cmd->type != EXIT) {
+
+    this->device->download(cmd->get_out_buffer(), &size);
+
+    this->device->upload(cmd->get_in_buffer(), &size);
+
+    if (cmd->type == READ_U32)
+      this->decoders.at(0)->process(cmd, value);
+  }
+}
+
 void Producer::process_jtag_queue(void) {
 
   jtag::Command *cmd = NULL;
@@ -51,12 +68,9 @@ void Producer::process_jtag_queue(void) {
       this->unlock();
 
       cmd = this->queue.front();
-      //
+
       // printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name(),
       //        cmd->size());
-      // for (unsigned int i = 0; i < cmd->size(); i++)
-      //   printf("%02x", cmd->get_buffer()[i]);
-      // printf("\r\n");
 
       size = cmd->size();
 
@@ -66,10 +80,10 @@ void Producer::process_jtag_queue(void) {
 
         this->device->upload(cmd->get_in_buffer(), &size);
 
+        this->notify(cmd);
+
       } else
         this->is_running = false;
-
-      this->notify(cmd);
 
       this->queue.pop();
 
@@ -89,6 +103,9 @@ void Producer::add_decoder(Decoder *decoder) {
 void Producer::notify(jtag::Command *cmd) {
 
   std::vector<Decoder *>::iterator it;
+
+  if (cmd->type != READ_U32)
+    return;
 
   for (it = decoders.begin(); it != decoders.end(); ++it) {
 

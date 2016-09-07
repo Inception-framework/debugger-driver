@@ -16,7 +16,7 @@ void Decoder::add_cmd_to_queue(jtag::Command *cmd) {
   this->locker.unlock();
 }
 
-uint32_t Decoder::process_jtag_queue(uint64_t *value) {
+int32_t Decoder::process_jtag_queue(uint64_t *value) {
 
   jtag::Command *cmd = NULL;
 
@@ -29,15 +29,18 @@ uint32_t Decoder::process_jtag_queue(uint64_t *value) {
     this->process(cmd, value);
 
     this->queue.pop();
+
+    return 0;
+
   } else
     this->locker.unlock();
 
-  return 0;
+  return -1;
 }
 
-uint32_t Decoder::process(jtag::Command *cmd, uint64_t *value) {
+int32_t Decoder::process(jtag::Command *cmd, uint64_t *value) {
 
-  if (cmd->type == RESET || cmd->decode(value) != -1) {
+  if (cmd->decode(value) != -1) {
 
     delete cmd;
 

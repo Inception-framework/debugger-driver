@@ -40,10 +40,10 @@ public:
   */
   void add_cmd_to_queue(jtag::Command *cmd);
 
-  uint32_t process_jtag_queue(uint64_t*);
+  int32_t process_jtag_queue(uint64_t*);
 
+  int32_t process(jtag::Command *cmd, uint64_t *value);
 private:
-  uint32_t process(jtag::Command *cmd, uint64_t *value);
 
   bool check_ack(uint8_t data);
 

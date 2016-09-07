@@ -167,12 +167,12 @@ COMMAND_TYPE Command::get_type() { return this->type; }
 
 uint8_t Command::again() { return ++this->attempts; }
 
-uint8_t Command::decode(uint64_t *value) {
+int8_t Command::decode(uint64_t *value) {
 
   if (type == READ_U32 || type == WRITE_U32)
     return tdo.decode(value);
   else
-    return -1;
+    return 0;
 }
 
 } /* namespace JTAG */

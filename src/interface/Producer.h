@@ -36,6 +36,8 @@ public:
 
   void add_decoder(Decoder *decoder);
 
+  void synchrone_process(jtag::Command *cmd, uint64_t *value);
+
 private:
   void notify(jtag::Command *cmd);
 
