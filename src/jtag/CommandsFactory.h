@@ -32,6 +32,9 @@ private:
   static void read_u32(jtag::Command *cmd, uint32_t address);
 
   static void write_u32(jtag::Command *cmd, uint32_t address, uint32_t data);
+
+  static bool first_io;
+
 };
 
 #endif /* JTAG_COMMANDSFACTORY_H_ */
