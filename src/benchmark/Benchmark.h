@@ -30,6 +30,9 @@ public:
   static void inc_nread(void);
 
   static void inc_nwrite(void);
+
+  static long double time(void) {return total_io_time.tv_sec;}
+
 private:
   static uint32_t get_tick_count(void);
 
