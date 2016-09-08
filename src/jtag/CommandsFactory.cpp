@@ -51,27 +51,31 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
 
   case READ_U32:
 
-    if (check_arg(argv, 1) == true)
+    if (check_arg(argv, 1) == true) {
       CommandsFactory::read_u32(cmd, argv.at(0));
-    else
+      CommandsFactory::first_io = false;
+    } else
       ALERT("CommandsFactory", "READ_U32 args missing");
 
     break;
 
   case WRITE_U32:
 
-    if (check_arg(argv, 2) == true)
+    if (check_arg(argv, 2) == true) {
       CommandsFactory::write_u32(cmd, argv.at(1), argv.at(0));
-    else
+      CommandsFactory::first_io = false;
+    } else
       ALERT("CommandsFactory", "WRITE_U32 args missing");
 
     break;
 
   case IDCODE:
     CommandsFactory::idcode(cmd);
+    CommandsFactory::first_io = true;
     break;
   case ACTIVE:
     CommandsFactory::active(cmd);
+    CommandsFactory::first_io = true;
     break;
   case EXIT:
     break;
@@ -96,6 +100,39 @@ bool CommandsFactory::check_arg(vector<uint32_t> &argv, uint32_t required) {
   return true;
 }
 
+void CommandsFactory::trace(jtag::Command *cmd) {
+
+  /*
+  * Data Watchpoint and Trace (DWT) provides profiling, PC and exception trace
+  * support.
+  * Exception tracing is enabled using the EXCTRCENA bit in DWT_CTRL register.
+  *
+  * Exception tracing is enabled using the EXCTRCENA bit in the DWT_CTRL
+  * register.
+  * When the bit is set the DWT emits an exception trace packet
+  * under the following conditions:
+  *  • exception entry (from Thread mode or pre-emption of thread or handler).
+  *  • exception exit when exiting a handler with an EXC_RETURN vector.
+  *      See Exception return behavior on page B1-25.
+  *  • exception return when re-entering a pre-empted thread or handler code
+  * sequence.
+  */
+  write_u32(cmd, 0xE0001000, (1 << 16) &&); // DWT_CTRL regiter : EXCTRCENA
+
+  write_u32(cmd, 0xE0000E80, 0xC); // Enable ITM TCR
+
+  write_u32(cmd, 0xE0000E00, 0xffffffff); // Enable ITM TER
+
+  /*TPIU*/
+  write_u32(cmd, 0xE0040000, 0x4); // Set TPIU SSPSR
+
+  write_u32(cmd, 0xE00400F0, 0x0); // Set TPIU SSPPR
+
+  write_u32(cmd, 0xE0040FC8, 0x20); // Set TPIU TYPE
+}
+
+void CommandsFactory::untrace(jtag::Command *cmd) {}
+
 void CommandsFactory::idcode(jtag::Command *cmd) {
 
   cmd->move_to(jtag::TAP_IRSHIFT);
@@ -106,8 +143,6 @@ void CommandsFactory::idcode(jtag::Command *cmd) {
   cmd->write_dr(DPAP_READ, 0, 0);
 
   cmd->move_to(jtag::TAP_IDLE);
-
-  CommandsFactory::first_io = true;
 }
 
 void CommandsFactory::active(jtag::Command *cmd) {
@@ -124,8 +159,6 @@ void CommandsFactory::active(jtag::Command *cmd) {
     cmd->add_command(0, 0, 0, 0);
 
   cmd->move_to(jtag::TAP_IDLE);
-
-  CommandsFactory::first_io = true;
 }
 
 void CommandsFactory::select(jtag::Command *cmd, uint32_t bank_id) {
@@ -152,6 +185,8 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
   // Set the correct JTAG-DP
   if (CommandsFactory::first_io == true) {
 
+    ALERT("CommandsFactory", "First IO here");
+
     cmd->move_to(jtag::TAP_IRSHIFT);
     cmd->write_ir(APACC); // 1011 = APACC IR
 
@@ -165,8 +200,6 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
     cmd->move_to(jtag::TAP_IDLE);
     for (int i = 0; i < 15; i++)
       cmd->add_command(0, 0, 0, 0);
-
-    CommandsFactory::first_io = false;
   }
 
   // set tar register value
@@ -198,6 +231,8 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
 
   if (CommandsFactory::first_io == true) {
 
+    ALERT("CommandsFactory", "First IO here");
+
     // Set the correct JTAG-DP
     cmd->move_to(jtag::TAP_IRSHIFT);
     cmd->write_ir(APACC); // 1011 = APACC IR
@@ -221,8 +256,6 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
     cmd->move_to(jtag::TAP_IDLE);
     for (int i = 0; i < 15; i++)
       cmd->add_command(0, 0, 0, 0);
-
-    CommandsFactory::first_io = false;
   }
 
   // set tar register value
