@@ -2,7 +2,7 @@
  * CommandsFactory.cpp
  *
  *  Created on: Jul 12, 2016
- *      Author: noname
+ *  @author Corteggiani Nassim <nassim.corteggiani@maximintegrated.com>
  */
 
 #include "CommandsFactory.h"
@@ -80,9 +80,11 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
   case EXIT:
     break;
   case TRACE:
+    CommandsFactory::first_io = false;
     CommandsFactory::trace(cmd);
     break;
   case UNTRACE:
+    CommandsFactory::first_io = false;
     CommandsFactory::untrace(cmd);
     break;
   }
@@ -117,11 +119,12 @@ void CommandsFactory::trace(jtag::Command *cmd) {
   *  • exception return when re-entering a pre-empted thread or handler code
   * sequence.
   */
-  write_u32(cmd, 0xE0001000, (1 << 16) &&); // DWT_CTRL regiter : EXCTRCENA
+  write_u32(cmd, 0xE0001000,
+            0x0000ffff && (1 << 16)); // DWT_CTRL regiter : EXCTRCENA
 
   write_u32(cmd, 0xE0000E80, 0xC); // Enable ITM TCR
 
-  write_u32(cmd, 0xE0000E00, 0xffffffff); // Enable ITM TER
+  write_u32(cmd, 0xE0000E00, 0x0000ffff); // Enable ITM TER
 
   /*TPIU*/
   write_u32(cmd, 0xE0040000, 0x4); // Set TPIU SSPSR
@@ -185,7 +188,7 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
   // Set the correct JTAG-DP
   if (CommandsFactory::first_io == true) {
 
-    ALERT("CommandsFactory", "First IO here");
+    SUCCESS("CommandsFactory", "First IO here");
 
     cmd->move_to(jtag::TAP_IRSHIFT);
     cmd->write_ir(APACC); // 1011 = APACC IR
@@ -231,7 +234,7 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
 
   if (CommandsFactory::first_io == true) {
 
-    ALERT("CommandsFactory", "First IO here");
+    SUCCESS("CommandsFactory", "First IO here");
 
     // Set the correct JTAG-DP
     cmd->move_to(jtag::TAP_IRSHIFT);
