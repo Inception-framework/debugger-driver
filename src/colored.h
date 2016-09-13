@@ -2,10 +2,13 @@
  * A basic C/C++ color log macro.
  *
  * @author Anthony Pena <anthony.pena@outlook.fr>
+ * @author Corteggiani Nassim <nassim.corteggiani@maximintegrated.com>
  * @version 0.0.4
  */
 #ifndef __COLOR_LOG__
 #define __COLOR_LOG__
+
+extern bool DEBUG;
 
 #define __LOG_COLOR_RED "1;31"
 #define __LOG_COLOR_GREEN "0;32"
@@ -15,10 +18,10 @@
 
 #ifdef _LOG_NO_COLOR
 #define __LOG_COLOR(CLR, CTX, TXT, args...)                                    \
-  printf("  %s : " #TXT " \n", CTX, ##args)
+    printf("  %s : " #TXT " \n", CTX, ##args)
 #else
 #define __LOG_COLOR(CLR, CTX, TXT, args...)                                    \
-  printf("\033[%sm[%s]\r\n  \033[%sm " #TXT " \033[m\n", __LOG_COLOR_YELLOW,   \
+    printf("\033[%sm[%s]\r\n  \033[%sm " #TXT " \033[m\n", __LOG_COLOR_YELLOW, \
          CTX, CLR, ##args)
 
 //#define __LOG_COLOR(CLR,CTX,TXT,args ...) printf("\033[%sm[%s]\r\n   \033[%sm
@@ -52,7 +55,8 @@
 #if defined _LOG_VERBOSE && !(defined _LOG_NO_VERBOSE)
 #include <stdio.h>
 #define VERBOSE(CTX, TXT, args...)                                             \
-  __LOG_COLOR(__LOG_COLOR_WHITE, CTX, TXT, ##args)
+  if(DEBUG)                                                                    \
+    __LOG_COLOR(__LOG_COLOR_WHITE, CTX, TXT, ##args)
 #else
 #define VERBOSE(CTX, TXT, args...)
 #endif
@@ -60,14 +64,15 @@
 #if defined _LOG_WARNING && !(defined _LOG_NO_WARNING)
 #include <stdio.h>
 #define WARNING(CTX, TXT, args...)                                             \
-  __LOG_COLOR(__LOG_COLOR_YELLOW, CTX, TXT, ##args)
+    __LOG_COLOR(__LOG_COLOR_YELLOW, CTX, TXT, ##args)
 #else
 #define WARNING(CTX, TXT, args...)
 #endif
 
 #if defined _LOG_INFO && !(defined _LOG_NO_INFO)
 #include <stdio.h>
-#define INFO(CTX, TXT, args...) __LOG_COLOR(__LOG_COLOR_BLUE, CTX, TXT, ##args)
+#define INFO(CTX, TXT, args...)                                                \
+    __LOG_COLOR(__LOG_COLOR_BLUE, CTX, TXT, ##args)
 #else
 #define INFO(CTX, TXT, args...)
 #endif
