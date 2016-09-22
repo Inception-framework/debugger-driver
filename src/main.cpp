@@ -91,11 +91,11 @@ int trace() {
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::TRACE, arg);
   system.producer->synchrone_process(cmd, &value);
 
-  arg.push_back(0xE0001000);
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
-  system.producer->synchrone_process(cmd, &value);
-
-  printf("    [*] Read at 0xE0001000 : 0x%08x \r\n", (uint32_t)value);
+  // arg.push_back(0xE0001000);
+  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
+  // system.producer->synchrone_process(cmd, &value);
+  //
+  // printf("    [*] Read at 0xE0001000 : 0x%08x \r\n", (uint32_t)value);
 
   INFO("User", "Press any key to shutdown Avatar");
 

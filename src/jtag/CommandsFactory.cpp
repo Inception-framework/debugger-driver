@@ -103,6 +103,7 @@ bool CommandsFactory::check_arg(vector<uint32_t> &argv, uint32_t required) {
 }
 
 void CommandsFactory::trace(jtag::Command *cmd) {
+  // 5 MHz
 
   /*
   * Data Watchpoint and Trace (DWT) provides profiling, PC and exception trace
@@ -119,12 +120,15 @@ void CommandsFactory::trace(jtag::Command *cmd) {
   *  • exception return when re-entering a pre-empted thread or handler code
   * sequence.
   */
-  write_u32(cmd, 0xE0001000,
-            0x0000ffff && (1 << 16)); // DWT_CTRL regiter : EXCTRCENA
+  write_u32(cmd, 0xE000EDFC, 1<<24); // Enable Trace Mode Flag into Debug Exception and Monitor Control Register
 
-  write_u32(cmd, 0xE0000E80, 0xC); // Enable ITM TCR
+  write_u32(cmd, 0xE0040010, 0); // DWT_CTRL regiter : EXCTRCENA
 
-  write_u32(cmd, 0xE0000E00, 0x0000ffff); // Enable ITM TER
+  write_u32(cmd, 0xE0001000, 0x40011a01); // DWT_CTRL regiter : EXCTRCENA
+
+  write_u32(cmd, 0xE0000E80, 0x0001000d/*0xC*/); // Enable ITM TCR
+
+  write_u32(cmd, 0xE0000E00, 0xffffffff); // Enable ITM TER
 
   /*TPIU*/
   write_u32(cmd, 0xE0040000, 0x4); // Set TPIU SSPSR
@@ -132,6 +136,8 @@ void CommandsFactory::trace(jtag::Command *cmd) {
   write_u32(cmd, 0xE00400F0, 0x0); // Set TPIU SSPPR
 
   write_u32(cmd, 0xE0040FC8, 0x20); // Set TPIU TYPE
+
+  write_u32(cmd, 0xE0040304, 0); //TPIU FFCR : formater
 }
 
 void CommandsFactory::untrace(jtag::Command *cmd) {}
@@ -186,7 +192,7 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
   // uint32_t header, csw_value;
 
   // Set the correct JTAG-DP
-  if (CommandsFactory::first_io == true) {
+  // if (CommandsFactory::first_io == true) {
 
     SUCCESS("CommandsFactory", "First IO here");
 
@@ -203,7 +209,7 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
     cmd->move_to(jtag::TAP_IDLE);
     for (int i = 0; i < 15; i++)
       cmd->add_command(0, 0, 0, 0);
-  }
+  // }
 
   // set tar register value
   cmd->move_to(jtag::TAP_DRSHIFT);
@@ -232,7 +238,7 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
 
   uint32_t csw_value;
 
-  if (CommandsFactory::first_io == true) {
+  // if (CommandsFactory::first_io == true) {
 
     SUCCESS("CommandsFactory", "First IO here");
 
@@ -241,7 +247,7 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
     cmd->write_ir(APACC); // 1011 = APACC IR
 
     // CSW register value
-    csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG; ///
+    csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_HPROT | CSW_MASTER_DEBUG | CSW_DBGSWENABLE;
                                                                 // 0x23000042;
     // CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE;
     // CSW_MASTER_DEBUG |
@@ -259,7 +265,7 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
     cmd->move_to(jtag::TAP_IDLE);
     for (int i = 0; i < 15; i++)
       cmd->add_command(0, 0, 0, 0);
-  }
+  // }
 
   // set tar register value
   cmd->move_to(jtag::TAP_DRSHIFT);
