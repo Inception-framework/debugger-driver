@@ -72,6 +72,23 @@ void *jtag_init(void) {
   return (void *)sj;
 }
 
+uint64_t jtag_read_2(void *opaque, uint64_t address) {
+
+  Command *cmd;
+  std::vector<uint32_t> arg;
+  uint64_t value;
+
+  SuperspeedJtag *sj = (SuperspeedJtag *)opaque;
+
+  arg.push_back((uint32_t)address);
+
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
+
+  sj->producer->synchrone_process(cmd, &value);
+
+  return value;
+}
+
 int32_t jtag_read(void *opaque, uint64_t address, uint64_t *value,
                   unsigned size) {
 

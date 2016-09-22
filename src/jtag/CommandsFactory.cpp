@@ -124,7 +124,7 @@ void CommandsFactory::trace(jtag::Command *cmd) {
 
   write_u32(cmd, 0xE0040010, 0); // DWT_CTRL regiter : EXCTRCENA
 
-  write_u32(cmd, 0xE0001000, 0x40011a01); // DWT_CTRL regiter : EXCTRCENA
+  write_u32(cmd, 0xE0001000, 1<<16); // DWT_CTRL regiter : EXCTRCENA
 
   write_u32(cmd, 0xE0000E80, 0x0001000d/*0xC*/); // Enable ITM TCR
 
