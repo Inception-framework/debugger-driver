@@ -11,6 +11,8 @@ USBDevice::USBDevice(uint16_t vid, uint16_t pid, uint32_t interface) {
   this->interface = interface;
 
   this->buffer_limit = 1024;
+
+  this->handle = NULL;
 }
 
 USBDevice::~USBDevice() {
