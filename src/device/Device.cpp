@@ -130,20 +130,28 @@ void USBDevice::init(void) {
     case LIBUSB_ERROR_NOT_FOUND:
       ALERT("Device",
             "The interface requested by avatar driver does not exist");
+      throw std::runtime_error(
+          "A driver different than avatar driver has claimed the interface\n");
       break;
 
     case LIBUSB_ERROR_BUSY:
       ALERT("Device",
             "A driver different than avatar driver has claimed the interface");
+      throw std::runtime_error(
+          "A driver different than avatar driver has claimed the interface\n");
       break;
 
     case LIBUSB_ERROR_NO_DEVICE:
       ALERT("Device",
             "Avatar driver detected that the device has been disconnected");
+      throw std::runtime_error(
+          "Avatar driver detected that the device has been disconnected\n");
       break;
 
     default:
       ALERT("Device", "Avatar driver was not able to claimed interface...");
+      throw std::runtime_error(
+          "Avatar driver was not able to claimed interface...\n");
       break;
     }
     this->handle = NULL;
@@ -194,6 +202,8 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
     ALERT("Device",
           "Avatar driver failed to communicate with device ... endpoint : %02x",
           endpoint);
+    throw std::runtime_error(
+        "Avatar driver failed to communicate with device ... endpoint\n");
   }
 
   return transferred;

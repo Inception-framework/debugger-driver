@@ -45,6 +45,9 @@ void Producer::synchrone_process(jtag::Command *cmd, uint64_t *value) {
 
   if (cmd->type != EXIT) {
 
+    // printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name(),
+    //        cmd->size());
+
     this->device->download(cmd->get_out_buffer(), &size);
 
     this->device->upload(cmd->get_in_buffer(), &size);

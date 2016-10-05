@@ -15,6 +15,8 @@ RM := rm -rf
 -include src/interface/subdir.mk
 -include src/device/subdir.mk
 -include src/benchmark/subdir.mk
+-include src/drivers/subdir.mk
+-include src/drivers/flash/subdir.mk
 -include src/subdir.mk
 -include subdir.mk
 -include objects.mk
@@ -42,7 +44,7 @@ endif
 
 -include ../makefile.defs
 
-# Add inputs and outputs from these tool invocations to the build variables 
+# Add inputs and outputs from these tool invocations to the build variables
 
 # All Target
 all: libsuperspeed-jtag.so

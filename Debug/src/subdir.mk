@@ -2,25 +2,33 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-# Add inputs and outputs from these tool invocations to the build variables 
+# Add inputs and outputs from these tool invocations to the build variables
 CPP_SRCS += \
 ../src/Decoder.cpp \
 ../src/Exception.cpp \
 ../src/main.cpp \
-../src/superspeedjtag.cpp 
+../src/superspeedjtag.cpp  \
+../src/TestReport.cpp \
+../src/TestsFactory.cpp \
+../src/System.cpp
 
 OBJS += \
 ./src/Decoder.o \
 ./src/Exception.o \
 ./src/main.o \
-./src/superspeedjtag.o 
+./src/superspeedjtag.o \
+./src/TestReport.o \
+./src/TestsFactory.o \
+./src/System.o
 
 CPP_DEPS += \
 ./src/Decoder.d \
 ./src/Exception.d \
 ./src/main.d \
-./src/superspeedjtag.d 
-
+./src/superspeedjtag.d \
+./src/TestReport.d \
+./src/TestsFactory.d \
+./src/System.d
 
 # Each subdirectory must supply rules for building sources it contributes
 src/%.o: ../src/%.cpp
@@ -29,5 +37,3 @@ src/%.o: ../src/%.cpp
 	g++ -std=c++1y -fpic -I-lpthread -I-lusb-1.0 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
-
-

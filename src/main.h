@@ -13,6 +13,7 @@
 #include "interface/Producer.h"
 
 #include "jtag/ap/ahb_ap/AHB_AP.h"
+#include "jtag/ap/AccessPort.h"
 
 #include "Decoder.h"
 

@@ -194,14 +194,10 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
   // Set the correct JTAG-DP
   // if (CommandsFactory::first_io == true) {
 
-    SUCCESS("CommandsFactory", "First IO here");
+    // SUCCESS("CommandsFactory", "First IO here");
 
     cmd->move_to(jtag::TAP_IRSHIFT);
     cmd->write_ir(APACC); // 1011 = APACC IR
-
-    // CSW register value
-    // csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE |
-    // CSW_MASTER_DEBUG | CSW_HPROT;
 
     // set csw register value
     cmd->move_to(jtag::TAP_DRSHIFT);
@@ -240,28 +236,18 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
 
   // if (CommandsFactory::first_io == true) {
 
-    SUCCESS("CommandsFactory", "First IO here");
+    // SUCCESS("CommandsFactory", "First IO here");
 
     // Set the correct JTAG-DP
     cmd->move_to(jtag::TAP_IRSHIFT);
     cmd->write_ir(APACC); // 1011 = APACC IR
 
     // CSW register value
-    csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_HPROT | CSW_MASTER_DEBUG | CSW_DBGSWENABLE;
-                                                                // 0x23000042;
-    // CSW_32BIT | CSW_ADDRINC_OFF | CSW_DBGSWENABLE;
-    // CSW_MASTER_DEBUG |
-    // CSW_SPROT | CSW_ADDRINC_SINGLE | CSW_SPIDEN;
-    // printf("CSW = 0x%08x\n\n", csw_value);
+    csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG;// | CSW_DBGSWENABLE | CSW_HPROT;
 
     // set csw register value
     cmd->move_to(jtag::TAP_DRSHIFT);
     cmd->write_dr(DPAP_WRITE, CSW_ADDR, csw_value);
-
-    // cmd->move_to(jtag::TAP_DRSHIFT);
-    // cmd->write_dr(DPAP_READ, CSW_ADDR, 0);
-    // for (int i = 0; i < 30; i++)
-    //   cmd->add_command(0, 0, 0, 0);
     cmd->move_to(jtag::TAP_IDLE);
     for (int i = 0; i < 15; i++)
       cmd->add_command(0, 0, 0, 0);
@@ -280,12 +266,4 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
   cmd->move_to(jtag::TAP_IDLE);
   for (int i = 0; i < 15; i++)
     cmd->add_command(0, 0, 0, 0);
-
-  // cmd->move_to(jtag::TAP_DRSHIFT);
-  // cmd->write_dr(DPAP_READ, CSW_ADDR, 0);
-  // cmd->move_to(jtag::TAP_IDLE);
-  //
-  // cmd->move_to(jtag::TAP_DRSHIFT);
-  // cmd->write_dr(DPAP_READ, CSW_ADDR, 0);
-  // cmd->move_to(jtag::TAP_IDLE);
 }

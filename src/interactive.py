@@ -17,7 +17,7 @@ class Interactive(object):
         code.InteractiveConsole(locals=locals()).interact()
 
     def write(self, address, value):
-        lib.jtag_write(self.obj, address, value, 32);
+        lib.jtag_write(self.obj, address, value, 32)
 
     def read(self, address):
         return lib.jtag_read_2(self.obj, address);
