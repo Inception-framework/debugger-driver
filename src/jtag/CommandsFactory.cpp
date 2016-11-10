@@ -80,7 +80,7 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
   case EXIT:
     break;
   case TRACE:
-    CommandsFactory::first_io = false;
+    CommandsFactory::first_io = true;
     CommandsFactory::trace(cmd);
     break;
   case UNTRACE:
@@ -124,7 +124,7 @@ void CommandsFactory::trace(jtag::Command *cmd) {
 
   write_u32(cmd, 0xE0040010, 0); // DWT_CTRL regiter : EXCTRCENA
 
-  write_u32(cmd, 0xE0001000, 1<<16); // DWT_CTRL regiter : EXCTRCENA
+  write_u32(cmd, 0xE0001000, (1<<16) || (1<<17) || (1<<18) || (1<<19) || (1<<20) || (1<<25)); // DWT_CTRL regiter : EXCTRCENA
 
   write_u32(cmd, 0xE0000E80, 0x0001000d/*0xC*/); // Enable ITM TCR
 
@@ -192,78 +192,78 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
   // uint32_t header, csw_value;
 
   // Set the correct JTAG-DP
-  // if (CommandsFactory::first_io == true) {
+  if (CommandsFactory::first_io == true) {
 
-    // SUCCESS("CommandsFactory", "First IO here");
+    SUCCESS("CommandsFactory", "First IO here");
 
     cmd->move_to(jtag::TAP_IRSHIFT);
     cmd->write_ir(APACC); // 1011 = APACC IR
 
     // set csw register value
     cmd->move_to(jtag::TAP_DRSHIFT);
-    cmd->write_dr(DPAP_WRITE, CSW_ADDR, 0x23000042);
+    cmd->write_dr(DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG| CSW_DBGSWENABLE | CSW_HPROT);
     cmd->move_to(jtag::TAP_IDLE);
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < 20; i++)
       cmd->add_command(0, 0, 0, 0);
-  // }
+  }
 
   // set tar register value
   cmd->move_to(jtag::TAP_DRSHIFT);
   cmd->write_dr(DPAP_WRITE, TAR_ADDR, address);
   cmd->move_to(jtag::TAP_IDLE);
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < 20; i++)
     cmd->add_command(0, 0, 0, 0);
 
   // set drw register value
   cmd->move_to(jtag::TAP_DRSHIFT);
   cmd->write_dr(DPAP_READ, DRW_ADDR, 0);
   cmd->move_to(jtag::TAP_IDLE);
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < 20; i++)
     cmd->add_command(0, 0, 0, 0);
 
   // set drw register value
   cmd->move_to(jtag::TAP_DRSHIFT);
   cmd->write_dr(DPAP_READ, DRW_ADDR, 0);
   cmd->move_to(jtag::TAP_IDLE);
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < 20; i++)
     cmd->add_command(0, 0, 0, 0);
 }
 
 void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
                                 uint32_t datain) {
 
-  uint32_t csw_value;
+  // uint32_t csw_value;
 
-  // if (CommandsFactory::first_io == true) {
+  if (CommandsFactory::first_io == true) {
 
-    // SUCCESS("CommandsFactory", "First IO here");
+    SUCCESS("CommandsFactory", "First IO here");
 
     // Set the correct JTAG-DP
     cmd->move_to(jtag::TAP_IRSHIFT);
     cmd->write_ir(APACC); // 1011 = APACC IR
 
     // CSW register value
-    csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG;// | CSW_DBGSWENABLE | CSW_HPROT;
+    // csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG| CSW_DBGSWENABLE | CSW_HPROT;
 
     // set csw register value
     cmd->move_to(jtag::TAP_DRSHIFT);
-    cmd->write_dr(DPAP_WRITE, CSW_ADDR, csw_value);
+    cmd->write_dr(DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG| CSW_DBGSWENABLE | CSW_HPROT);
     cmd->move_to(jtag::TAP_IDLE);
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < 20; i++)
       cmd->add_command(0, 0, 0, 0);
-  // }
+  }
 
   // set tar register value
   cmd->move_to(jtag::TAP_DRSHIFT);
   cmd->write_dr(DPAP_WRITE, TAR_ADDR, address);
   cmd->move_to(jtag::TAP_IDLE);
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < 20; i++)
     cmd->add_command(0, 0, 0, 0);
 
   // set DRW register value
   cmd->move_to(jtag::TAP_DRSHIFT);
   cmd->write_dr(DPAP_WRITE, DRW_ADDR, datain);
   cmd->move_to(jtag::TAP_IDLE);
-  for (int i = 0; i < 15; i++)
+  for (int i = 0; i < 20; i++)
     cmd->add_command(0, 0, 0, 0);
 }

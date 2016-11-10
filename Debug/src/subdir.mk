@@ -10,7 +10,8 @@ CPP_SRCS += \
 ../src/superspeedjtag.cpp  \
 ../src/TestReport.cpp \
 ../src/TestsFactory.cpp \
-../src/System.cpp
+../src/System.cpp \
+../src/BinLoader.cpp
 
 OBJS += \
 ./src/Decoder.o \
@@ -19,7 +20,8 @@ OBJS += \
 ./src/superspeedjtag.o \
 ./src/TestReport.o \
 ./src/TestsFactory.o \
-./src/System.o
+./src/System.o \
+./src/BinLoader.o
 
 CPP_DEPS += \
 ./src/Decoder.d \
@@ -28,7 +30,8 @@ CPP_DEPS += \
 ./src/superspeedjtag.d \
 ./src/TestReport.d \
 ./src/TestsFactory.d \
-./src/System.d
+./src/System.d \
+./src/BinLoader.d
 
 # Each subdirectory must supply rules for building sources it contributes
 src/%.o: ../src/%.cpp

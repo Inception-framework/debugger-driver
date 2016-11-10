@@ -16,7 +16,9 @@ enum Test {
   BENCHMARK_IO,
   CHECK_WRITE_U32,
   CHECK_READ_U32,
-  CHECK_DEVICE
+  CHECK_DEVICE,
+  TEST_IDCODE,
+  TEST_TRACE
 };
 
 // typedef struct EnumIter<BENCHMARK_IO, CHECK_WRITE_U32, CHECK_READ_U32, CHECK_DEVICE>  TestIterator;
@@ -48,9 +50,14 @@ public:
   static TestReport *CreateTest(enum Test type, System* sys);
 
 private :
+
   static std::map<enum Test, TestReport*> testMap;
 
+  static void trace(System* sys, TestReport* report);
+
   static void benchmark_io(System* sys, TestReport* report);
+
+  static void idcode(System* sys, TestReport* report);
 };
 
 #endif

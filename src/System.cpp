@@ -1,3 +1,4 @@
+
 #include "System.h"
 
 #include "TestReport.h"
@@ -7,6 +8,10 @@
 #include <algorithm>
 #include <functional>
 #include <sstream>
+
+#include "benchmark/Benchmark.h"
+
+#include "BinLoader.h"
 
 using namespace std::placeholders;
 
@@ -34,7 +39,7 @@ System::~System() {}
 std::string System::info() {
 
   // Command *cmd = NULL;
-  std::vector<uint32_t> arg;
+  // std::vector<uint32_t> arg;
   // uint64_t value = 0;
 
   std::stringstream info;
@@ -131,7 +136,10 @@ uint32_t System::read_u32(uint32_t address) {
   arg.push_back(address);
 
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
+
+  Benchmark::start();
   producer->synchrone_process(cmd, &value);
+  Benchmark::stop();
 
   return (uint32_t)value;
 }
@@ -168,5 +176,21 @@ void System::check(Test test) {
     ALERT(report->name.c_str(), "failed !");
 
   INFO(report->name.c_str(), "%s", info.str().c_str());
+
+}
+
+void System::load_binary_in_sdram(std::string file_path) {
+
+  BinLoader* bin_loader = new BinLoader("/home/noname/workspacees06/stub/SLA/stub.bin");
+
+  try {
+
+    while(true)
+    bin_loader->next();
+
+  } catch (std::runtime_error) {
+
+    INFO("BIN_LOADER", "End Of File");
+  }
 
 }

@@ -48,6 +48,8 @@ class System {
     jtag::AccessPort *ap;
 
     void select(void);
+
+    void load_binary_in_sdram(std::string file_path);
 };
 
 #endif
