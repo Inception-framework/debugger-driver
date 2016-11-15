@@ -33,7 +33,7 @@ public:
 
   void add(uint32_t begin, uint32_t end);
 
-  int8_t decode(uint64_t *value);
+  int8_t decode(uint64_t *value, bool idcode);
 
   void resize(uint32_t new_size);
 
@@ -43,7 +43,7 @@ private:
 
   int8_t decode_recursivly(uint32_t position, uint64_t *value);
 
-  TDO_PACKET *tdo_to_int(uint32_t position);
+  TDO_PACKET *to_int(uint32_t position);
 
   bool check_ack(uint8_t ack);
 

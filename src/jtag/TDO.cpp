@@ -15,8 +15,18 @@ void TDO::add(uint32_t begin, uint32_t end) {
   this->push_back(new Pair{begin, end});
 }
 
-int8_t TDO::decode(uint64_t *value) {
-  return this->decode_recursivly(0, value);
+int8_t TDO::decode(uint64_t *value, bool idcode) {
+
+  if(idcode) {
+
+    TDO_PACKET *packet;
+
+    packet = to_int(0);
+
+    *value = (packet->ack ) | (packet->data_in << 3);
+  }
+  else
+    return this->decode_recursivly(0, value);
 }
 
 int8_t TDO::decode_recursivly(uint32_t position, uint64_t *value) {
@@ -31,7 +41,7 @@ int8_t TDO::decode_recursivly(uint32_t position, uint64_t *value) {
     return -1;
 
   if (end == 34)
-    packet = tdo_to_int(position);
+    packet = to_int(position);
   else
     return -1;
 
@@ -45,7 +55,7 @@ int8_t TDO::decode_recursivly(uint32_t position, uint64_t *value) {
   return 0;
 }
 
-TDO_PACKET *TDO::tdo_to_int(uint32_t position) {
+TDO_PACKET *TDO::to_int(uint32_t position) {
 
   uint8_t ack = 0;
   uint64_t datain = 0;

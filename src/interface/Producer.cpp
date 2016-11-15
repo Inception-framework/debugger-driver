@@ -52,7 +52,7 @@ void Producer::synchrone_process(jtag::Command *cmd, uint64_t *value) {
 
     this->device->upload(cmd->get_in_buffer(), &size);
 
-    if (cmd->type == READ_U32)
+    if (cmd->type == READ_U32 || cmd->type == IDCODE )
       this->decoders.at(0)->process(cmd, value);
   }
 }

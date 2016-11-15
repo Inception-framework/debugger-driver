@@ -45,7 +45,7 @@ public:
 
   flash::Flash* get_flash();
 
-  std::string idcode;
+  uint32_t idcode;
 
   bool halted;
 

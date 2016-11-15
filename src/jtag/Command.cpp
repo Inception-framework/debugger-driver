@@ -169,8 +169,8 @@ uint8_t Command::again() { return ++this->attempts; }
 
 int8_t Command::decode(uint64_t *value) {
 
-  if (type == READ_U32 || type == WRITE_U32)
-    return tdo.decode(value);
+  if (type == READ_U32 || type == IDCODE)
+    return tdo.decode(value, type == IDCODE ? true : false);
   else
     return 0;
 }

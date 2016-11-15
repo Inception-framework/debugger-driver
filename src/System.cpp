@@ -34,7 +34,7 @@ System::System() : is_initialized(false) {
 
   producer->add_decoder(decoder);
 
-  idcode = "";
+  idcode = 0;
 
   ap = NULL;
 
@@ -45,9 +45,17 @@ System::~System() {}
 
 std::string System::info() {
 
-  // Command *cmd = NULL;
-  // std::vector<uint32_t> arg;
-  // uint64_t value = 0;
+  if (!is_initialized)
+    init_jtag();
+
+  Command *cmd = NULL;
+  std::vector<uint32_t> arg;
+  uint64_t value = 0;
+
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
+  producer->synchrone_process(cmd, &value);
+
+  this->idcode = (uint32_t)value;
 
   std::stringstream info;
 
@@ -58,13 +66,11 @@ std::string System::info() {
   info << "            * Project : Avatar On Steroids\r\n";
 
   info << "    [*] Chip information\r\n";
-  info << "            * IDCODE  : "<< idcode << "\r\n";
+  info << "            * IDCODE  : 0x"<< std::hex << idcode << "\r\n";
 
   if(flash != NULL)
     info << "            * Flash   : "<< flash->info() <<"\r\n";
 
-  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
-  // producer->synchrone_process(cmd, &value);
 
   return info.str();
 }
