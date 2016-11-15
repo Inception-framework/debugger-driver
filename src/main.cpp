@@ -45,6 +45,9 @@ int main(int argc, char *argv[]) {
     } else if (arg == "--idcode") {
       sys->check(TEST_IDCODE);
       return 0;
+    } else if (arg == "--flash") {
+      sys->check(TEST_FLASH);
+      return 0;
     } else if (arg == "--interractive") {
       FILE *pipe = popen("python interactive.py", "r");
       // ALERT("Command Argument", "interractive mode is not yet available");

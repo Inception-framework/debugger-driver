@@ -78,25 +78,25 @@ class Interactive(object):
 
     def read_reg(self, reg):
 
-            DCB_DCRDR = hex(self.read(0xE000EDF8))
+            # DCB_DCRDR = hex(self.read(0xE000EDF8))
 
             self.write(0xE000EDF4, reg)
 
             reg = hex(self.read(0xE000EDF8))
 
-            self.write(0xE000EDF8, DCB_DCRDR)
+            # self.write(0xE000EDF8, DCB_DCRDR)
 
             return reg
 
     def write_reg(self, reg, value):
 
-            DCB_DCRDR = hex(self.read(0xE000EDF8))
+            # DCB_DCRDR = hex(self.read(0xE000EDF8))
 
             self.write(0xE000EDF8, value)
 
             self.write(0xE000EDF4, reg |  (1 << 16))
 
-            self.write(0xE000EDF8, DCB_DCRDR)
+            # self.write(0xE000EDF8, DCB_DCRDR)
 
             return reg
 
@@ -104,7 +104,12 @@ class Interactive(object):
 
             value = self.read(0xE000EDF0)
 
-            DHCSR(value).show()
+            if value < 0 :
+                value = value + 2**32
+
+            print(hex(value))
+
+            DHCSR(value.to_bytes(4, byteorder='big')).show()
 
 import scapy
 from scapy.all import *
@@ -120,18 +125,18 @@ class DHCSR(Packet):
         XBitField("RESERVED", 0, size=1),
         XBitField("RESERVED", 0, size=1),
 
-        XBitField("S_RESET_ST", 0, size=1),
-        XBitField("S_RETIRE_ST", 0, size=1),
+        XBitField("S_RESET_ST_________", 0, size=1),
+        XBitField("S_RETIRE_ST________", 0, size=1),
 
         XBitField("RESERVED", 0, size=1),
         XBitField("RESERVED", 0, size=1),
         XBitField("RESERVED", 0, size=1),
         XBitField("RESERVED", 0, size=1),
 
-        XBitField("S_LOCKUP", 0, size=1),
-        XBitField("S_SLEEP", 0, size=1),
-        XBitField("S_HALT", 0, size=1),
-        XBitField("S_REGRDY", 0, size=1),
+        XBitField("S_LOCKUP___________", 0, size=1),
+        XBitField("S_SLEEP____________", 0, size=1),
+        XBitField("S_HALT_____________", 0, size=1),
+        XBitField("S_REGRDY___________", 0, size=1),
 
         XBitField("RESERVED", 0, size=1),
         XBitField("RESERVED", 0, size=1),
@@ -144,13 +149,13 @@ class DHCSR(Packet):
         XBitField("RESERVED", 0, size=1),
         XBitField("RESERVED", 0, size=1),
 
-        XBitField("C_SNAPSTALL", 0, size=1),
+        XBitField("C_SNAPSTALL__________", 0, size=1),
         XBitField("RESERVED", 0, size=1),
 
-        XBitField("C_MASKINTS", 0, size=1),
-        XBitField("C_STEP", 0, size=1),
-        XBitField("C_HALT", 0, size=1),
-        XBitField("C_DEBUGEN", 0, size=1),
+        XBitField("C_MASKINTS___________", 0, size=1),
+        XBitField("C_STEP_______________", 0, size=1),
+        XBitField("C_HALT_______________", 0, size=1),
+        XBitField("C_DEBUGEN____________", 0, size=1),
         # XShortField("DBGKEY", 0xA05F),
     ]
 

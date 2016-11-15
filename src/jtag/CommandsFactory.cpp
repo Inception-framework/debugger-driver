@@ -192,9 +192,9 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
   // uint32_t header, csw_value;
 
   // Set the correct JTAG-DP
-  if (CommandsFactory::first_io == true) {
+  // if (CommandsFactory::first_io == true) {
 
-    SUCCESS("CommandsFactory", "First IO here");
+    // SUCCESS("CommandsFactory", "First IO here");
 
     cmd->move_to(jtag::TAP_IRSHIFT);
     cmd->write_ir(APACC); // 1011 = APACC IR
@@ -205,7 +205,7 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
     cmd->move_to(jtag::TAP_IDLE);
     for (int i = 0; i < 20; i++)
       cmd->add_command(0, 0, 0, 0);
-  }
+  // }
 
   // set tar register value
   cmd->move_to(jtag::TAP_DRSHIFT);
@@ -234,9 +234,9 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
 
   // uint32_t csw_value;
 
-  if (CommandsFactory::first_io == true) {
-
-    SUCCESS("CommandsFactory", "First IO here");
+  // if (CommandsFactory::first_io == true) {
+//
+    // SUCCESS("CommandsFactory", "First IO here");
 
     // Set the correct JTAG-DP
     cmd->move_to(jtag::TAP_IRSHIFT);
@@ -251,7 +251,7 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
     cmd->move_to(jtag::TAP_IDLE);
     for (int i = 0; i < 20; i++)
       cmd->add_command(0, 0, 0, 0);
-  }
+  // }
 
   // set tar register value
   cmd->move_to(jtag::TAP_DRSHIFT);

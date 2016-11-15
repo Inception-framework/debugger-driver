@@ -18,7 +18,8 @@ enum Test {
   CHECK_READ_U32,
   CHECK_DEVICE,
   TEST_IDCODE,
-  TEST_TRACE
+  TEST_TRACE,
+  TEST_FLASH
 };
 
 // typedef struct EnumIter<BENCHMARK_IO, CHECK_WRITE_U32, CHECK_READ_U32, CHECK_DEVICE>  TestIterator;
@@ -58,6 +59,8 @@ private :
   static void benchmark_io(System* sys, TestReport* report);
 
   static void idcode(System* sys, TestReport* report);
+
+  static void flash(System* system, TestReport* report);
 };
 
 #endif

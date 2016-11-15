@@ -37,6 +37,7 @@ std::map<enum Test, TestReport *> TestsFactory::testMap = {
      new TestReport("CHECK_READ_U32", "Read at a valid random address", 0)},
     {CHECK_DEVICE, new TestReport("CHECK_DEVICE",
                                   "Device check-up (Availability/Speed/)", 0)},
+    {TEST_FLASH, new TestReport("CHECK_Flash", "Flash check-up", 0)},
 };
 
 TestsFactory::TestsFactory() {}
@@ -75,6 +76,11 @@ TestReport *TestsFactory::CreateTest(Test type, System *system) {
     TestsFactory::trace(system, report);
     report->gravity = 1;
     break;
+  case TEST_FLASH:
+
+    TestsFactory::flash(system, report);
+    report->gravity = 1;
+    break;
   default:
     break;
   }
@@ -107,6 +113,22 @@ void TestsFactory::idcode(System* system, TestReport* report) {
   // report->error = info.str();
 }
 
+void TestsFactory::flash(System* system, TestReport* report) {
+
+  Command* cmd;
+  uint64_t value;
+  std::vector<uint32_t> arg;
+
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
+  system->synchrone_process(cmd, &value);
+
+  report->success = true;
+
+  std::vector<uint32_t> buffer = {0x0ABABABA, 0x0ABABABA, 0x0ABABABA};
+
+  system->get_flash()->write(0x10000000, buffer);
+}
+
 /*
 * Perform 100 000 memory reads through AHB access port and record io access
 * time. At each read value is compared with expected value called oracle.
@@ -116,7 +138,6 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
 
   SUCCESS("Benchmark", "Starting IO Benchmark ...");
 
-  AccessPort *ap = NULL;
   uint64_t value;
 
   VERBOSE("Command", "Creating 100 000 WRITE_U32 commands ...");
@@ -158,7 +179,6 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
       report->success = false;
       report->error = info.str();
 
-      delete ap;
       return;
     }
 
@@ -168,8 +188,6 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
   }
 
   INFO("Benchmark", "%s", (const char *)Benchmark::to_string().c_str());
-
-  delete ap;
 
   report->success = true;
 

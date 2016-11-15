@@ -11,11 +11,14 @@
 
 #include "benchmark/Benchmark.h"
 
+#include "drivers/flash/max32550_flash_driver.h"
+
 #include "BinLoader.h"
 
 using namespace std::placeholders;
 
 using namespace jtag;
+using namespace flash;
 
 System::System() : is_initialized(false) {
 
@@ -31,7 +34,11 @@ System::System() : is_initialized(false) {
 
   producer->add_decoder(decoder);
 
+  idcode = "";
+
   ap = NULL;
+
+  flash = new MXFlash(this, 1048576, 0x10000000, 256);
 }
 
 System::~System() {}
@@ -49,6 +56,12 @@ std::string System::info() {
   info << "            * Date    : 2016\r\n";
   info << "            * Company : Maxim Integrated\r\n";
   info << "            * Project : Avatar On Steroids\r\n";
+
+  info << "    [*] Chip information\r\n";
+  info << "            * IDCODE  : "<< idcode << "\r\n";
+
+  if(flash != NULL)
+    info << "            * Flash   : "<< flash->info() <<"\r\n";
 
   // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
   // producer->synchrone_process(cmd, &value);
@@ -142,6 +155,25 @@ uint32_t System::read_u32(uint32_t address) {
   Benchmark::stop();
 
   return (uint32_t)value;
+}
+
+flash::Flash* System::get_flash() {
+
+  return this->flash;
+}
+
+void System::write_reg(uint32_t reg_id, uint32_t value) {
+
+  this->write_u32(0xE000EDF8, value);
+
+  this->write_u32(0xE000EDF4, reg_id |  (1 << 16));
+}
+
+uint32_t System::read_reg(uint32_t reg_id) {
+
+  this->write_u32(0xE000EDF4, reg_id);
+
+  return this->read_u32(0xE000EDF8);
 }
 
 /*
