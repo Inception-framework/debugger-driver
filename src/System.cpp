@@ -23,17 +23,28 @@ using namespace flash;
 
 System::System() : is_initialized(false), halted(false) {
 
-  INFO("Device", "Initializing superspeed device ...");
-  fx3 = new Device::USBDevice(0x04B4, 0x00F0, 0);
-  fx3->init();
+  WARNING("SYSTEM", "Please connect the jtag device first and then \
+  the trace device.");
 
-  VERBOSE("Interface", "Starting producer thread ...");
-  producer = new Producer(fx3);
+  INFO("Device", "Initializing jtag device ...");
+  fx3_jtag = new Device::USBDevice(0x0B6A, 0x0001, 0);
+  fx3_jtag->init();
 
-  VERBOSE("Decoder", "Starting decoder thread ...");
+  INFO("Device", "Initializing trace device ...");
+  fx3_trace = new Device::USBDevice(0x0B6A, 0x0002, 0);
+  fx3_trace->init();
+
+  VERBOSE("Interface", "Starting producer...");
+  producer = new Producer(fx3_jtag);
+
+  VERBOSE("Decoder", "Starting decoder...");
   decoder = new Decoder(producer);
 
   producer->add_decoder(decoder);
+
+  VERBOSE("Trace", "Starting trace...");
+  trace = new Trace(fx3_trace);
+  trace->start();
 
   idcode = 0;
 
@@ -42,7 +53,10 @@ System::System() : is_initialized(false), halted(false) {
   flash = new MXFlash(this, 1048576, 0x10000000, 256);
 }
 
-System::~System() {}
+System::~System() {
+
+  trace->stop();
+}
 
 std::string System::info() {
 

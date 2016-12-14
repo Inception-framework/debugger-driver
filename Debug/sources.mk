@@ -25,6 +25,7 @@ C_DEPS :=
 SUBDIRS := \
 src \
 src/benchmark \
+src/trace \
 src/drivers/flash \
 src/device \
 src/interface \

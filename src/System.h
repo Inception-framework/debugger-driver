@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "jtag/ap/AccessPort.h"
+#include "trace/Trace.h"
 #include "main.h"
 
 #include "TestsFactory.h"
@@ -50,7 +51,11 @@ public:
   bool halted;
 
 private:
-  Device::USBDevice *fx3;
+  Device::USBDevice *fx3_jtag;
+
+  Device::USBDevice *fx3_trace;
+
+  Trace* trace;
 
   Producer *producer;
 

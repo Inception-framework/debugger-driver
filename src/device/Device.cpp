@@ -1,14 +1,15 @@
 #include "Device.h"
+#include <cassert>
 
 namespace Device {
 
-USBDevice::USBDevice(uint16_t vid, uint16_t pid, uint32_t interface) {
+USBDevice::USBDevice(uint16_t p_vid, uint16_t p_pid, uint32_t p_interface) {
 
-  this->vid = vid;
+  vid = p_vid;
 
-  this->pid = pid;
+  pid = p_pid;
 
-  this->interface = interface;
+  interface = p_interface;
 
   this->buffer_limit = 1024;
 
@@ -19,40 +20,12 @@ USBDevice::~USBDevice() {
   // TODO Auto-generated destructor stub
 }
 
-void USBDevice::change_gpif(void) {}
+void USBDevice::quit(void) { this->device_close(); }
 
-void USBDevice::quit(void) { this->jtag_libusb_close(); }
+void USBDevice::device_open() {
 
-bool USBDevice::string_descriptor_equal(libusb_device_handle *device,
-                                        uint8_t str_index, const char *string) {
-  int retval;
-  bool matched;
-  char desc_string[256 + 1]; /* Max size of string descriptor */
-
-  if (str_index == 0)
-    return false;
-
-  retval = libusb_get_string_descriptor_ascii(
-      device, str_index, (unsigned char *)desc_string, sizeof(desc_string) - 1);
-  if (retval < 0) {
-    ALERT("Device", "libusb_get_string_descriptor_ascii() failed with %d",
-          retval);
-    return false;
-  }
-
-  /* Null terminate descriptor string in case it needs to be logged. */
-  desc_string[sizeof(desc_string) - 1] = '\0';
-
-  matched = strncmp(string, desc_string, sizeof(desc_string)) == 0;
-
-  return matched;
-}
-
-void USBDevice::jtag_libusb_open(const uint16_t vid, const uint16_t pid,
-                                 const char *serial,
-                                 struct libusb_device_handle **out) {
   int cnt, idx, errCode;
-  struct libusb_device_handle *libusb_handle = NULL;
+  libusb_device **devs;
 
   if (libusb_init(&this->context) < 0)
     return;
@@ -60,40 +33,32 @@ void USBDevice::jtag_libusb_open(const uint16_t vid, const uint16_t pid,
   cnt = libusb_get_device_list(this->context, &devs);
 
   for (idx = 0; idx < cnt; idx++) {
-    struct libusb_device_descriptor dev_desc;
 
-    if (libusb_get_device_descriptor(devs[idx], &dev_desc) != 0)
+    if (libusb_get_device_descriptor(devs[idx], &descriptor) != 0)
       continue;
 
-    if (dev_desc.idVendor != vid && dev_desc.idProduct != pid) {
+    if (descriptor.idVendor != vid || descriptor.idProduct != pid) {
       continue;
     }
 
-    errCode = libusb_open(devs[idx], &libusb_handle);
+    dev = devs[idx];
+
+    errCode = libusb_open(devs[idx], &this->handle);
 
     if (errCode) {
+      this->handle = NULL;
       ALERT("Device", "libusb_open() failed with %s",
             libusb_error_name(errCode));
       continue;
     }
 
-    /* Device must be open to use libusb_get_string_descriptor_ascii. */
-    if (serial != NULL &&
-        !string_descriptor_equal(libusb_handle, dev_desc.iSerialNumber,
-                                 serial)) {
-      libusb_close(libusb_handle);
-      continue;
-    }
-
-    /* Success. */
-    *out = libusb_handle;
     break;
   }
   if (cnt >= 0)
     libusb_free_device_list(devs, 1);
 }
 
-void USBDevice::jtag_libusb_close() {
+void USBDevice::device_close() {
   /* Close device */
   libusb_close(this->handle);
 
@@ -104,28 +69,40 @@ void USBDevice::init(void) {
 
   int32_t retval;
 
-  this->jtag_libusb_open(this->vid, this->pid, NULL, &this->handle);
+  device_open();
+
   if (!this->handle) {
-    ALERT("Device", "Avatar driver doesn't find device\n");
+    ALERT("Device", "Avatar driver doesn't find device %04x:%04x \n", vid, pid);
     throw std::runtime_error("Avatar driver doesn't find device\n");
     return;
   }
 
-  this->dev = libusb_get_device(this->handle);
+  dev = libusb_get_device(handle);
 
-  struct libusb_device_descriptor desciptor;
-  libusb_get_device_descriptor(this->dev, &desciptor);
+  if(vid != descriptor.idVendor) {
 
-  this->vid = desciptor.idVendor;
-  this->pid = desciptor.idProduct;
-  this->is_open = 1;
-  this->busnum = libusb_get_bus_number(this->dev);
-  this->devaddr = libusb_get_device_address(this->dev);
+    ALERT("DEVICE", " ID Vendor %04x:%04x", vid, descriptor.idVendor);
+    exit(0);
+  }
 
-  retval = libusb_claim_interface(this->handle, this->interface);
+  if(pid != descriptor.idProduct) {
+
+    ALERT("DEVICE", " ID Product %04x:%04x", pid, descriptor.idProduct);
+    exit(0);
+  }
+
+  is_open = 1;
+
+  busnum = libusb_get_bus_number(dev);
+  devaddr = libusb_get_device_address(dev);
+
+  retval = libusb_claim_interface(handle, interface);
   if (retval == 0) {
     INFO("Device", "Avatar USB3 driver successfully claimed interface");
   } else {
+
+    ALERT("ALERT", "Device %04x:%04x", vid, pid);
+
     switch (retval) {
     case LIBUSB_ERROR_NOT_FOUND:
       ALERT("Device",

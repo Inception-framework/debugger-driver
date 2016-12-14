@@ -33,24 +33,15 @@ public:
 
   void quit();
 
-  /*
-   * By sending any byte on channel 2, the device will switch the state machine
-   * Switch between JTAG and SWD state machine
-   */
-  void change_gpif();
-
   void download(uint8_t *data, uint32_t *size);
 
   void upload(uint8_t *data, uint32_t *size);
 
 private:
-  bool string_descriptor_equal(libusb_device_handle *device, uint8_t str_index,
-                               const char *string);
 
-  void jtag_libusb_open(const uint16_t vid, const uint16_t pid,
-                        const char *serial, struct libusb_device_handle **out);
+  void device_open();
 
-  void jtag_libusb_close();
+  void device_close();
 
   uint32_t io(uint8_t endpoint, uint8_t *buffer, uint32_t size);
 
@@ -59,6 +50,8 @@ private:
   libusb_device_handle *handle; /* Handle */
 
   struct libusb_context *context;
+
+  struct libusb_device_descriptor descriptor;
 
   unsigned short vid; /* Vendor ID */
 
@@ -77,8 +70,6 @@ private:
   uint32_t buffer_limit;
 
   uint8_t endpoint;
-
-  libusb_device **devs;
 };
 
 } /* namespace JTAG */
