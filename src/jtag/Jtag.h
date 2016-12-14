@@ -57,7 +57,9 @@ typedef enum tap_state {
 
 #define APACC 0xB
 #define DPACC 0xA
+#define ABORT 0x8
 
+#define ABORT_ADDR (0x00)
 #define CSW_ADDR (0x00)
 #define TAR_ADDR (0x04)
 #define DRW_ADDR (0x0C)

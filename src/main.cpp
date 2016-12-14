@@ -5,6 +5,7 @@
  *      Author: Corteggiani Nassim
  */
 bool DEBUG = false;
+bool DEBUG2 = false;
 
 #include "System.h"
 
@@ -19,38 +20,43 @@ int main(int argc, char *argv[]) {
 
   System *sys = new System();
 
-  INFO("Init", "%s", sys->info().c_str());
-
   std::stringstream help;
   std::string program_name(argv[0]);
   help << program_name << " (--trace | --benchmark_io | --interractive)";
 
-  if (argc >= 3) {
-    std::string arg(argv[1]);
-    std::string arg1(argv[2]);
-
-    if (arg == "--debug" || arg1 == "--debug")
-      DEBUG = true;
-  }
-
   if (argc >= 2) {
-    std::string arg(argv[1]);
 
-    if (arg == "--trace") {
-      sys->check(TEST_TRACE);
-      return 0;
-    } else if (arg == "--benchmark_io") {
-      sys->check(BENCHMARK_IO);
-      return 0;
-    } else if (arg == "--idcode") {
-      sys->check(TEST_IDCODE);
-      return 0;
-    } else if (arg == "--flash") {
-      sys->check(TEST_FLASH);
-      return 0;
-    } else if (arg == "--interractive") {
-      FILE *pipe = popen("python interactive.py", "r");
-      // ALERT("Command Argument", "interractive mode is not yet available");
+    for(auto i=1; i<argc; i++) {
+      std::string arg(argv[i]);
+
+        if (arg == "--info")
+          INFO("Init", "%s", sys->info().c_str());
+        else if (arg == "--debug")
+          DEBUG = true;
+        else if (arg == "--debug2") {
+          DEBUG = true;
+          DEBUG2 = true;
+        }
+        else if (arg == "--trace") {
+          sys->check(TEST_TRACE);
+          return 0;
+        } else if (arg == "--benchmark_io") {
+          sys->check(BENCHMARK_IO);
+          return 0;
+        } else if (arg == "--flash") {
+          sys->check(TEST_FLASH);
+          return 0;
+        } else if (arg == "--AHB_AP_SCS") {
+          sys->check(TEST_AHB_AP_SCS);
+          return 0;
+        } else if (arg == "--TEST_AHB_AP_CSW") {
+          sys->check(TEST_AHB_AP_CSW);
+          return 0;
+        } else if (arg == "--interractive") {
+          FILE *pipe = popen("python interactive.py", "r");
+          // ALERT("Command Argument", "interractive mode is not yet available");
+        }
+
     }
   }
 

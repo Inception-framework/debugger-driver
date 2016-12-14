@@ -24,7 +24,12 @@ public:
   static jtag::Command *CreateCommand(COMMAND_TYPE type,
                                       std::vector<uint32_t> &argv);
 
+  // static void write_multi(jtag::Command* cmd, uint32_t address, std::vector<uint32_t> *data);
+
+  static void abort(jtag::Command* cmd);
+
 private:
+
   static bool check_arg(std::vector<uint32_t> &argv, uint32_t required);
 
   static void select(jtag::Command *cmd, uint32_t bank_id);

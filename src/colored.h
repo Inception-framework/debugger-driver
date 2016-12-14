@@ -9,6 +9,7 @@
 #define __COLOR_LOG__
 
 extern bool DEBUG;
+extern bool DEBUG2;
 
 #define __LOG_COLOR_RED "1;31"
 #define __LOG_COLOR_GREEN "0;32"
@@ -30,6 +31,9 @@ extern bool DEBUG;
 
 #ifdef _LOG_ALL
 
+#ifndef _LOG_VVERBOSE
+#define _LOG_VVERBOSE
+#endif
 #ifndef _LOG_VERBOSE
 #define _LOG_VERBOSE
 #endif
@@ -59,6 +63,15 @@ extern bool DEBUG;
     __LOG_COLOR(__LOG_COLOR_WHITE, CTX, TXT, ##args)
 #else
 #define VERBOSE(CTX, TXT, args...)
+#endif
+
+#if defined _LOG_VVERBOSE && !(defined _LOG_NO_VVERBOSE)
+#include <stdio.h>
+#define VVERBOSE(CTX, TXT, args...)                                            \
+  if(DEBUG2)                                                                    \
+    __LOG_COLOR(__LOG_COLOR_WHITE, CTX, TXT, ##args)
+#else
+#define VVERBOSE(CTX, TXT, args...)
 #endif
 
 #if defined _LOG_WARNING && !(defined _LOG_NO_WARNING)

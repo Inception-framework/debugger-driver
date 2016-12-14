@@ -28,8 +28,6 @@
 #include "../../jtag/Command.h"
 #include "../../jtag/CommandsFactory.h"
 
-#include <thread>
-
 using namespace jtag;
 using namespace std;
 
@@ -96,16 +94,20 @@ void MXFlash::write_u32_word() {}
 void MXFlash::write(uint32_t address, std::vector<uint32_t> buffer) {
 
   /*Attempt to write using the stub*/
-  load_stub();
+  // load_stub();
 
-  load_buffer(buffer);
+  // load_buffer(buffer);
 
   set_stub_args(address, this->buffer_base, 0x10000000, buffer.size()/4);
 
-  // INFO("REGISTER", "R0 = 0x%08x", sys->read_reg(0));
+  load_buffer(buffer);
+
+  INFO("REGISTER", "R0 = 0x%08x", sys->read_reg(0));
   // INFO("REGISTER", "R1 = 0x%08x", sys->read_reg(1));
   // INFO("REGISTER", "R2 = 0x%08x", sys->read_reg(2));
   // INFO("REGISTER", "R3 = 0x%08x", sys->read_reg(3));
+
+  // load_buffer(buffer);
 
   // sys->execute(0x20000000);
 
@@ -223,6 +225,7 @@ void MXFlash::load_buffer(std::vector<uint32_t> buffer) {
       throw std::runtime_error("Unable to load buffer. SRAM write failed");
     }
 
+    break;
     address += 4;
   }
 }
@@ -230,14 +233,9 @@ void MXFlash::load_buffer(std::vector<uint32_t> buffer) {
 void MXFlash::set_stub_args(uint32_t src_addr, uint32_t src_size,
                             uint32_t dst_addr, uint32_t dst_size) {
 
-  sys->write_u32(0xE000EDF0, 0xA05F0003);
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  sys->write_reg(0, 0x3);
 
-  sys->write_reg(0, src_addr);
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-  //
-  // sys->write_reg(1, src_size);
-  // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+  // sys->write_reg(1, 0x3);
   //
   // sys->write_reg(2, dst_addr);
   // std::this_thread::sleep_for(std::chrono::milliseconds(1000));

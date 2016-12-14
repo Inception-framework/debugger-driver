@@ -47,14 +47,14 @@ endif
 # Add inputs and outputs from these tool invocations to the build variables
 
 # All Target
-all: libsuperspeed-jtag.so
+all: libinception.so
 
 # Tool invocations
-libsuperspeed-jtag.so: $(OBJS) $(USER_OBJS)
+libinception.so: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
-	g++ -std=c++1y -o superspeed $(OBJS) $(USER_OBJS) $(LIBS)
-	g++ -shared -Wl,-soname=superspeed-jtag -o "libsuperspeed-jtag.so" $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -std=c++1y -o inception $(OBJS) $(USER_OBJS) $(LIBS)
+	g++ -shared -Wl,-soname=inception -o "libinception.so" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 

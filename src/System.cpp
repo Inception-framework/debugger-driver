@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <functional>
 #include <sstream>
+#include <thread>
 
 #include "benchmark/Benchmark.h"
 
@@ -20,7 +21,7 @@ using namespace std::placeholders;
 using namespace jtag;
 using namespace flash;
 
-System::System() : is_initialized(false) {
+System::System() : is_initialized(false), halted(false) {
 
   INFO("Device", "Initializing superspeed device ...");
   fx3 = new Device::USBDevice(0x04B4, 0x00F0, 0);
@@ -67,10 +68,10 @@ std::string System::info() {
 
   info << "    [*] Chip information\r\n";
   info << "            * IDCODE  : 0x"<< std::hex << idcode << "\r\n";
+  info << "            * HALTED  : "<< halted << "\r\n";
 
   if(flash != NULL)
     info << "            * Flash   : "<< flash->info() <<"\r\n";
-
 
   return info.str();
 }
@@ -101,6 +102,8 @@ void System::init_jtag() {
   VERBOSE("Command", "Creating ACTIVE command ...");
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::ACTIVE, arg);
   producer->synchrone_process(cmd, &value);
+
+  // halt();
 }
 
 void System::write_u32(uint32_t value, uint32_t address) {
@@ -127,6 +130,9 @@ void System::select() {
   Command *cmd = NULL;
   std::vector<uint32_t> arg;
   uint64_t value = 0;
+
+  if (!is_initialized)
+    init_jtag();
 
   if (ap == NULL) {
 
@@ -168,18 +174,33 @@ flash::Flash* System::get_flash() {
   return this->flash;
 }
 
+void System::halt() {
+
+  if(!halted) {
+
+    this->write_u32(0xE000EDF0, 0xA05F0003);
+    halted = true;
+  }
+
+}
+
 void System::write_reg(uint32_t reg_id, uint32_t value) {
 
-  this->write_u32(0xE000EDF8, value);
+  this->write_u32(value, 0xE000EDF8);//DCRDR
+  // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-  this->write_u32(0xE000EDF4, reg_id |  (1 << 16));
+  this->write_u32(reg_id | 0x00010000, 0xE000EDF4);//DCRSR
+  // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 uint32_t System::read_reg(uint32_t reg_id) {
 
-  this->write_u32(0xE000EDF4, reg_id);
+  this->write_u32(reg_id, 0xE000EDF4);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-  return this->read_u32(0xE000EDF8);
+  uint32_t retVal =  this->read_u32(0xE000EDF8);
+
+  return retVal;
 }
 
 /*

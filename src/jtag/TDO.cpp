@@ -1,5 +1,12 @@
 #include "TDO.h"
 
+#include <iostream>
+#include <sstream>
+#include <iomanip>
+
+#define _LOG_ALL
+#include "../colored.h"
+
 namespace jtag {
 
 TDO::TDO() {}
@@ -62,19 +69,24 @@ TDO_PACKET *TDO::to_int(uint32_t position) {
 
   uint32_t begin = this->at(position)->begin;
 
-  // printf("ACK : ");
+
+  std::stringstream info;
+
+  info << "Ack ";
   for (unsigned int i = 0; i < 3; i++) {
-    // printf("%1x", (data[begin + i] & (1u << 0)));
+    info << std::hex << std::setw(1) << (data[begin + i] & (1u << 0));
     ack += (data[begin + i] & (1u << 0)) << i;
   }
-  // puts("\r\n");
+  info << "\r\n";
 
-  // printf("DATA_IN : ");
+  info << "\tDATA_IN : ";
   for (unsigned int i = 3; i < 35; i++) {
-    // printf("%1x", (data[begin + i] & (1u << 0)));
+    info << std::hex << std::setw(1) << (data[begin + i] & (1u << 0));
     datain += (data[begin + i] & (1u << 0)) << i - 3;
   }
-  // puts("\r\n");
+  info << "\r\n";
+
+  VVERBOSE("TDO", "%s", info.str().c_str());
 
   TDO_PACKET *packet = new TDO_PACKET{ack, datain};
 

@@ -67,6 +67,8 @@ private:
   void load_binary_in_sdram(std::string file_path);
 
   flash::Flash *flash;
+
+  void halt();
 };
 
 #endif

@@ -2,7 +2,7 @@
 import code
 from collections import OrderedDict
 from ctypes import cdll
-lib = cdll.LoadLibrary('../Debug/libsuperspeed-jtag.so')
+lib = cdll.LoadLibrary('../Debug/libinception.so')
 
 class Interactive(object):
 
@@ -34,7 +34,7 @@ class Interactive(object):
         lib.jtag_write(self.obj, address, value, 32)
 
     def read(self, address):
-        return lib.jtag_read_2(self.obj, address)
+        return lib.jtag_read_u32(self.obj, address)
 
     def step(self):
         self.write(0xE000EDF0, (0xA05F << 16) | (1<<2) | (1 << 0))

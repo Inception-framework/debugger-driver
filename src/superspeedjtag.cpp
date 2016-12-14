@@ -1,6 +1,8 @@
 #include "superspeedjtag.h"
 
 #include "benchmark/Benchmark.h"
+#include "System.h"
+
 #include <string>
 
 using namespace jtag;
@@ -24,108 +26,40 @@ void benchmark_to_string() {
 
 void *jtag_init(void) {
 
-  Command *cmd;
-  AccessPort *ap;
-  std::vector<uint32_t> arg;
-  uint64_t value;
+    System *sys = new System();
 
-  INFO("Device", "Initializing superspeed device ...");
-  Device::USBDevice *fx3 = new Device::USBDevice(0x04B4, 0x00F0, 0);
-  fx3->init();
+    INFO("Init", "%s", sys->info().c_str());
 
-  INFO("Interface", "Starting producer thread ...");
-  Producer *producer = new Producer(fx3);
-  // producer->start();
-
-  INFO("Decoder", "Starting decoder thread ...");
-  Decoder *decoder = new Decoder(producer);
-
-  producer->add_decoder(decoder);
-
-  // INFO("Command", "Creating RESET command ...");
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
-  // producer->add_cmd_to_queue(cmd);
-  producer->synchrone_process(cmd, &value);
-
-  // INFO("Command", "Creating ACTIVE command ...");
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::ACTIVE, arg);
-  // producer->add_cmd_to_queue(cmd);
-  producer->synchrone_process(cmd, &value);
-
-  // INFO("Command", "Creating Select command ...");
-  ap = new AHB_AP();
-  arg.push_back(ap->select());
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SELECT, arg);
-  // producer->add_cmd_to_queue(cmd);
-  producer->synchrone_process(cmd, &value);
-
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
-  // producer->add_cmd_to_queue(cmd);
-  producer->synchrone_process(cmd, &value);
-
-  SuperspeedJtag *sj = new SuperspeedJtag{fx3, producer, decoder};
-
-  Benchmark::init();
-
-  INFO("Device", "Avatar ready !");
-
-  return (void *)sj;
+    return (void *)sys;
 }
 
-uint64_t jtag_read_2(void *opaque, uint64_t address) {
+uint64_t jtag_read_u32(void *opaque, uint64_t address) {
 
-  Command *cmd;
-  std::vector<uint32_t> arg;
-  uint64_t value;
+    if(opaque == NULL)
+      return 0;
 
-  SuperspeedJtag *sj = (SuperspeedJtag *)opaque;
+    System *sys = (System *)opaque;
 
-  arg.push_back((uint32_t)address);
-
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
-
-  sj->producer->synchrone_process(cmd, &value);
-
-  return value;
+    return sys->read_u32(address);
 }
 
 int32_t jtag_read(void *opaque, uint64_t address, uint64_t *value,
                   unsigned size) {
 
-  Command *cmd;
-  std::vector<uint32_t> arg;
+  if(opaque == NULL)
+    return 0;
 
-  SuperspeedJtag *sj = (SuperspeedJtag *)opaque;
+  System *sys = (System *)opaque;
 
-  // INFO("Command", "Creating READ_U32 command ...");
-
-  arg.push_back((uint32_t)address);
-
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
-
-  // sj->producer->add_cmd_to_queue(cmd);
-  sj->producer->synchrone_process(cmd, value);
-
-  // while (sj->decoder->process_jtag_queue(value) == -1)
-  //   ;
-
-  return 0;
+  return sys->read_u32(address);
 }
 
 void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size) {
 
-  Command *cmd;
-  std::vector<uint32_t> arg;
+  if(opaque == NULL)
+    return;
 
-  SuperspeedJtag *sj = (SuperspeedJtag *)opaque;
+  System *sys = (System *)opaque;
 
-  // INFO("Command", "Creating WRITE_U32 command ...");
-
-  arg.push_back((uint32_t)value);
-  arg.push_back((uint32_t)address);
-
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::WRITE_U32, arg);
-
-  // sj->producer->add_cmd_to_queue(cmd);
-  sj->producer->synchrone_process(cmd, &value);
+  sys->write_u32(value, address);
 }

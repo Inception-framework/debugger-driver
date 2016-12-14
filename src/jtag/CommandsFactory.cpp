@@ -34,7 +34,7 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
 
       CommandsFactory::select(cmd, argv.at(0));
 
-      CommandsFactory::first_io = true;
+      // CommandsFactory::first_io = true;
     } else
       ALERT("CommandsFactory", "SELECT args missing");
 
@@ -45,7 +45,7 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
     for (int i = 0; i < 5; i++)
       cmd->add_command(1, 0, 0, 0);
 
-    CommandsFactory::first_io = true;
+    // CommandsFactory::first_io = true;
 
     break;
 
@@ -53,7 +53,7 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
 
     if (check_arg(argv, 1) == true) {
       CommandsFactory::read_u32(cmd, argv.at(0));
-      CommandsFactory::first_io = false;
+      // CommandsFactory::first_io = false;
     } else
       ALERT("CommandsFactory", "READ_U32 args missing");
 
@@ -63,7 +63,7 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
 
     if (check_arg(argv, 2) == true) {
       CommandsFactory::write_u32(cmd, argv.at(1), argv.at(0));
-      CommandsFactory::first_io = false;
+      // CommandsFactory::first_io = false;
     } else
       ALERT("CommandsFactory", "WRITE_U32 args missing");
 
@@ -71,22 +71,40 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
 
   case IDCODE:
     CommandsFactory::idcode(cmd);
-    CommandsFactory::first_io = true;
+    // CommandsFactory::first_io = true;
     break;
   case ACTIVE:
     CommandsFactory::active(cmd);
-    CommandsFactory::first_io = true;
+    // CommandsFactory::first_io = true;
     break;
   case EXIT:
     break;
   case TRACE:
-    CommandsFactory::first_io = true;
+    // CommandsFactory::first_io = true;
     CommandsFactory::trace(cmd);
     break;
   case UNTRACE:
-    CommandsFactory::first_io = false;
+    // CommandsFactory::first_io = false;
     CommandsFactory::untrace(cmd);
     break;
+
+  // case SET_AP_AHB_CSW:
+  //   if (check_arg(argv, 1) == true) {
+  //     CommandsFactory::set_ap_ahb_csw(cmd, argv.at(0));
+  //   } else
+  //     ALERT("CommandsFactory", "SET_AP_AHB_CSW arg missing");
+  //
+  //   break;
+
+
+  // case WRITE_MULTI:
+  //   if (check_arg(argv, 2) == true) {
+  //     CommandsFactory::write_multi(cmd, argv.at(0), (std)argv.at(1));
+  //   } else
+  //     ALERT("CommandsFactory", "SET_AP_AHB_CSW arg missing");
+  //
+  //   break;
+  //
   }
 
   argv.clear();
@@ -187,12 +205,26 @@ void CommandsFactory::select(jtag::Command *cmd, uint32_t bank_id) {
   cmd->move_to(jtag::TAP_IDLE);
 }
 
+// void CommandsFactory::set_ap_ahb_csw(jtag::Command* cmd, uint32_t csw_value) {
+//
+//   // Set the correct JTAG-DP
+//   cmd->move_to(jtag::TAP_IRSHIFT);
+//   cmd->write_ir(APACC); // 1011 = APACC IR
+//
+//   // set csw register value
+//   cmd->move_to(jtag::TAP_DRSHIFT);
+//   cmd->write_dr(DPAP_WRITE, CSW_ADDR, csw_value);
+//   cmd->move_to(jtag::TAP_IDLE);
+//   for (int i = 0; i < 20; i++)
+//     cmd->add_command(0, 0, 0, 0);
+// }
+
 void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
 
   // uint32_t header, csw_value;
 
   // Set the correct JTAG-DP
-  // if (CommandsFactory::first_io == true) {
+  if (CommandsFactory::first_io == true) {
 
     // SUCCESS("CommandsFactory", "First IO here");
 
@@ -201,11 +233,11 @@ void CommandsFactory::read_u32(jtag::Command *cmd, uint32_t address) {
 
     // set csw register value
     cmd->move_to(jtag::TAP_DRSHIFT);
-    cmd->write_dr(DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG| CSW_DBGSWENABLE | CSW_HPROT);
+    cmd->write_dr(DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
     cmd->move_to(jtag::TAP_IDLE);
     for (int i = 0; i < 20; i++)
       cmd->add_command(0, 0, 0, 0);
-  // }
+  }
 
   // set tar register value
   cmd->move_to(jtag::TAP_DRSHIFT);
@@ -234,8 +266,8 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
 
   // uint32_t csw_value;
 
-  // if (CommandsFactory::first_io == true) {
-//
+  if (CommandsFactory::first_io == true) {
+
     // SUCCESS("CommandsFactory", "First IO here");
 
     // Set the correct JTAG-DP
@@ -247,11 +279,11 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
 
     // set csw register value
     cmd->move_to(jtag::TAP_DRSHIFT);
-    cmd->write_dr(DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG| CSW_DBGSWENABLE | CSW_HPROT);
+    cmd->write_dr(DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
     cmd->move_to(jtag::TAP_IDLE);
     for (int i = 0; i < 20; i++)
       cmd->add_command(0, 0, 0, 0);
-  // }
+  }
 
   // set tar register value
   cmd->move_to(jtag::TAP_DRSHIFT);
@@ -267,3 +299,35 @@ void CommandsFactory::write_u32(jtag::Command *cmd, uint32_t address,
   for (int i = 0; i < 20; i++)
     cmd->add_command(0, 0, 0, 0);
 }
+
+// void CommandsFactory::write_multi(jtag::Command* cmd, uint32_t address, std::vector<uint32_t> **da) {
+//
+//       SUCCESS("CommandsFactory", "First IO here");
+//
+//       // Set the correct JTAG-DP
+//       cmd->move_to(jtag::TAP_IRSHIFT);
+//       cmd->write_ir(APACC); // 1011 = APACC IR
+//
+//       // set csw register value
+//       cmd->move_to(jtag::TAP_DRSHIFT);
+//       cmd->write_dr(DPAP_WRITE, CSW_ADDR, 0x02300052);
+//       cmd->move_to(jtag::TAP_IDLE);
+//       for (int i = 0; i < 20; i++)
+//         cmd->add_command(0, 0, 0, 0);
+//
+//     // set tar register value
+//     cmd->move_to(jtag::TAP_DRSHIFT);
+//     cmd->write_dr(DPAP_WRITE, TAR_ADDR, address);
+//     cmd->move_to(jtag::TAP_IDLE);
+//     for (int i = 0; i < 20; i++)
+//       cmd->add_command(0, 0, 0, 0);
+//
+//     for (auto const &word : buffer) {
+//       // set DRW register value
+//       cmd->move_to(jtag::TAP_DRSHIFT);
+//       cmd->write_dr(DPAP_WRITE, DRW_ADDR, word);
+//       cmd->move_to(jtag::TAP_IDLE);
+//       for (int i = 0; i < 30; i++)
+//         cmd->add_command(0, 0, 0, 0);
+//     }
+// }

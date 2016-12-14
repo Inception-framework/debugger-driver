@@ -45,8 +45,8 @@ void Producer::synchrone_process(jtag::Command *cmd, uint64_t *value) {
 
   if (cmd->type != EXIT) {
 
-    // printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name(),
-    //        cmd->size());
+    VVERBOSE("PRODUCER", "[*] Sending command %s %dB...", cmd->command_name(),
+      cmd->size());
 
     this->device->download(cmd->get_out_buffer(), &size);
 
@@ -72,8 +72,8 @@ void Producer::process_jtag_queue(void) {
 
       cmd = this->queue.front();
 
-      // printf("\r\n[*] Sending command %s %dB...\n", cmd->command_name(),
-      //        cmd->size());
+      VVERBOSE("PRODUCER", "[*] Sending command %s %dB...", cmd->command_name(),
+             cmd->size());
 
       size = cmd->size();
 

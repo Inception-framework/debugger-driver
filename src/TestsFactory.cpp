@@ -8,6 +8,8 @@
 #include "System.h"
 #include "jtag/CommandsFactory.h"
 #include "benchmark/Benchmark.h"
+#include "jtag/ap/ahb_ap/AHB_AP.h"
+#include "jtag/ap/AccessPort.h"
 
 #include <time.h>
 #include <chrono>
@@ -25,9 +27,6 @@ std::map<enum Test, TestReport *> TestsFactory::testMap = {
     {TEST_TRACE,
     new TestReport("TRACE", "Test if the trace mode exist and can be enabled",
                     0)},
-    {TEST_IDCODE,
-     new TestReport("IDCODE", "Retrieve the ID Code of the chip",
-                    0)},
     {CHECK_WRITE_U32,
      new TestReport("CHECK_WRITE_U32", "Perform a 32bits write at a valid "
                                        "random address and read the same "
@@ -38,6 +37,8 @@ std::map<enum Test, TestReport *> TestsFactory::testMap = {
     {CHECK_DEVICE, new TestReport("CHECK_DEVICE",
                                   "Device check-up (Availability/Speed/)", 0)},
     {TEST_FLASH, new TestReport("CHECK_Flash", "Flash check-up", 0)},
+    {TEST_AHB_AP_SCS, new TestReport("TEST_AHB_AP_SCS", "Same test than run_test.sv : HALT, AMBA Write, RESUME", 0)},
+    {TEST_AHB_AP_CSW, new TestReport("TEST_AHB_AP_CSW", "Read Write and compare on AHB_AP CSW register", 0)},
 };
 
 TestsFactory::TestsFactory() {}
@@ -66,11 +67,6 @@ TestReport *TestsFactory::CreateTest(Test type, System *system) {
 
     report->gravity = 0;
     break;
-  case TEST_IDCODE:
-
-    TestsFactory::idcode(system, report);
-    report->gravity = 1;
-    break;
   case TEST_TRACE:
 
     TestsFactory::trace(system, report);
@@ -81,6 +77,19 @@ TestReport *TestsFactory::CreateTest(Test type, System *system) {
     TestsFactory::flash(system, report);
     report->gravity = 1;
     break;
+
+  case TEST_AHB_AP_SCS:
+
+    TestsFactory::ahb_ap_scs(system, report);
+    report->gravity = 1;
+    break;
+
+  case TEST_AHB_AP_CSW:
+
+    TestsFactory::ahb_ap_csw(system, report);
+    report->gravity = 1;
+    break;
+
   default:
     break;
   }
@@ -115,13 +124,6 @@ void TestsFactory::idcode(System* system, TestReport* report) {
 
 void TestsFactory::flash(System* system, TestReport* report) {
 
-  Command* cmd;
-  uint64_t value;
-  std::vector<uint32_t> arg;
-
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
-  system->synchrone_process(cmd, &value);
-
   report->success = true;
 
   std::vector<uint32_t> buffer = {0x0ABABABA, 0x0ABABABA, 0x0ABABABA};
@@ -138,6 +140,7 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
 
   SUCCESS("Benchmark", "Starting IO Benchmark ...");
 
+  AccessPort *ap = NULL;
   uint64_t value;
 
   VERBOSE("Command", "Creating 100 000 WRITE_U32 commands ...");
@@ -179,6 +182,7 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
       report->success = false;
       report->error = info.str();
 
+      delete ap;
       return;
     }
 
@@ -189,7 +193,115 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
 
   INFO("Benchmark", "%s", (const char *)Benchmark::to_string().c_str());
 
+  delete ap;
+
   report->success = true;
 
   return;
+}
+
+void TestsFactory::ahb_ap_csw(System* system, TestReport* report) {
+
+  Command* cmd;
+  uint64_t value = 0;
+  std::vector<uint32_t> arg;
+
+  VERBOSE("Command", "Creating Select command ...");
+  AccessPort* ap = new AHB_AP();
+  arg.push_back(ap->select());
+
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SELECT, arg);
+  system->synchrone_process(cmd, &value);
+
+  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE:JTAG_:ABORT, arg);
+  // system->synchrone_process(cmd, &value);
+
+  arg.push_back(0x23000042);
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SET_AP_AHB_CSW, arg);
+  system->synchrone_process(cmd, &value);
+
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_CSW, arg);
+  system->synchrone_process(cmd, &value);
+
+  if(value == 0x23000042)
+    report->success = true;
+  else {
+
+    std::stringstream info;
+
+    info << "At test " << 0;
+    info << " returned value differs from oracle ";
+    info << "(0x" << std::hex << 0x23000042;
+    info << ") : 0x" << std::hex << value;
+    info << ", address AP_CSW_ADDR" << "\r\n";
+
+    report->success = false;
+    report->error = info.str();
+  }
+
+}
+
+void TestsFactory::ahb_ap_scs(System* system, TestReport* report) {
+
+  Command* cmd;
+  uint64_t value = 0, regVal = 0;
+  std::vector<uint32_t> arg;
+
+  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SELECT, arg);
+  // system->synchrone_process(cmd, &value);
+
+  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::DAP_ABORT, arg);
+  // system->synchrone_process(cmd, &value);
+
+  // system->write_u32(0xA05F0001, 0xE000EDF0);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+  system->write_u32(0xA05F0003, 0xE000EDF0);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+  // arg.push_back(0x23000052);
+  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SET_AP_AHB_CSW, arg);
+  // system->synchrone_process(cmd, &value);
+
+  // std::vector<uint32_t> buffer = {0x0ABABABA, 0x0ABABABA, 0x0ABABABA};
+  //
+  // CommandsFactory::write_multi(cmd, 0x20000200, &buffer);
+
+  // system->write_u32(0x00DDFFFF, 0x20000200);
+
+  // value = system->read_u32(0x20000200);
+
+  system->write_reg(0, 3);
+
+  regVal = system->read_reg(0);
+
+  ALERT("REG","0x%08x", regVal);
+
+  if(regVal == 3)
+    report->success = true;
+  else {
+
+    std::stringstream info;
+
+    info << "At test " << 0;
+    info << " returned value differs from oracle ";
+    info << "(0x" << std::hex << 3;
+    info << ") : 0x" << std::hex << regVal;
+    info << ", address 0x" << 0x20000200 << "\r\n";
+    info << " REG = " << std::hex << regVal << "\r\n";
+
+    report->success = false;
+    report->error = info.str();
+  }
+
+  // system->write_u32(0x20000240, 0xE000EDF8);
+  // system->write_u32(0x0001000F, 0xE000EDF4);
+  // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+
+  // do {
+  //
+  //   value = system->read_u32(0xE000EDF0);
+  // } while( value & (1UL << 16));
+  //
+  // system->write_u32(0xA05F0001, 0xE000EDF0);
 }

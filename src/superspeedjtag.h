@@ -10,15 +10,6 @@
 
 #include "main.h"
 
-typedef struct superspeed_jtag {
-
-  Device::USBDevice *fx3;
-
-  Producer *producer;
-
-  Decoder *decoder;
-} SuperspeedJtag;
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -28,7 +19,7 @@ void *jtag_init(void);
 int32_t jtag_read(void *opaque, uint64_t address, uint64_t *value,
   unsigned size);
 
-uint64_t jtag_read_2(void *opaque, uint64_t address);
+uint64_t jtag_read_u32(void *opaque, uint64_t address);
 
 void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size);
 

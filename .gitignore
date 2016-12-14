@@ -1,5 +1,9 @@
 *.o
 *.d
 *.so
+*.gch
+*.png
+*.vp
+*.sv
 
 src/Debug/superspeed-jtag
