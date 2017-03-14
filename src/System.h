@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: System.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -38,6 +38,10 @@
 #include "test/TestsFactory.h"
 #include "drivers/flash/flash.h"
 
+#include "decoders/Decoder.h"
+#include "decoders/inception/InceptionDecoder.h"
+#include "decoders/jtag/JTAGDecoder.h"
+
 namespace flash {
 class Flash;
 }
@@ -48,6 +52,8 @@ public:
   System();
 
   ~System();
+
+  void select_protocol(JTAG_PROTOCOL protocol);
 
   void stop();
 
@@ -80,6 +86,9 @@ public:
   bool halted;
 
 private:
+
+  JTAG_PROTOCOL protocol;
+
   Device::USBDevice *fx3_jtag;
 
   Device::USBDevice *fx3_trace;

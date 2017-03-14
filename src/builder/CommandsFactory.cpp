@@ -54,6 +54,7 @@ void CommandsFactory::initProtocol(JTAG_PROTOCOL new_protocol) {
     break;
   case INCEPTION:
     CommandsFactory::builder = new InceptionBuilder();
+    break;
   case FILEB:
     CommandsFactory::builder = new FileBuilder();
     break;

@@ -59,30 +59,27 @@ System::System() : halted(false) {
 
   INFO("Device", "Initializing jtag device ...");
   fx3_jtag = new Device::USBDevice(0x0B6A, 0x0001, 0);
+  // fx3_jtag = new Device::USBDevice(0x04B4, 0x00F1, 0);
   fx3_jtag->init();
 
-  INFO("Device", "Initializing trace device ...");
+  //INFO("Device", "Initializing trace device ...");
   // fx3_trace = new Device::USBDevice(0x04b4, 0x00f3, 0);
   // fx3_trace->init();
 
   VERBOSE("Interface", "Starting producer...");
   producer = new Producer(fx3_jtag);
 
-  VERBOSE("Decoder", "Starting decoder...");
-  decoder = new Decoder(producer);
-
-  producer->add_decoder(decoder);
-
-  VERBOSE("Trace", "Starting trace...");
+  // VERBOSE("Trace", "Starting trace...");
   // trace = new Trace(fx3_trace);
   // trace->run();
 
-  reset();
+  select_protocol(JTAG_PROTOCOL::JTAG);
 
   idcode = 0;
 
   flash = new MXFlash(this, 1048576, 0x10000000, 256);
 }
+
 
 System::~System() {}
 
@@ -90,10 +87,9 @@ void System::reset() {
 
   std::vector<uint32_t> arg;
 
-  CommandsFactory::initProtocol(JTAG_PROTOCOL::JTAG);
+  CommandsFactory::initProtocol(protocol);
 
   Command *cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
-
   producer->synchrone_process(cmd, (uint32_t)NULL);
 }
 
@@ -104,6 +100,29 @@ void System::stop() {
   fx3_jtag->close();
 
   // fx3_trace->close();
+}
+
+void System::select_protocol(JTAG_PROTOCOL new_protocol) {
+
+  protocol = new_protocol;
+
+  switch(new_protocol) {
+    case INCEPTION:
+      VERBOSE("Decoder", "Starting Inception decoder...");
+      decoder = new InceptionDecoder(producer);
+    break;
+    case JTAG:
+      VERBOSE("Decoder", "Starting JTAG decoder...");
+      decoder = new JTAGDecoder(producer);
+    break;
+    default:
+      ALERT("System", "No Decoder available for the selected protocole");
+      throw std::runtime_error("No Decoder available for this protocol...");
+  }
+
+  producer->set_decoder(decoder);
+
+  reset();
 }
 
 std::string System::info() {
@@ -123,7 +142,7 @@ std::string System::info() {
   info << "            * Author  : Corteggiani Nassim\r\n";
   info << "            * Date    : 2016\r\n";
   info << "            * Company : Maxim Integrated\r\n";
-  info << "            * Project : Avatar On Steroids\r\n";
+  info << "            * Project : Inception\r\n";
 
   info << "    [*] Chip information\r\n";
   info << "            * IDCODE  : 0x" << std::hex << idcode << "\r\n";

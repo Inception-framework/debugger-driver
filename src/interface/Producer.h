@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: Producer.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -27,40 +27,31 @@
 #ifndef PRODUCER_H_
 #define PRODUCER_H_
 
-#include "Interface.h"
-
 #include "../device/Device.h"
 
-#include "../Decoder.h"
+#include "../decoders/Decoder.h"
+#include "../device/Device.h"
 
 #include <chrono>
 #include <thread>
 
-class Producer : public Interface {
+class Producer{
 
 public:
-  Producer(Device::USBDevice *device);
+  Producer(Device::USBDevice *new_device);
 
-  virtual ~Producer();
+  ~Producer();
 
-  void start(void);
-
-  void stop(void);
-
-  void add_cmd_to_queue(jtag::Command *cmd);
-
-  void process_jtag_queue(void);
-
-  static int sent;
-
-  void add_decoder(Decoder *decoder);
+  void set_decoder(Decoder *new_decoder);
 
   void synchrone_process(jtag::Command *cmd, uint64_t *value);
 
 private:
-  void notify(jtag::Command *cmd);
 
-  std::vector<Decoder *> decoders;
+  Decoder * decoder;
+
+  Device::USBDevice *device;
+
 };
 
 #endif /* PRODUCER_H_ */

@@ -37,9 +37,7 @@ JTAGBuilder::JTAGBuilder() : first_io(true) {}
 
 JTAGBuilder::~JTAGBuilder() {}
 
-jtag::Command *JTAGBuilder::reset() { return init(); }
-
-jtag::Command *JTAGBuilder::init() {
+jtag::Command *JTAGBuilder::reset() {
 
   INFO("JTAGBuilder", "Resetting JTAG debugger");
 
@@ -48,11 +46,15 @@ jtag::Command *JTAGBuilder::init() {
   for (int i = 0; i < 5; i++)
     add_command(cmd, 1, 0, 0, 0);
 
-  // active(cmd);
-//
-  // select(cmd, 0);
+  active(cmd);
+
+  select(cmd, 0);
 
   return cmd;
+}
+
+jtag::Command *JTAGBuilder::init() {
+
 }
 
 /*
@@ -279,7 +281,7 @@ void JTAGBuilder::write_ir(jtag::Command *cmd, uint8_t ir) {
     cmd->push_back(byte);
   }
 
-  cmd->push_back(0);
+  cmd->push_back((uint8_t)0x00);
 
   Jtag::current_state = TAP_IRPAUSE;
 }
@@ -312,7 +314,7 @@ void JTAGBuilder::wait(jtag::Command *cmd, uint32_t cycles) {
   }
 
   for (unsigned int i = 0; i < cycles; i++)
-    cmd->push_back(0);
+    cmd->push_back((uint8_t)0x00);
 }
 
 void JTAGBuilder::print_dr(uint8_t RnW, uint8_t address, uint64_t datain) {
@@ -332,19 +334,19 @@ void JTAGBuilder::write_dr(jtag::Command *cmd, uint8_t RnW, uint8_t address,
 
   uint32_t j;
   uint8_t byte;
-  uint32_t pos = cmd->size();
+  uint32_t pos = cmd->get_out_buffer_size();
 
   byte = ((address >> 1) & 0x6) | (RnW & 0x1);
 
   for (j = 0; j < 3; j++)
-    cmd->push_back(byte & (1u << j) ? (1 << 1) : 0);
+    cmd->push_back( (uint8_t) (byte & (1u << j) ? (1 << 1) : 0) );
 
   for (j = 0; j < 31; j++)
-    cmd->push_back(datain & (1u << j) ? (1 << 1) : 0);
+    cmd->push_back( (uint8_t) (datain & (1u << j) ? (1 << 1) : 0) );
 
-  cmd->push_back(datain & (1u << 31) ? (1 << 1) | (1 << 0) : (1 << 0));
+  cmd->push_back( (uint8_t) (datain & (1u << 31) ? (1 << 1) | (1 << 0) : (1 << 0)) );
 
-  cmd->push_back(0);
+  cmd->push_back((uint8_t)0x00);
 
   Jtag::current_state = TAP_DRPAUSE;
 

@@ -1,9 +1,9 @@
 /*******************************************************************************
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
-    @Filename: Decoder.cpp
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Filename: InceptionDecoder.h
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -24,66 +24,31 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "Decoder.h"
+#ifndef INCEPTION_DECODER_H_
+#define INCEPTION_DECODER_H_
 
-#include "interface/Producer.h"
-#include "builder/TDO.h"
+#include "../../interface/Interface.h"
 
-Decoder::Decoder(Producer *producer) { this->producer = producer; }
+#include "../../builder/Command.h"
+#include "../Decoder.h"
 
-Decoder::~Decoder() {}
+class Producer;
 
-void Decoder::add_cmd_to_queue(jtag::Command *cmd) {
+#define _LOG_ALL
+#include "../../colored.h"
 
-  this->locker.lock();
+class InceptionDecoder : public Decoder{
 
-  this->queue.push(cmd);
+public:
+  InceptionDecoder(Producer *new_producer);
 
-  this->locker.unlock();
-}
+  ~InceptionDecoder();
 
-int32_t Decoder::process_jtag_queue(uint64_t *value) {
+  int32_t process(jtag::Command *cmd, uint64_t *value);
 
-  jtag::Command *cmd = NULL;
+private:
 
-  this->locker.lock();
-  if (this->queue.empty() == false) {
-    this->locker.unlock();
+  Producer *producer;
+};
 
-    cmd = this->queue.front();
-
-    this->process(cmd, value);
-
-    this->queue.pop();
-
-    return 0;
-
-  } else
-    this->locker.unlock();
-
-  return -1;
-}
-
-int32_t Decoder::process(jtag::Command *cmd, uint64_t *value) {
-
-  if (cmd->decode(value) != -1) {
-
-    delete cmd;
-
-    return 0;
-
-  } else {
-
-    if (cmd->again() <= 2)
-      this->producer->add_cmd_to_queue(cmd);
-    else {
-
-      ALERT("Decoder", "Command %s failed after 2 attempts",
-            cmd->command_name());
-
-      delete cmd;
-    }
-
-    return -1;
-  }
-}
+#endif /* DECODER_H_ */

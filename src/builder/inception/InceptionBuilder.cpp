@@ -40,11 +40,7 @@ jtag::Command *InceptionBuilder::write(uint32_t address, uint32_t data) {
 
   VERBOSE("InceptionBuilder", "Write command at address 0x%08x", address);
 
-  cmd->push_back(0x14); // Write a word of 32bits
-
-  cmd->push_back(0x00); // Only once
-  cmd->push_back(0x00);
-  cmd->push_back(0x01);
+  cmd->push_back((uint32_t) 0x14000001); // Write a word of 32bits
 
   for (auto i = 3; i >= 0; i--)
     cmd->push_back(address >> (8 * i));
@@ -59,16 +55,15 @@ jtag::Command *InceptionBuilder::read(uint32_t address) {
 
   VERBOSE("InceptionBuilder", "Read command at address 0x%08x", address);
 
-  jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::WRITE);
+  jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::READ);
 
-  cmd->push_back(0x24); // Read a word of 32bits
+  cmd->push_back((uint32_t) 0x24000001); // Read a word of 32bits
+  cmd->push_back((uint32_t) address);
 
-  cmd->push_back(0x00); // Only once
-  cmd->push_back(0x00);
-  cmd->push_back(0x01);
+  // for (auto i = 3; i >= 0; i--)
+    // cmd->push_back((uint32_t) (address >> (8 * i)) );
 
-  for (auto i = 3; i >= 0; i--)
-    cmd->push_back(address >> (8 * i));
+  cmd->add_tdo(32, 64);
 
   return cmd;
 }
@@ -77,10 +72,9 @@ jtag::Command *InceptionBuilder::reset() {
 
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::RESET);
 
-  cmd->push_back(0x30);
-  cmd->push_back(0x00);
-  cmd->push_back(0x00);
-  cmd->push_back(0x00);
+  for(auto i=0; i<2; i++) {
+    cmd->push_back((uint32_t)0x30000000);
+  }
 
   return cmd;
 }
@@ -89,10 +83,7 @@ jtag::Command *InceptionBuilder::idcode() {
 
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::IDCODE);
 
-  cmd->push_back(0x40);
-  cmd->push_back(0x00);
-  cmd->push_back(0x00);
-  cmd->push_back(0x00);
+  cmd->push_back((uint32_t)0x40000000);
 
   return cmd;
 }

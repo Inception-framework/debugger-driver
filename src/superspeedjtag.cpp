@@ -54,7 +54,7 @@ void *jtag_init(void) {
 
   System *sys = new System();
 
-  INFO("Init", "%s", sys->info().c_str());
+  //INFO("Init", "%s", sys->info().c_str());
 
   return (void *)sys;
 }

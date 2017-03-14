@@ -1,9 +1,9 @@
 /*******************************************************************************
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
-    @Filename: Decoder.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Filename: InceptionDecoder.cpp
+    @Last modified by:   Corteggiani
+    @Last modified time: 12-Apr-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -24,57 +24,44 @@
 *                                                                              *
 ********************************************************************************/
 
-#ifndef DECODER_H_
-#define DECODER_H_
+#include "InceptionDecoder.h"
 
-#include "interface/Interface.h"
+InceptionDecoder::InceptionDecoder(Producer* new_producer) : Decoder(new_producer) {}
 
-#include "builder/Command.h"
+InceptionDecoder::~InceptionDecoder() {}
 
-class Producer;
+int32_t InceptionDecoder::process(jtag::Command *cmd, uint64_t *value) {
 
-#include <mutex>
-#include <queue>
-#include <thread>
+  *value = 0;
 
-#define _LOG_ALL
-#include "colored.h"
+  switch(cmd->get_type()) {
 
-class Decoder /*: public Interface*/ {
+    case WRITE:
+    case IDCODE:
+    case RESET:
+      return 0;
 
-public:
-  Decoder(Producer *producer);
+    case READ:
 
-  virtual ~Decoder();
+    uint8_t* buffer = cmd->get_in_buffer();
 
-  void start();
+    if( cmd->get_in_buffer_size() != 8 )  {
 
-  void stop();
+      if( cmd->get_in_buffer_size() == 4 ) {
 
-  /*
-  * Thread safe method use by Consumer object to assign TDO outputs to the
-  * expected Command object.
-  * The Decoder checks JTAG ack and ask the Producer to send the command again
-  * if a wait response occurs
-  */
-  void add_cmd_to_queue(jtag::Command *cmd);
+        memcpy(value, &buffer[0], 32);
 
-  int32_t process_jtag_queue(uint64_t *);
+        ALERT("InceptionDecoder", "Failed to decode READ command with error code 0x%08x", value);
+        throw std::runtime_error("Error : wring answer ");
+      } else {
 
-  int32_t process(jtag::Command *cmd, uint64_t *value);
+        ALERT("InceptionDecoder", "Failed to decode READ command with unknown error code");
+        throw std::runtime_error("Error : wring answer ");
+      }
+    } else {
 
-private:
-  bool check_ack(uint8_t data);
-
-  std::queue<jtag::Command *> queue;
-
-  std::thread task;
-
-  bool is_running;
-
-  Producer *producer;
-
-  std::mutex locker;
-};
-
-#endif /* DECODER_H_ */
+      memcpy(value, &buffer[4], 32);
+      return (uint32_t)*value;
+    }
+  }
+}

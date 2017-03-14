@@ -1,9 +1,9 @@
 /*******************************************************************************
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
-    @Filename: Consumer.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Filename: JTAGDecoder.h
+    @Last modified by:   Corteggiani
+    @Last modified time: 12-Apr-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -24,35 +24,37 @@
 *                                                                              *
 ********************************************************************************/
 
-#ifndef CONSUMER_H_
-#define CONSUMER_H_
+#ifndef JTAG_DECODER_H_
+#define JTAG_DECODER_H_
 
 #include "../Decoder.h"
-#include "Interface.h"
 
-class Consumer : public Interface {
+#include "../../builder/TDO.h"
+
+#include <iostream>
+#include <stdint.h>
+#include <vector>
+#include <iomanip>
+
+class JTAGDecoder : public Decoder {
 
 public:
-  Consumer(Device::USBDevice *device);
 
-  virtual ~Consumer();
+  JTAGDecoder(Producer *new_producer);
 
-  void start(void);
+  ~JTAGDecoder() {};
 
-  void stop(void);
-
-  void add_cmd_to_queue(jtag::Command *cmd);
-
-  void process_jtag_queue(void);
-
-  void add_decoder(Decoder *decoder);
+  int32_t process(jtag::Command *cmd, uint64_t *value);
 
 private:
-  void notify(jtag::Command *cmd);
 
-  Decoder *decoder;
+  int8_t decode(uint64_t *value);
 
-  std::vector<Decoder *> decoders;
+  int8_t decode_recursivly(jtag::Command *cmd, uint32_t position, uint64_t *value);
+
+  jtag::TDO_PACKET *to_int(jtag::Command *cmd, uint32_t position);
+
+  bool check_ack(uint8_t ack);
 };
 
-#endif /* CONSUMER_H_ */
+#endif

@@ -8,7 +8,7 @@
 
 
 
-#!/usr/bin/python3.5
+#!/usr/bin/python2.7
 import code
 from collections import OrderedDict
 from ctypes import cdll
@@ -53,7 +53,9 @@ class Interactive(object):
         lib.jtag_write(self.obj, address, value, 32)
 
     def read(self, address):
-        return lib.jtag_read_u32(self.obj, address)
+        value = lib.jtag_read_u32(self.obj, address)
+        print(hex(value))
+
 
     def step(self):
         self.write(0xE000EDF0, (0xA05F << 16) | (1<<2) | (1 << 0))

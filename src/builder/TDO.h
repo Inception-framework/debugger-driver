@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: TDO.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -51,20 +51,7 @@ public:
 
   void add(uint32_t begin, uint32_t end);
 
-  int8_t decode(uint64_t *value, bool idcode);
-
-  void resize(uint32_t new_size);
-
-  uint8_t *tdo_ptr();
-
-private:
-  int8_t decode_recursivly(uint32_t position, uint64_t *value);
-
-  TDO_PACKET *to_int(uint32_t position);
-
-  bool check_ack(uint8_t ack);
-
-  std::vector<uint8_t> data;
+  void get();
 };
 
 } /* namespace JTAG */

@@ -4,21 +4,18 @@
 
 # Add inputs and outputs from these tool invocations to the build variables
 CPP_SRCS += \
-../src/Decoder.cpp \
 ../src/Exception.cpp \
 ../src/main.cpp \
 ../src/superspeedjtag.cpp  \
 ../src/System.cpp
 
 OBJS += \
-./src/Decoder.o \
 ./src/Exception.o \
 ./src/main.o \
 ./src/superspeedjtag.o \
 ./src/System.o
 
 CPP_DEPS += \
-./src/Decoder.d \
 ./src/Exception.d \
 ./src/main.d \
 ./src/superspeedjtag.d \

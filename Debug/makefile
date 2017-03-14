@@ -6,11 +6,19 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+
 -include src/test/subdir.mk
+
+-include src/builder/subdir.mk
 -include src/builder/jtag/subdir.mk
 -include src/builder/inception/subdir.mk
 -include src/builder/file_builder/subdir.mk
--include src/builder/subdir.mk
+
+-include src/decoders/subdir.mk
+-include src/decoders/jtag/subdir.mk
+-include src/decoders/inception/subdir.mk
+-include src/decoders/file_builder/subdir.mk
+
 -include src/binutils/subdir.mk
 -include src/interface/subdir.mk
 -include src/device/subdir.mk

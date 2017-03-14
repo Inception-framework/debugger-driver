@@ -4,20 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables
 CPP_SRCS += \
-../src/interface/Interface.cpp \
-../src/interface/Producer.cpp
+../src/decoders/inception/InceptionDecoder.cpp
 
 OBJS += \
-./src/interface/Interface.o \
-./src/interface/Producer.o
+./src/decoders/inception/InceptionDecoder.o
 
 CPP_DEPS += \
-./src/interface/Interface.d \
-./src/interface/Producer.d
-
+./src/decoders/inception/InceptionDecoder.d
 
 # Each subdirectory must supply rules for building sources it contributes
-src/interface/%.o: ../src/interface/%.cpp
+src/decoders/inception/%.o: ../src/decoders/inception/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -std=c++1y -fpic -I-lpthread -I-lusb-1.0 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"

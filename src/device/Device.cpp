@@ -183,7 +183,7 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
 
   do {
     if ((retval = libusb_bulk_transfer(handle, endpoint, buffer, size,
-                                       &transferred, 0)) != 0) {
+                                       &transferred, 2000)) != 0) {
       ALERT("Device", "%s", libusb_error_name(retval));
 
       switch (retval) {
@@ -205,11 +205,13 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
       }
       sleep(2);
       attempt++;
-    } else
+    } else if (size == 0)
+      attempt++;
+    else
       break;
-  } while (attempt < 2);
+  } while (attempt < 6);
 
-  if (attempt >= 2) {
+  if (attempt >= 5) {
     ALERT("Device",
           "Avatar driver failed to communicate with device ... endpoint : %02x",
           endpoint);
@@ -237,6 +239,16 @@ void USBDevice::download(uint8_t *data, uint32_t *size) {
 
 void USBDevice::upload(uint8_t *data, uint32_t *size) {
 
+  std::stringstream info;
+
   *size = io(0x81, data, *size);
+
+  info << "0x" << std::hex << std::setfill('0');
+  for (unsigned int i = 0; i < *size; i++) {
+    info << std::setw(2) << static_cast<unsigned>(data[i]);
+    info << " ";
+  }
+
+  VVERBOSE("JTAG", "<%s", info.str().c_str());
 }
 }

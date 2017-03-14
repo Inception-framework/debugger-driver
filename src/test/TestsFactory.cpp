@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: TestsFactory.cpp
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -213,7 +213,8 @@ void TestsFactory::benchmark_io(System *system, TestReport *report) {
       return;
     }
 
-    addr += 4;
+    if( (addr + 4) < 0x20010000)
+      addr += 4;
     val32 = rand() % 0xFFFFFFFF;
     // val32++;
   }

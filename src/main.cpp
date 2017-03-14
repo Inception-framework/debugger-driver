@@ -34,8 +34,6 @@
 #include <sys/types.h>
 
 int main(int argc, char *argv[]) {
-  DEBUG = true;
-  DEBUG2 = true;
 
   System *sys = new System();
 

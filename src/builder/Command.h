@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: Command.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -29,6 +29,8 @@
 
 #include <iostream>
 #include <stdint.h>
+#include <stdio.h>
+#include <string.h>
 #include <vector>
 
 #include "Jtag.h"
@@ -83,7 +85,7 @@ namespace jtag {
 
 class Command {
 public:
-  Command(COMMAND_TYPE type);
+  Command(COMMAND_TYPE new_type);
 
   virtual ~Command();
 
@@ -93,32 +95,33 @@ public:
 
   uint8_t *get_out_buffer(void);
 
+  uint32_t get_out_buffer_size(void);
+
   uint8_t *get_in_buffer(void);
+
+  uint32_t get_in_buffer_size(void);
 
   void push_back(uint8_t data_in);
 
-  uint32_t size(void);
+  void push_back(uint32_t data_in);
 
   uint8_t again(void);
-
-  int8_t decode(uint64_t *value);
 
   void add_tdo(uint64_t start, uint64_t end);
 
   COMMAND_TYPE type;
 
+  TDO tdo;
+
 private:
+
   void set_type(COMMAND_TYPE type);
 
   std::vector<uint8_t> out_buffer;
 
-  uint8_t ack;
-
-  uint32_t datain;
+  std::vector<uint8_t> in_buffer;
 
   uint8_t attempts;
-
-  TDO tdo;
 };
 
 } /* namespace JTAG */

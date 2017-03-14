@@ -1,7 +1,7 @@
 /*******************************************************************************
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
-    @Filename: Interface.h
+    @Filename: Decoder.h
     @Last modified by:   Corteggiani
     @Last modified time: 15-Mar-2017
     @License: GPLv3
@@ -24,47 +24,27 @@
 *                                                                              *
 ********************************************************************************/
 
-#ifndef INTERFACE_H_
-#define INTERFACE_H_
+#ifndef DECODER_H_
+#define DECODER_H_
 
-#include <mutex>
-#include <queue>
-#include <thread>
+#include "../interface/Interface.h"
 
-#include "../device/Device.h"
 #include "../builder/Command.h"
 
-class Interface {
+class Producer;
+
+class Decoder {
 
 public:
-  Interface(Device::USBDevice *device);
+  Decoder(Producer *new_producer);
 
-  virtual ~Interface();
+  virtual ~Decoder();
 
-  virtual void start(void) = 0;
+  virtual int32_t process(jtag::Command *cmd, uint64_t *value) = 0;
 
-  virtual void stop(void) = 0;
+private:
 
-  virtual void add_cmd_to_queue(jtag::Command *cmd) = 0;
-
-  virtual void process_jtag_queue(void) = 0;
-
-  void lock();
-
-  void unlock();
-
-  void wait();
-
-protected:
-  std::queue<jtag::Command *> queue;
-
-  std::thread task;
-
-  bool is_running;
-
-  Device::USBDevice *device;
-
-  std::mutex locker;
+  Producer *producer;
 };
 
-#endif
+#endif /* DECODER_H_ */

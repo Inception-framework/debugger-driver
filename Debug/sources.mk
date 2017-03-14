@@ -33,4 +33,7 @@ src/builder \
 src/builder/jtag \
 src/builder/inception \
 src/builder/file_builder \
+src/decoders/inception \
+src/decoders/jtag \
+src/decoders/file_builder \
 src/binutils

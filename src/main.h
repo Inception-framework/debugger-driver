@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: main.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -35,9 +35,8 @@
 #include "builder/Command.h"
 #include "builder/CommandsFactory.h"
 
-#include "interface/Consumer.h"
 #include "interface/Producer.h"
 
-#include "Decoder.h"
+#include "decoders/Decoder.h"
 
 #endif /* MAIN_H_ */

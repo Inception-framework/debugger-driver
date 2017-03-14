@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: Producer.cpp
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -26,111 +26,33 @@
 
 #include "Producer.h"
 
-int Producer::sent = 0;
+#include <stdio.h>
 
-Producer::Producer(Device::USBDevice *device) : Interface(device) {}
+Producer::Producer(Device::USBDevice *new_device) {device = new_device;}
 
 Producer::~Producer() {}
-
-void Producer::add_cmd_to_queue(jtag::Command *cmd) {
-
-  this->lock();
-
-  this->queue.push(cmd);
-
-  this->unlock();
-}
-
-void Producer::start() {
-
-  this->is_running = true;
-
-  this->task = std::thread(&Producer::process_jtag_queue, this);
-}
-
-void Producer::stop() {
-
-  this->is_running = false;
-
-  // if (this->task.joinable())
-  this->wait();
-}
 
 void Producer::synchrone_process(jtag::Command *cmd, uint64_t *value) {
 
   uint32_t size;
-
-  size = cmd->size();
+  size = cmd->get_out_buffer_size();
 
   if (cmd->type != EXIT) {
 
-    VVERBOSE("PRODUCER", "[*] Sending command %s %dB...", cmd->command_name(),
-             cmd->size());
+    VVERBOSE("PRODUCER", "[*] Sending command %s %dB %d...", cmd->command_name(),
+             cmd->get_out_buffer_size(), cmd->type);
 
-    this->device->download(cmd->get_out_buffer(), &size);
+    device->download(cmd->get_out_buffer(), &size);
 
-    this->device->upload(cmd->get_in_buffer(), &size);
+    // if( cmd->type == READ)
+    device->upload(cmd->get_in_buffer(), &size);
 
-    if (cmd->type == READ || cmd->type == IDCODE)
-      this->decoders.at(0)->process(cmd, value);
+    if (cmd->get_type() == READ || cmd->get_type() == IDCODE)
+      decoder->process(cmd, value);
   }
 }
 
-void Producer::process_jtag_queue(void) {
+void Producer::set_decoder(Decoder *new_decoder) {
 
-  jtag::Command *cmd = NULL;
-
-  uint32_t size;
-
-  while (this->is_running) {
-
-    this->lock();
-
-    if (this->queue.empty() == false) {
-      this->unlock();
-
-      cmd = this->queue.front();
-
-      VVERBOSE("PRODUCER", "[*] Sending command %s %dB...", cmd->command_name(),
-               cmd->size());
-
-      size = cmd->size();
-
-      if (cmd->type != EXIT) {
-
-        this->device->download(cmd->get_out_buffer(), &size);
-
-        this->device->upload(cmd->get_in_buffer(), &size);
-
-        this->notify(cmd);
-
-      } else
-        this->is_running = false;
-
-      this->queue.pop();
-
-      Producer::sent++;
-    } else
-      this->unlock();
-  }
-
-  printf("\r\n############ Producer down #################\r\n");
-}
-
-void Producer::add_decoder(Decoder *decoder) {
-
-  this->decoders.push_back(decoder);
-}
-
-void Producer::notify(jtag::Command *cmd) {
-
-  std::vector<Decoder *>::iterator it;
-
-  if (cmd->type != READ)
-    return;
-
-  for (it = decoders.begin(); it != decoders.end(); ++it) {
-
-    (*it)->add_cmd_to_queue(cmd);
-  }
+  decoder = new_decoder;
 }
