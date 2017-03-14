@@ -24,6 +24,15 @@ class Interactive(object):
         print("Contact : nassim.corteggiani@maximintegrated.com")
         print("Please install rlwrap for 'up arrow history' : rlwrap python3.5 interactive.py")
         print("___________________________________________________")
+        print("Supported functions : ")
+        print("\t write(address, value) : AHB-AP memory write")
+        print("\t read(address) : AHB-AP memory read")
+        print("\t step() : single step")
+        print("\t halt() : halt the cpu")
+        print("\t display_all_regs() :display all CPU registers")
+        print("\t read_reg(id) : read a specific register")
+        print("\t write_reg(id, value) : write a value into the specified register")
+        print("\t show_dhcsr() : read the dhcsr register and cast content")
 
     def __init__(self):
         self.help()

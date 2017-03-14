@@ -20,7 +20,7 @@ USBDevice::~USBDevice() {
   // TODO Auto-generated destructor stub
 }
 
-void USBDevice::quit(void) { this->device_close(); }
+void USBDevice::close(void) { this->device_close(); }
 
 void USBDevice::device_open() {
 
@@ -33,6 +33,8 @@ void USBDevice::device_open() {
   cnt = libusb_get_device_list(this->context, &devs);
 
   for (idx = 0; idx < cnt; idx++) {
+
+    printf("idVendor = %02x and idProduct = %02x \n",descriptor.idVendor, descriptor.idProduct);
 
     if (libusb_get_device_descriptor(devs[idx], &descriptor) != 0)
       continue;

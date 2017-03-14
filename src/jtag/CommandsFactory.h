@@ -13,40 +13,39 @@
 
 #include "Command.h"
 
+#include "CommandsBuilder.h"
+
 #include <iostream>
 #include <vector>
 
+typedef enum JTAG_PROTOCOL {
+  SWD = 0,
+  JTAG = 1,
+  INCEPTION = 2,
+} JTAG_PROTOCOL;
+
 class CommandsFactory {
+
 public:
+
   CommandsFactory();
+
   virtual ~CommandsFactory();
 
   static jtag::Command *CreateCommand(COMMAND_TYPE type,
                                       std::vector<uint32_t> &argv);
 
-  // static void write_multi(jtag::Command* cmd, uint32_t address, std::vector<uint32_t> *data);
+  static void initProtocol(JTAG_PROTOCOL protocol);
 
-  static void abort(jtag::Command* cmd);
+private:
+
+  static JTAG_PROTOCOL protocol;
+
+  static jtag::CommandsBuilder* builder;
 
 private:
 
   static bool check_arg(std::vector<uint32_t> &argv, uint32_t required);
-
-  static void select(jtag::Command *cmd, uint32_t bank_id);
-
-  static void read_u32(jtag::Command *cmd, uint32_t address);
-
-  static void write_u32(jtag::Command *cmd, uint32_t address, uint32_t data);
-
-  static void active(jtag::Command *cmd);
-
-  static void trace(jtag::Command *cmd);
-
-  static void untrace(jtag::Command *cmd);
-
-  static void idcode(jtag::Command *cmd);
-
-  static bool first_io;
 
 };
 

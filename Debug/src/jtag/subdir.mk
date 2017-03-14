@@ -8,21 +8,24 @@ CPP_SRCS += \
 ../src/jtag/Command_test.cpp \
 ../src/jtag/CommandsFactory.cpp \
 ../src/jtag/Jtag.cpp \
-../src/jtag/TDO.cpp 
+../src/jtag/TDO.cpp \
+../src/jtag/JTAGBuilder.cpp
 
 OBJS += \
 ./src/jtag/Command.o \
 ./src/jtag/Command_test.o \
 ./src/jtag/CommandsFactory.o \
 ./src/jtag/Jtag.o \
-./src/jtag/TDO.o 
+./src/jtag/TDO.o \
+./src/jtag/JTAGBuilder.o
 
 CPP_DEPS += \
 ./src/jtag/Command.d \
 ./src/jtag/Command_test.d \
 ./src/jtag/CommandsFactory.d \
 ./src/jtag/Jtag.d \
-./src/jtag/TDO.d 
+./src/jtag/TDO.d \
+./src/jtag/JTAGBuilder.d
 
 
 # Each subdirectory must supply rules for building sources it contributes

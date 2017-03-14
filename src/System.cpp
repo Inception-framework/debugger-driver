@@ -1,7 +1,11 @@
 
 #include "System.h"
 
+bool DEBUG = false;
+bool DEBUG2 = false;
+
 #include "TestReport.h"
+#include "jtag/CommandsFactory.h"
 
 #include "main.h"
 
@@ -21,7 +25,7 @@ using namespace std::placeholders;
 using namespace jtag;
 using namespace flash;
 
-System::System() : is_initialized(false), halted(false) {
+System::System() : halted(false) {
 
   WARNING("SYSTEM", "Please connect the jtag device first and then \
   the trace device.");
@@ -31,8 +35,8 @@ System::System() : is_initialized(false), halted(false) {
   fx3_jtag->init();
 
   INFO("Device", "Initializing trace device ...");
-  fx3_trace = new Device::USBDevice(0x0B6A, 0x0002, 0);
-  fx3_trace->init();
+  // fx3_trace = new Device::USBDevice(0x04b4, 0x00f3, 0);
+  // fx3_trace->init();
 
   VERBOSE("Interface", "Starting producer...");
   producer = new Producer(fx3_jtag);
@@ -43,8 +47,10 @@ System::System() : is_initialized(false), halted(false) {
   producer->add_decoder(decoder);
 
   VERBOSE("Trace", "Starting trace...");
-  trace = new Trace(fx3_trace);
-  trace->start();
+  // trace = new Trace(fx3_trace);
+  // trace->run();
+
+  CommandsFactory::initProtocol(JTAG_PROTOCOL::JTAG);
 
   idcode = 0;
 
@@ -53,15 +59,18 @@ System::System() : is_initialized(false), halted(false) {
   flash = new MXFlash(this, 1048576, 0x10000000, 256);
 }
 
-System::~System() {
+System::~System() {}
 
-  trace->stop();
+void System::stop() {
+
+  // trace->stop();
+
+  fx3_jtag->close();
+
+  // fx3_trace->close();
 }
 
 std::string System::info() {
-
-  if (!is_initialized)
-    init_jtag();
 
   Command *cmd = NULL;
   std::vector<uint32_t> arg;
@@ -92,32 +101,7 @@ std::string System::info() {
 
 void System::synchrone_process(Command* command, uint64_t *value) {
 
-  if (!is_initialized)
-    init_jtag();
-
   this->producer->synchrone_process(command, value);
-}
-
-void System::init_jtag() {
-
-  if (is_initialized)
-    return;
-
-  is_initialized = true;
-
-  Command *cmd = NULL;
-  std::vector<uint32_t> arg;
-  uint64_t value = 0;
-
-  VERBOSE("Command", "Creating RESET command ...");
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
-  producer->synchrone_process(cmd, &value);
-
-  VERBOSE("Command", "Creating ACTIVE command ...");
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::ACTIVE, arg);
-  producer->synchrone_process(cmd, &value);
-
-  // halt();
 }
 
 void System::write_u32(uint32_t value, uint32_t address) {
@@ -126,38 +110,11 @@ void System::write_u32(uint32_t value, uint32_t address) {
   std::vector<uint32_t> arg;
   uint64_t retval;
 
-  if (!is_initialized)
-    init_jtag();
-
-  if(ap == NULL)
-    select();
-
   arg.push_back(value);
   arg.push_back(address);
 
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::WRITE_U32, arg);
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::WRITE, arg);
   producer->synchrone_process(cmd, &retval);
-}
-
-void System::select() {
-
-  Command *cmd = NULL;
-  std::vector<uint32_t> arg;
-  uint64_t value = 0;
-
-  if (!is_initialized)
-    init_jtag();
-
-  if (ap == NULL) {
-
-    VERBOSE("Command", "Creating Select command ...");
-    ap = new AHB_AP();
-
-    arg.push_back(ap->select());
-
-    cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SELECT, arg);
-    producer->synchrone_process(cmd, &value);
-  }
 }
 
 uint32_t System::read_u32(uint32_t address) {
@@ -166,15 +123,9 @@ uint32_t System::read_u32(uint32_t address) {
   Command *cmd = NULL;
   std::vector<uint32_t> arg;
 
-  if (!is_initialized)
-    init_jtag();
-
-  if(ap == NULL)
-    select();
-
   arg.push_back(address);
 
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_U32, arg);
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ, arg);
 
   Benchmark::start();
   producer->synchrone_process(cmd, &value);
@@ -250,6 +201,7 @@ void System::check(Test test) {
 
   INFO(report->name.c_str(), "%s", info.str().c_str());
 
+  stop();
 }
 
 void System::load_binary_in_sdram(std::string file_path) {

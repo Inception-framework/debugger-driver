@@ -31,7 +31,7 @@ public:
 
   void init();
 
-  void quit();
+  void close();
 
   void download(uint8_t *data, uint32_t *size);
 

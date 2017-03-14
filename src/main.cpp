@@ -4,9 +4,6 @@
  *  Created on: Jul 12, 2016
  *      Author: Corteggiani Nassim
  */
-bool DEBUG = false;
-bool DEBUG2 = false;
-
 #include "System.h"
 
 #include <iostream>
@@ -39,6 +36,9 @@ int main(int argc, char *argv[]) {
         }
         else if (arg == "--trace") {
           sys->check(TEST_TRACE);
+
+          std::this_thread::sleep_for(std::chrono::seconds(0));
+
           return 0;
         } else if (arg == "--benchmark_io") {
           sys->check(BENCHMARK_IO);
@@ -59,6 +59,8 @@ int main(int argc, char *argv[]) {
 
     }
   }
+
+  sys->stop();
 
   ALERT("Command Argument", "Wrong argument(s), should be : %s",
         help.str().c_str());

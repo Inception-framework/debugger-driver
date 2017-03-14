@@ -1,8 +1,8 @@
 #ifndef TRACE_H
 #define TRACE_H
 
-#include <thread>
 #include <chrono>
+#include <future>
 
 #include "../device/Device.h"
 
@@ -18,11 +18,11 @@ public:
 
   void stop();
 
-private:
-
   void run();
 
-  std::thread task;
+private:
+
+  // std::future task;
 
   bool stopped;
 

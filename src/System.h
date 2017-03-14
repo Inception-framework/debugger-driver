@@ -24,6 +24,8 @@ public:
 
   ~System();
 
+  void stop();
+
   std::string info();
 
   uint32_t read_u32(uint32_t address);
@@ -61,13 +63,7 @@ private:
 
   Decoder *decoder;
 
-  void init_jtag(void);
-
-  bool is_initialized;
-
   jtag::AccessPort *ap;
-
-  void select(void);
 
   void load_binary_in_sdram(std::string file_path);
 

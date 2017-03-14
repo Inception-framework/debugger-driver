@@ -4,18 +4,41 @@ Trace::Trace(Device::USBDevice *dev): stopped(false), device(dev) {}
 
 void Trace::start() {
 
-  this->task = std::thread(&Trace::run, this);
+  std::async(&Trace::run, this);
+
 }
 
 void Trace::stop() {
 
     stopped = true;
+
+    // task.get();
 }
 
 void Trace::run() {
 
-  while(stopped==false) {
+  uint32_t size = 8;
 
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  uint8_t buffer[8] = {0};
+
+  // buffer[0] = 4;
+  // device->download((uint8_t*)&buffer, &size);
+  // buffer[0] = 0;
+
+  while(true) {
+
+    INFO("Trace", "Waiting Trace information");
+
+    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    device->upload((uint8_t*)&buffer, &size);
+
+    INFO("TRACE", "Received %d B", size);
+
+    for(auto i=0; i<size; i++) {
+      printf("%d", buffer[i]);
+    }
+    printf("\n\r");
+
   }
 }

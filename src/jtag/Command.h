@@ -18,10 +18,10 @@
 typedef enum COMMAND_TYPE {
   RESET = 0,
   IDCODE = 1,
-  WRITE_U32 = 2,
-  READ_U32 = 3,
-  SELECT = 4,
-  ACTIVE = 5,
+  WRITE = 2,
+  READ = 3,
+  // SELECT = 4,
+  // ACTIVE = 5,
   EXIT = 6,
   TRACE = 7,
   UNTRACE = 8,
@@ -35,24 +35,24 @@ static const struct command_name_mapping {
   enum COMMAND_TYPE symbol;
   const char *name;
 } command_name_mapping[] = {
+    // {
+    //     RESET, "RESET",
+    // },
     {
-        RESET, "RESET",
+        READ, "READ",
     },
     {
-        READ_U32, "READ U32",
-    },
-    {
-        WRITE_U32, "WRITE U32",
+        WRITE, "WRITE",
     },
     {
         IDCODE, "IDCODE",
     },
-    {
-        ACTIVE, "ACTIVE",
-    },
-    {
-        SELECT, "SELECT",
-    },
+    // {
+    //     ACTIVE, "ACTIVE",
+    // },
+    // {
+    //     SELECT, "SELECT",
+    // },
     {EXIT, "EXIT"},
     {EXIT, "TRACE"},
     {EXIT, "UNTRACE"},
@@ -69,15 +69,6 @@ public:
 
   virtual ~Command();
 
-  void add_command(uint32_t tms, uint32_t tdi, uint32_t trst = 0,
-                   uint32_t srst = 0);
-
-  void move_to(tap_state_t state);
-
-  void write_ir(uint8_t ir);
-
-  void write_dr(uint8_t RnW, uint8_t address, uint32_t datain);
-
   const char *command_name(void);
 
   COMMAND_TYPE get_type(void);
@@ -86,13 +77,15 @@ public:
 
   uint8_t *get_in_buffer(void);
 
-  uint32_t size(void);
+  void push_back(uint8_t data_in);
 
-  void wait(uint32_t cycles);
+  uint32_t size(void);
 
   uint8_t again(void);
 
   int8_t decode(uint64_t *value);
+
+  void add_tdo(uint64_t start, uint64_t end);
 
   COMMAND_TYPE type;
 

@@ -52,7 +52,7 @@ void Producer::synchrone_process(jtag::Command *cmd, uint64_t *value) {
 
     this->device->upload(cmd->get_in_buffer(), &size);
 
-    if (cmd->type == READ_U32 || cmd->type == IDCODE )
+    if (cmd->type == READ || cmd->type == IDCODE )
       this->decoders.at(0)->process(cmd, value);
   }
 }
@@ -107,7 +107,7 @@ void Producer::notify(jtag::Command *cmd) {
 
   std::vector<Decoder *>::iterator it;
 
-  if (cmd->type != READ_U32)
+  if (cmd->type != READ)
     return;
 
   for (it = decoders.begin(); it != decoders.end(); ++it) {

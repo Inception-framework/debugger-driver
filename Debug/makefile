@@ -23,10 +23,10 @@ RM := rm -rf
 # Add inputs and outputs from these tool invocations to the build variables
 
 # All Target
-all: libinception.so
+all: inception
 
 # Tool invocations
-libinception.so: $(OBJS) $(USER_OBJS)
+inception: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: GCC C++ Linker'
 	g++ -std=c++1y -o inception $(OBJS) $(USER_OBJS) $(LIBS)

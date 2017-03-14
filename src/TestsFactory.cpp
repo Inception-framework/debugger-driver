@@ -210,8 +210,8 @@ void TestsFactory::ahb_ap_csw(System* system, TestReport* report) {
   AccessPort* ap = new AHB_AP();
   arg.push_back(ap->select());
 
-  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SELECT, arg);
-  system->synchrone_process(cmd, &value);
+  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SELECT, arg);
+  // system->synchrone_process(cmd, &value);
 
   // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE:JTAG_:ABORT, arg);
   // system->synchrone_process(cmd, &value);
