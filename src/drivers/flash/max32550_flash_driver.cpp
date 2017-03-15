@@ -1,3 +1,29 @@
+/*******************************************************************************
+    @Author: Corteggiani Nassim <Corteggiani>
+    @Email:  nassim.corteggiani@maximintegrated.com
+    @Filename: max32550_flash_driver.cpp
+    @Last modified by:   Corteggiani                                 
+    @Last modified time: 15-Mar-2017                               
+    @License: GPLv3
+
+    Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
+    Copyright (C) 2017 Corteggiani Nassim <Corteggiani>
+
+*
+*    This program is free software: you can redistribute it and/or modify      *
+*    it under the terms of the GNU General Public License as published by      *
+*    the Free Software Foundation, either version 3 of the License, or         *
+*    (at your option) any later version.                                       *
+*    This program is distributed in the hope that it will be useful,           *
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*    GNU General Public License for more details.                              *
+*    You should have received a copy of the GNU General Public License         *
+*    along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+*                                                                              *
+*                                                                              *
+********************************************************************************/
+
 /***************************************************************************
 *   Copyright (C) 2012 by Maxim Integrated                                *
 *                                                                         *
@@ -80,7 +106,8 @@ bool MXFlash::is_flash_busy(void) {
     return true;
 
   // if ((flash_ctrl_value & 0x048800E0) == 0) {
-  //   INFO("FLASH", "Still busy, waiting... CTRL REG = 0x%08x", flash_ctrl_value);
+  //   INFO("FLASH", "Still busy, waiting... CTRL REG = 0x%08x",
+  //   flash_ctrl_value);
   //   return false;
   // }
 
@@ -98,7 +125,7 @@ void MXFlash::write(uint32_t address, std::vector<uint32_t> buffer) {
 
   // load_buffer(buffer);
 
-  set_stub_args(address, this->buffer_base, 0x10000000, buffer.size()/4);
+  set_stub_args(address, this->buffer_base, 0x10000000, buffer.size() / 4);
 
   load_buffer(buffer);
 
@@ -166,7 +193,7 @@ void MXFlash::unlock(void) {
   ctrl_val &= ~FLSH_CN_UNLOCK_MASK;
   ctrl_val |= FLSH_CN_UNLOCK_VALUE;
 
-  if((ctrl_val & FLSH_CN_UNLOCK_MASK) == FLSH_CN_UNLOCK_VALUE)
+  if ((ctrl_val & FLSH_CN_UNLOCK_MASK) == FLSH_CN_UNLOCK_VALUE)
     return;
 
   sys->write_u32(ctrl_val, MXFlash::flash_ctrl_addr + FLSH_CN);
@@ -186,7 +213,8 @@ void MXFlash::load_stub(void) {
   uint32_t address = this->stub_base;
   uint32_t read;
 
-  INFO("FLASH", "Loading stub driver into SRAM memory at address 0X%08x", this->stub_base);
+  INFO("FLASH", "Loading stub driver into SRAM memory at address 0X%08x",
+       this->stub_base);
 
   for (auto const &word : stub) {
 
@@ -211,7 +239,8 @@ void MXFlash::load_buffer(std::vector<uint32_t> buffer) {
   uint32_t read;
   uint32_t address = this->stub_base;
 
-  INFO("FLASH", "Loading buffer into SRAM memory at address 0X%08x", this->buffer_base);
+  INFO("FLASH", "Loading buffer into SRAM memory at address 0X%08x",
+       this->buffer_base);
 
   for (auto const &word : buffer) {
 
@@ -242,6 +271,5 @@ void MXFlash::set_stub_args(uint32_t src_addr, uint32_t src_size,
   //
   // sys->write_reg(3, dst_size);
   // std::this_thread::sleep_for(std::chrono::milliseconds(1000));
-
 }
 }

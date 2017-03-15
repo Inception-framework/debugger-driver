@@ -1,9 +1,10 @@
-# @Author: Nassim
-# @Date:   2017-01-23T15:26:32+01:00
+# @Author: Corteggiani Nassim <Corteggiani>
+# @Date:   15-Mar-2017
 # @Email:  nassim.corteggiani@maximintegrated.com
-# @Project: Inception-commander
-# @Last modified by:   Nassim
-# @Last modified time: 2017-03-15T11:49:41+01:00
+# @Filename: interactive.py
+# @Last modified by:   Corteggiani
+# @Last modified time: 15-Mar-2017
+# @License: GPLv3
 
 
 

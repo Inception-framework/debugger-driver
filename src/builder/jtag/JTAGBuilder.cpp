@@ -1,13 +1,28 @@
-/**
-* @Author: Nassim
-* @Date:   2017-03-15T10:34:17+01:00
-* @Email:  nassim.corteggiani@maximintegrated.com
-* @Project: Inception-commander
-* @Last modified by:   Nassim
-* @Last modified time: 2017-03-15T15:00:05+01:00
-*/
+/*******************************************************************************
+    @Author: Corteggiani Nassim <Corteggiani>
+    @Email:  nassim.corteggiani@maximintegrated.com
+    @Filename: JTAGBuilder.cpp
+    @Last modified by:   Corteggiani                                 
+    @Last modified time: 15-Mar-2017                               
+    @License: GPLv3
 
+    Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
+    Copyright (C) 2017 Corteggiani Nassim <Corteggiani>
 
+*
+*    This program is free software: you can redistribute it and/or modify      *
+*    it under the terms of the GNU General Public License as published by      *
+*    the Free Software Foundation, either version 3 of the License, or         *
+*    (at your option) any later version.                                       *
+*    This program is distributed in the hope that it will be useful,           *
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*    GNU General Public License for more details.                              *
+*    You should have received a copy of the GNU General Public License         *
+*    along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+*                                                                              *
+*                                                                              *
+********************************************************************************/
 
 #include "JTAGBuilder.h"
 
@@ -22,10 +37,9 @@ JTAGBuilder::JTAGBuilder() : first_io(true) {}
 
 JTAGBuilder::~JTAGBuilder() {}
 
-jtag::Command* JTAGBuilder::reset() { return init(); }
+jtag::Command *JTAGBuilder::reset() { return init(); }
 
-
-jtag::Command* JTAGBuilder::init() {
+jtag::Command *JTAGBuilder::init() {
 
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::RESET);
 
@@ -42,27 +56,29 @@ jtag::Command* JTAGBuilder::init() {
 /*
 * Implementation of Commands from the CommandsBuilder interface
 */
-jtag::Command* JTAGBuilder::write(uint32_t datain, uint32_t address) {
+jtag::Command *JTAGBuilder::write(uint32_t datain, uint32_t address) {
 
-  INFO("JTAGBuilder","Write command at address 0x%08x", address);
+  VERBOSE("JTAGBuilder", "Write command at address 0x%08x", address);
 
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::WRITE);
 
   if (first_io == true) {
 
-      // Set the correct JTAG-DP
-      move_to(cmd, jtag::TAP_IRSHIFT);
-      write_ir(cmd, APACC); // 1011 = APACC IR
+    // Set the correct JTAG-DP
+    move_to(cmd, jtag::TAP_IRSHIFT);
+    write_ir(cmd, APACC); // 1011 = APACC IR
 
-      // CSW register value
-      // csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG| CSW_DBGSWENABLE | CSW_HPROT;
+    // CSW register value
+    // csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG|
+    // CSW_DBGSWENABLE | CSW_HPROT;
 
-      // set csw register value
-      move_to(cmd, jtag::TAP_DRSHIFT);
-      write_dr(cmd, DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
-      move_to(cmd, jtag::TAP_IDLE);
-      for (int i = 0; i < 20; i++)
-        add_command(cmd, 0, 0, 0, 0);
+    // set csw register value
+    move_to(cmd, jtag::TAP_DRSHIFT);
+    write_dr(cmd, DPAP_WRITE, CSW_ADDR,
+             CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
+    move_to(cmd, jtag::TAP_IDLE);
+    for (int i = 0; i < 20; i++)
+      add_command(cmd, 0, 0, 0, 0);
   }
 
   // set tar register value
@@ -82,11 +98,11 @@ jtag::Command* JTAGBuilder::write(uint32_t datain, uint32_t address) {
   return cmd;
 }
 
-jtag::Command* JTAGBuilder::read(uint32_t address) {
+jtag::Command *JTAGBuilder::read(uint32_t address) {
 
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::READ);
 
-  VERBOSE("JTAGBuilder","Write command at address 0x%08x", address);
+  VERBOSE("JTAGBuilder", "Read command at address 0x%08x", address);
 
   // uint32_t header, csw_value;
 
@@ -100,7 +116,8 @@ jtag::Command* JTAGBuilder::read(uint32_t address) {
 
     // set csw register value
     move_to(cmd, jtag::TAP_DRSHIFT);
-    write_dr(cmd, DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
+    write_dr(cmd, DPAP_WRITE, CSW_ADDR,
+             CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
     move_to(cmd, jtag::TAP_IDLE);
     for (int i = 0; i < 20; i++)
       add_command(cmd, 0, 0, 0, 0);
@@ -130,7 +147,7 @@ jtag::Command* JTAGBuilder::read(uint32_t address) {
   return cmd;
 }
 
-jtag::Command* JTAGBuilder::idcode() {
+jtag::Command *JTAGBuilder::idcode() {
 
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::IDCODE);
 
@@ -179,8 +196,8 @@ void JTAGBuilder::select(jtag::Command *cmd, uint32_t bank_id) {
   move_to(cmd, jtag::TAP_IDLE);
 }
 
-void JTAGBuilder::add_command(jtag::Command *cmd, uint32_t tms, uint32_t tdi, uint32_t trst,
-                          uint32_t srst) {
+void JTAGBuilder::add_command(jtag::Command *cmd, uint32_t tms, uint32_t tdi,
+                              uint32_t trst, uint32_t srst) {
 
   uint8_t byte = 0;
 
@@ -268,7 +285,8 @@ void JTAGBuilder::wait(jtag::Command *cmd, uint32_t cycles) {
     cmd->push_back(0);
 }
 
-void JTAGBuilder::write_dr(jtag::Command *cmd, uint8_t RnW, uint8_t address, uint32_t datain) {
+void JTAGBuilder::write_dr(jtag::Command *cmd, uint8_t RnW, uint8_t address,
+                           uint32_t datain) {
 
   uint32_t j;
   uint8_t byte;
@@ -282,8 +300,7 @@ void JTAGBuilder::write_dr(jtag::Command *cmd, uint8_t RnW, uint8_t address, uin
   for (j = 0; j < 31; j++)
     cmd->push_back(datain & (1u << j) ? (1 << 1) : 0);
 
-  cmd->push_back(datain & (1u << 31) ? (1 << 1) | (1 << 0)
-                                                 : (1 << 0));
+  cmd->push_back(datain & (1u << 31) ? (1 << 1) | (1 << 0) : (1 << 0));
 
   cmd->push_back(0);
 
@@ -291,5 +308,4 @@ void JTAGBuilder::write_dr(jtag::Command *cmd, uint8_t RnW, uint8_t address, uin
 
   cmd->add_tdo(pos, (pos + 34));
 }
-
 }

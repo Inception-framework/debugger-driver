@@ -1,13 +1,28 @@
-/**
-* @Author: Nassim
-* @Date:   2017-03-15T11:05:17+01:00
-* @Email:  nassim.corteggiani@maximintegrated.com
-* @Project: Inception-commander
-* @Last modified by:   Nassim
-* @Last modified time: 2017-03-15T14:28:18+01:00
-*/
+/*******************************************************************************
+    @Author: Corteggiani Nassim <Corteggiani>
+    @Email:  nassim.corteggiani@maximintegrated.com
+    @Filename: System.cpp
+    @Last modified by:   Corteggiani                                 
+    @Last modified time: 15-Mar-2017                               
+    @License: GPLv3
 
+    Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
+    Copyright (C) 2017 Corteggiani Nassim <Corteggiani>
 
+*
+*    This program is free software: you can redistribute it and/or modify      *
+*    it under the terms of the GNU General Public License as published by      *
+*    the Free Software Foundation, either version 3 of the License, or         *
+*    (at your option) any later version.                                       *
+*    This program is distributed in the hope that it will be useful,           *
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*    GNU General Public License for more details.                              *
+*    You should have received a copy of the GNU General Public License         *
+*    along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+*                                                                              *
+*                                                                              *
+********************************************************************************/
 
 #include "System.h"
 
@@ -111,16 +126,16 @@ std::string System::info() {
   info << "            * Project : Avatar On Steroids\r\n";
 
   info << "    [*] Chip information\r\n";
-  info << "            * IDCODE  : 0x"<< std::hex << idcode << "\r\n";
-  info << "            * HALTED  : "<< halted << "\r\n";
+  info << "            * IDCODE  : 0x" << std::hex << idcode << "\r\n";
+  info << "            * HALTED  : " << halted << "\r\n";
 
-  if(flash != NULL)
-    info << "            * Flash   : "<< flash->info() <<"\r\n";
+  if (flash != NULL)
+    info << "            * Flash   : " << flash->info() << "\r\n";
 
   return info.str();
 }
 
-void System::synchrone_process(Command* command, uint64_t *value) {
+void System::synchrone_process(Command *command, uint64_t *value) {
 
   this->producer->synchrone_process(command, value);
 }
@@ -155,27 +170,23 @@ uint32_t System::read_u32(uint32_t address) {
   return (uint32_t)value;
 }
 
-flash::Flash* System::get_flash() {
-
-  return this->flash;
-}
+flash::Flash *System::get_flash() { return this->flash; }
 
 void System::halt() {
 
-  if(!halted) {
+  if (!halted) {
 
     this->write_u32(0xE000EDF0, 0xA05F0003);
     halted = true;
   }
-
 }
 
 void System::write_reg(uint32_t reg_id, uint32_t value) {
 
-  this->write_u32(value, 0xE000EDF8);//DCRDR
+  this->write_u32(value, 0xE000EDF8); // DCRDR
   // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-  this->write_u32(reg_id | 0x00010000, 0xE000EDF4);//DCRSR
+  this->write_u32(reg_id | 0x00010000, 0xE000EDF4); // DCRSR
   // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
@@ -184,7 +195,7 @@ uint32_t System::read_reg(uint32_t reg_id) {
   this->write_u32(reg_id, 0xE000EDF4);
   // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-  uint32_t retVal =  this->read_u32(0xE000EDF8);
+  uint32_t retVal = this->read_u32(0xE000EDF8);
 
   return retVal;
 }
@@ -215,7 +226,7 @@ void System::check(Test test) {
   info << "    Error          : " << report->error << "\r\n";
   info << "    Gravity        : " << std::hex << report->gravity << "\r\n";
 
-  if(report->success)
+  if (report->success)
     SUCCESS(report->name.c_str(), "passed !");
   else
     ALERT(report->name.c_str(), "failed !");
@@ -227,16 +238,16 @@ void System::check(Test test) {
 
 void System::load_binary_in_sdram(std::string file_path) {
 
-  BinLoader* bin_loader = new BinLoader("/home/noname/workspacees06/stub/SLA/stub.bin");
+  BinLoader *bin_loader =
+      new BinLoader("/home/noname/workspacees06/stub/SLA/stub.bin");
 
   try {
 
-    while(true)
-    bin_loader->next();
+    while (true)
+      bin_loader->next();
 
   } catch (std::runtime_error) {
 
     INFO("BIN_LOADER", "End Of File");
   }
-
 }

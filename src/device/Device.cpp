@@ -1,13 +1,28 @@
-/**
-* @Author: Nassim
-* @Date:   2017-03-15T09:52:22+01:00
-* @Email:  nassim.corteggiani@maximintegrated.com
-* @Project: Inception-commander
-* @Last modified by:   Nassim
-* @Last modified time: 2017-03-15T15:21:37+01:00
-*/
+/*******************************************************************************
+    @Author: Corteggiani Nassim <Corteggiani>
+    @Email:  nassim.corteggiani@maximintegrated.com
+    @Filename: Device.cpp
+    @Last modified by:   Corteggiani                                 
+    @Last modified time: 15-Mar-2017                               
+    @License: GPLv3
 
+    Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
+    Copyright (C) 2017 Corteggiani Nassim <Corteggiani>
 
+*
+*    This program is free software: you can redistribute it and/or modify      *
+*    it under the terms of the GNU General Public License as published by      *
+*    the Free Software Foundation, either version 3 of the License, or         *
+*    (at your option) any later version.                                       *
+*    This program is distributed in the hope that it will be useful,           *
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*    GNU General Public License for more details.                              *
+*    You should have received a copy of the GNU General Public License         *
+*    along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+*                                                                              *
+*                                                                              *
+********************************************************************************/
 
 #include "Device.h"
 
@@ -49,7 +64,9 @@ void USBDevice::device_open() {
 
   for (idx = 0; idx < cnt; idx++) {
 
-    VVERBOSE("Device","Detecting device idVendor = %02x (Expected idProduct = %02x)",descriptor.idVendor, descriptor.idProduct);
+    VVERBOSE("Device",
+             "Detecting device idVendor = %02x (Expected idProduct = %02x)",
+             descriptor.idVendor, descriptor.idProduct);
 
     if (libusb_get_device_descriptor(devs[idx], &descriptor) != 0)
       continue;
@@ -96,13 +113,13 @@ void USBDevice::init(void) {
 
   dev = libusb_get_device(handle);
 
-  if(vid != descriptor.idVendor) {
+  if (vid != descriptor.idVendor) {
 
     ALERT("DEVICE", " ID Vendor %04x:%04x", vid, descriptor.idVendor);
     exit(0);
   }
 
-  if(pid != descriptor.idProduct) {
+  if (pid != descriptor.idProduct) {
 
     ALERT("DEVICE", " ID Product %04x:%04x", pid, descriptor.idProduct);
     exit(0);
@@ -210,7 +227,7 @@ void USBDevice::download(uint8_t *data, uint32_t *size) {
   info << "0x" << std::hex << std::setfill('0');
   for (unsigned int i = 0; i < *size; i++) {
     info << std::setw(2) << static_cast<unsigned>(data[i]);
-    //VVERBOSE("JTAG", "%02x", data[i]);
+    // VVERBOSE("JTAG", "%02x", data[i]);
   }
 
   VVERBOSE("JTAG", "%s", info.str().c_str());

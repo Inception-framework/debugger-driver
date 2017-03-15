@@ -1,13 +1,28 @@
-/**
-* @Author: Nassim
-* @Date:   2017-03-15T11:06:48+01:00
-* @Email:  nassim.corteggiani@maximintegrated.com
-* @Project: Inception-commander
-* @Last modified by:   Nassim
-* @Last modified time: 2017-03-15T11:48:38+01:00
-*/
+/*******************************************************************************
+    @Author: Corteggiani Nassim <Corteggiani>
+    @Email:  nassim.corteggiani@maximintegrated.com
+    @Filename: TestsFactory.cpp
+    @Last modified by:   Corteggiani                                 
+    @Last modified time: 15-Mar-2017                               
+    @License: GPLv3
 
+    Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
+    Copyright (C) 2017 Corteggiani Nassim <Corteggiani>
 
+*
+*    This program is free software: you can redistribute it and/or modify      *
+*    it under the terms of the GNU General Public License as published by      *
+*    the Free Software Foundation, either version 3 of the License, or         *
+*    (at your option) any later version.                                       *
+*    This program is distributed in the hope that it will be useful,           *
+*    but WITHOUT ANY WARRANTY; without even the implied warranty of            *
+*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*    GNU General Public License for more details.                              *
+*    You should have received a copy of the GNU General Public License         *
+*    along with this program.  If not, see <http://www.gnu.org/licenses/>.     *
+*                                                                              *
+*                                                                              *
+********************************************************************************/
 
 #include "../test/TestsFactory.h"
 
@@ -34,7 +49,7 @@ std::map<enum Test, TestReport *> TestsFactory::testMap = {
                                     "the address space",
                     0)},
     {TEST_TRACE,
-    new TestReport("TRACE", "Test if the trace mode exist and can be enabled",
+     new TestReport("TRACE", "Test if the trace mode exist and can be enabled",
                     0)},
     {CHECK_WRITE_U32,
      new TestReport("CHECK_WRITE_U32", "Perform a 32bits write at a valid "
@@ -46,8 +61,13 @@ std::map<enum Test, TestReport *> TestsFactory::testMap = {
     {CHECK_DEVICE, new TestReport("CHECK_DEVICE",
                                   "Device check-up (Availability/Speed/)", 0)},
     {TEST_FLASH, new TestReport("CHECK_Flash", "Flash check-up", 0)},
-    {TEST_AHB_AP_SCS, new TestReport("TEST_AHB_AP_SCS", "Same test than run_test.sv : HALT, AMBA Write, RESUME", 0)},
-    {TEST_AHB_AP_CSW, new TestReport("TEST_AHB_AP_CSW", "Read Write and compare on AHB_AP CSW register", 0)},
+    {TEST_AHB_AP_SCS,
+     new TestReport("TEST_AHB_AP_SCS",
+                    "Same test than run_test.sv : HALT, AMBA Write, RESUME",
+                    0)},
+    {TEST_AHB_AP_CSW,
+     new TestReport("TEST_AHB_AP_CSW",
+                    "Read Write and compare on AHB_AP CSW register", 0)},
 };
 
 TestsFactory::TestsFactory() {}
@@ -106,21 +126,21 @@ TestReport *TestsFactory::CreateTest(Test type, System *system) {
   return report;
 }
 
-void TestsFactory::trace(System* sys, TestReport* report) {
+void TestsFactory::trace(System *sys, TestReport *report) {
 
-    Command* cmd;
-    uint64_t value;
-    std::vector<uint32_t> arg;
+  Command *cmd;
+  uint64_t value;
+  std::vector<uint32_t> arg;
 
-    cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::TRACE, arg);
-    sys->synchrone_process(cmd, &value);
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::TRACE, arg);
+  sys->synchrone_process(cmd, &value);
 
-    report->success = true;
+  report->success = true;
 }
 
-void TestsFactory::idcode(System* system, TestReport* report) {
+void TestsFactory::idcode(System *system, TestReport *report) {
 
-  Command* cmd;
+  Command *cmd;
   uint64_t value;
   std::vector<uint32_t> arg;
 
@@ -131,7 +151,7 @@ void TestsFactory::idcode(System* system, TestReport* report) {
   // report->error = info.str();
 }
 
-void TestsFactory::flash(System* system, TestReport* report) {
+void TestsFactory::flash(System *system, TestReport *report) {
 
   report->success = true;
 
@@ -145,7 +165,7 @@ void TestsFactory::flash(System* system, TestReport* report) {
 * time. At each read value is compared with expected value called oracle.
 * In case of mismatch, the test is aborted and benchmark results displayed.
 */
-void TestsFactory::benchmark_io(System* system, TestReport* report) {
+void TestsFactory::benchmark_io(System *system, TestReport *report) {
 
   SUCCESS("Benchmark", "Starting IO Benchmark ...");
 
@@ -155,7 +175,7 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
 
   Benchmark::init();
 
-  srand (time(NULL));
+  srand(time(NULL));
 
   uint32_t addr = 0x20000000;
   uint32_t val32 = rand() % 0xFFFFFFFF;
@@ -205,9 +225,9 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
   return;
 }
 
-void TestsFactory::ahb_ap_csw(System* system, TestReport* report) {
+void TestsFactory::ahb_ap_csw(System *system, TestReport *report) {
 
-  Command* cmd;
+  Command *cmd;
   uint64_t value = 0;
   std::vector<uint32_t> arg;
 
@@ -221,7 +241,7 @@ void TestsFactory::ahb_ap_csw(System* system, TestReport* report) {
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ_CSW, arg);
   system->synchrone_process(cmd, &value);
 
-  if(value == 0x23000042)
+  if (value == 0x23000042)
     report->success = true;
   else {
 
@@ -231,17 +251,17 @@ void TestsFactory::ahb_ap_csw(System* system, TestReport* report) {
     info << " returned value differs from oracle ";
     info << "(0x" << std::hex << 0x23000042;
     info << ") : 0x" << std::hex << value;
-    info << ", address AP_CSW_ADDR" << "\r\n";
+    info << ", address AP_CSW_ADDR"
+         << "\r\n";
 
     report->success = false;
     report->error = info.str();
   }
-
 }
 
-void TestsFactory::ahb_ap_scs(System* system, TestReport* report) {
+void TestsFactory::ahb_ap_scs(System *system, TestReport *report) {
 
-  Command* cmd;
+  Command *cmd;
   uint64_t value = 0, regVal = 0;
   std::vector<uint32_t> arg;
 
@@ -273,9 +293,9 @@ void TestsFactory::ahb_ap_scs(System* system, TestReport* report) {
 
   regVal = system->read_reg(0);
 
-  ALERT("REG","0x%08x", regVal);
+  ALERT("REG", "0x%08x", regVal);
 
-  if(regVal == 3)
+  if (regVal == 3)
     report->success = true;
   else {
 
