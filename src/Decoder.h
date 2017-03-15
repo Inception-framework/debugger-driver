@@ -10,7 +10,7 @@
 
 #include "interface/Interface.h"
 
-#include "jtag/Command.h"
+#include "builder/Command.h"
 
 class Producer;
 

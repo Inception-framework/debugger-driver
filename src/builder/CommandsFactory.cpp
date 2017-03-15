@@ -9,7 +9,7 @@
 
 #include "CommandsBuilder.h"
 
-#include "JTAGBuilder.h"
+#include "jtag/JTAGBuilder.h"
 
 #include <assert.h>
 
@@ -52,6 +52,10 @@ jtag::Command *CommandsFactory::CreateCommand(COMMAND_TYPE type,
   jtag::Command* cmd = NULL;
 
   switch (type) {
+
+  case RESET:
+    cmd = CommandsFactory::builder->reset();
+    break;
 
   case READ:
     if (check_arg(argv, 1) == true) {

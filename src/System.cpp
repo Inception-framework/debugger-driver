@@ -4,8 +4,10 @@
 bool DEBUG = false;
 bool DEBUG2 = false;
 
-#include "TestReport.h"
-#include "jtag/CommandsFactory.h"
+#include "test/TestReport.h"
+#include "test/TestsFactory.h"
+
+#include "builder/CommandsFactory.h"
 
 #include "main.h"
 
@@ -18,7 +20,7 @@ bool DEBUG2 = false;
 
 #include "drivers/flash/max32550_flash_driver.h"
 
-#include "BinLoader.h"
+#include "binutils/BinLoader.h"
 
 using namespace std::placeholders;
 
@@ -50,16 +52,25 @@ System::System() : halted(false) {
   // trace = new Trace(fx3_trace);
   // trace->run();
 
-  CommandsFactory::initProtocol(JTAG_PROTOCOL::JTAG);
+  reset();
 
   idcode = 0;
-
-  ap = NULL;
 
   flash = new MXFlash(this, 1048576, 0x10000000, 256);
 }
 
 System::~System() {}
+
+void System::reset() {
+
+  std::vector<uint32_t> arg;
+
+  CommandsFactory::initProtocol(JTAG_PROTOCOL::JTAG);
+
+  Command *cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
+
+  producer->synchrone_process(cmd, (uint32_t)NULL);
+}
 
 void System::stop() {
 

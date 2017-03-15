@@ -7,8 +7,8 @@
 
 #include "JTAGBuilder.h"
 
-#include "Jtag.h"
-#include "Command.h"
+#include "../Jtag.h"
+#include "../Command.h"
 
 using namespace std;
 
@@ -18,7 +18,7 @@ JTAGBuilder::JTAGBuilder() : first_io(true) {}
 
 JTAGBuilder::~JTAGBuilder() {}
 
-jtag::Command* JTAGBuilder::reset() { init(); }
+jtag::Command* JTAGBuilder::reset() { return init(); }
 
 
 jtag::Command* JTAGBuilder::init() {
@@ -40,9 +40,11 @@ jtag::Command* JTAGBuilder::init() {
 */
 jtag::Command* JTAGBuilder::write(uint32_t datain, uint32_t address) {
 
+  INFO("JTAGBuilder","Write command at address 0x%08x", address);
+
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::WRITE);
 
-    if (first_io == true) {
+  if (first_io == true) {
 
       // Set the correct JTAG-DP
       move_to(cmd, jtag::TAP_IRSHIFT);
@@ -57,22 +59,23 @@ jtag::Command* JTAGBuilder::write(uint32_t datain, uint32_t address) {
       move_to(cmd, jtag::TAP_IDLE);
       for (int i = 0; i < 20; i++)
         add_command(cmd, 0, 0, 0, 0);
-    }
+  }
 
-    // set tar register value
-    move_to(cmd, jtag::TAP_DRSHIFT);
-    write_dr(cmd, DPAP_WRITE, TAR_ADDR, address);
-    move_to(cmd, jtag::TAP_IDLE);
-    for (int i = 0; i < 20; i++)
-      add_command(cmd, 0, 0, 0, 0);
+  // set tar register value
+  move_to(cmd, jtag::TAP_DRSHIFT);
+  write_dr(cmd, DPAP_WRITE, TAR_ADDR, address);
+  move_to(cmd, jtag::TAP_IDLE);
+  for (int i = 0; i < 20; i++)
+    add_command(cmd, 0, 0, 0, 0);
 
-    // set DRW register value
-    move_to(cmd, jtag::TAP_DRSHIFT);
-    write_dr(cmd, DPAP_WRITE, DRW_ADDR, datain);
-    move_to(cmd, jtag::TAP_IDLE);
-    for (int i = 0; i < 20; i++)
-      add_command(cmd, 0, 0, 0, 0);
+  // set DRW register value
+  move_to(cmd, jtag::TAP_DRSHIFT);
+  write_dr(cmd, DPAP_WRITE, DRW_ADDR, datain);
+  move_to(cmd, jtag::TAP_IDLE);
+  for (int i = 0; i < 20; i++)
+    add_command(cmd, 0, 0, 0, 0);
 
+  return cmd;
 }
 
 jtag::Command* JTAGBuilder::read(uint32_t address) {
@@ -117,6 +120,8 @@ jtag::Command* JTAGBuilder::read(uint32_t address) {
   move_to(cmd, jtag::TAP_IDLE);
   for (int i = 0; i < 20; i++)
     add_command(cmd, 0, 0, 0, 0);
+
+  return cmd;
 }
 
 jtag::Command* JTAGBuilder::idcode() {

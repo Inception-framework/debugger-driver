@@ -29,7 +29,5 @@ src/trace \
 src/drivers/flash \
 src/device \
 src/interface \
-src/jtag \
-src/jtag/ap \
-src/jtag/ap/ahb_ap \
-src/jtag/ap/jtag_ap \
+src/builder \
+src/binutils

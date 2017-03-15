@@ -25,8 +25,8 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "../../jtag/Command.h"
-#include "../../jtag/CommandsFactory.h"
+#include "../../builder/Command.h"
+#include "../../builder/CommandsFactory.h"
 
 using namespace jtag;
 using namespace std;

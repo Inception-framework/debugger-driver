@@ -1,7 +1,7 @@
 #include "Decoder.h"
 
 #include "interface/Producer.h"
-#include "jtag/TDO.h"
+#include "builder/TDO.h"
 
 Decoder::Decoder(Producer *producer) { this->producer = producer; }
 

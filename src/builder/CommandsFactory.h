@@ -2,7 +2,7 @@
  * CommandsFactory.h
  *
  *  Created on: Jul 12, 2016
- *      Author: noname
+ *      Author: Nassim Corteggiani
  */
 
 #ifndef JTAG_COMMANDSFACTORY_H_

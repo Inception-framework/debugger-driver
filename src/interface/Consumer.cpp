@@ -9,7 +9,7 @@
 
 #include "../Decoder.h"
 #include "../device/Device.h"
-#include "../jtag/Command.h"
+#include "../builder/Command.h"
 
 Consumer::Consumer(Device::USBDevice *device) : Interface(device) {
 

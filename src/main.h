@@ -6,14 +6,11 @@
 #define _LOG_ALL
 #include "colored.h"
 
-#include "jtag/Command.h"
-#include "jtag/CommandsFactory.h"
+#include "builder/Command.h"
+#include "builder/CommandsFactory.h"
 
 #include "interface/Consumer.h"
 #include "interface/Producer.h"
-
-#include "jtag/ap/ahb_ap/AHB_AP.h"
-#include "jtag/ap/AccessPort.h"
 
 #include "Decoder.h"
 

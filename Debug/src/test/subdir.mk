@@ -4,25 +4,16 @@
 
 # Add inputs and outputs from these tool invocations to the build variables
 CPP_SRCS += \
-../src/Decoder.cpp \
-../src/Exception.cpp \
-../src/main.cpp \
-../src/superspeedjtag.cpp  \
-../src/System.cpp
+../src/test/TestReport.cpp \
+../src/test/TestsFactory.cpp
 
 OBJS += \
-./src/Decoder.o \
-./src/Exception.o \
-./src/main.o \
-./src/superspeedjtag.o \
-./src/System.o
+./src/test/TestReport.o \
+./src/test/TestsFactory.o
 
 CPP_DEPS += \
-./src/Decoder.d \
-./src/Exception.d \
-./src/main.d \
-./src/superspeedjtag.d \
-./src/System.d
+./src/test/TestReport.d \
+./src/test/TestsFactory.d
 
 # Each subdirectory must supply rules for building sources it contributes
 src/%.o: ../src/%.cpp

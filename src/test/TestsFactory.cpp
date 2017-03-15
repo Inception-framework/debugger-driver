@@ -1,15 +1,13 @@
-#include "TestsFactory.h"
+#include "../test/TestsFactory.h"
 
-#include "TestReport.h"
+#include "../test/TestReport.h"
 
 #define _LOG_ALL
-#include "colored.h"
-#include "jtag/Command.h"
-#include "System.h"
-#include "jtag/CommandsFactory.h"
-#include "benchmark/Benchmark.h"
-#include "jtag/ap/ahb_ap/AHB_AP.h"
-#include "jtag/ap/AccessPort.h"
+#include "../colored.h"
+#include "../builder/Command.h"
+#include "../System.h"
+#include "../builder/CommandsFactory.h"
+#include "../benchmark/Benchmark.h"
 
 #include <time.h>
 #include <chrono>
@@ -140,7 +138,6 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
 
   SUCCESS("Benchmark", "Starting IO Benchmark ...");
 
-  AccessPort *ap = NULL;
   uint64_t value;
 
   VERBOSE("Command", "Creating 100 000 WRITE_U32 commands ...");
@@ -182,7 +179,6 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
       report->success = false;
       report->error = info.str();
 
-      delete ap;
       return;
     }
 
@@ -192,8 +188,6 @@ void TestsFactory::benchmark_io(System* system, TestReport* report) {
   }
 
   INFO("Benchmark", "%s", (const char *)Benchmark::to_string().c_str());
-
-  delete ap;
 
   report->success = true;
 
@@ -205,13 +199,6 @@ void TestsFactory::ahb_ap_csw(System* system, TestReport* report) {
   Command* cmd;
   uint64_t value = 0;
   std::vector<uint32_t> arg;
-
-  VERBOSE("Command", "Creating Select command ...");
-  AccessPort* ap = new AHB_AP();
-  arg.push_back(ap->select());
-
-  // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::SELECT, arg);
-  // system->synchrone_process(cmd, &value);
 
   // cmd = CommandsFactory::CreateCommand(COMMAND_TYPE:JTAG_:ABORT, arg);
   // system->synchrone_process(cmd, &value);

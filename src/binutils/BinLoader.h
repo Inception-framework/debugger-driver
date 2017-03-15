@@ -5,7 +5,7 @@
 #include <fstream>
 #include <stdint.h>
 #define _LOG_ALL
-#include "colored.h"
+#include "../colored.h"
 
 class BinLoader{
 

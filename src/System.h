@@ -6,11 +6,10 @@
 #include <string>
 #include <vector>
 
-#include "jtag/ap/AccessPort.h"
 #include "trace/Trace.h"
 #include "main.h"
 
-#include "TestsFactory.h"
+#include "test/TestsFactory.h"
 #include "drivers/flash/flash.h"
 
 namespace flash {
@@ -27,6 +26,8 @@ public:
   void stop();
 
   std::string info();
+
+  void reset();
 
   uint32_t read_u32(uint32_t address);
 
@@ -62,8 +63,6 @@ private:
   Producer *producer;
 
   Decoder *decoder;
-
-  jtag::AccessPort *ap;
 
   void load_binary_in_sdram(std::string file_path);
 

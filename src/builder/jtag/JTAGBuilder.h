@@ -3,8 +3,8 @@
 
 #include <cstdint>
 
-#include "CommandsBuilder.h"
-#include "Jtag.h"
+#include "../CommandsBuilder.h"
+#include "../Jtag.h"
 
 namespace jtag {
 

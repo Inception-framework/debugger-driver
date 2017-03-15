@@ -13,7 +13,7 @@
 #include <thread>
 
 #include "../device/Device.h"
-#include "../jtag/Command.h"
+#include "../builder/Command.h"
 
 class Interface {
 
