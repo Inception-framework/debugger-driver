@@ -17,12 +17,12 @@ This project supports 3 execution mode :
  * As a stand-alone program : ./Debug/inception 
 
 
-# <a name="Python"></a>Inception
+# <a name="Python"></a>Python
 
 You can use rlwrap if installed to get a real Python console.
 ``$ rlwrap python3.5 interactive.py``
 
-# <a name="Stand Alone"></a>Inception
+# <a name="Stand Alone"></a>Stand Alone
 
 
 Different arguments are supported : 
