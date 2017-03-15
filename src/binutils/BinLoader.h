@@ -1,3 +1,14 @@
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T10:57:27+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:51:25+01:00
+*/
+
+
+
 #ifndef BINLOADER_H
 #define BINLOADER_H
 

@@ -1,9 +1,14 @@
-/*
- * main.cpp
- *
- *  Created on: Jul 12, 2016
- *      Author: Corteggiani Nassim
- */
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T10:10:24+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:49:10+01:00
+*/
+
+
+
 #include "System.h"
 
 #include <iostream>

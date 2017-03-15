@@ -1,8 +1,12 @@
-/*
- * Consumer_test.cpp
- *
- *  Created on: Jul 12, 2016
- *      Author: noname
- */
+/**
+* @Author: Nassim
+* @Date:   2016-09-14T08:47:50+02:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:48:31+01:00
+*/
+
+
 
 #include "Consumer.h"

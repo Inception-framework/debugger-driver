@@ -1,9 +1,13 @@
-/*
- * Jtag.h
- *
- *  Created on: Jul 12, 2016
- *      Author: noname
- */
+/**
+* @Author: Nassim
+* @Date:   2017-03-14T13:17:59+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:52:24+01:00
+*/
+
+
 
 #ifndef JTAG_H_
 #define JTAG_H_
@@ -85,22 +89,6 @@ typedef enum tap_state {
 #define CSW_MASTER_DEBUG (1UL << 29) /* ? */
 #define CSW_SPROT (1UL << 30)
 #define CSW_DBGSWENABLE (1UL << 31)
-
-// typedef enum mem_ap_reg {
-//   /* MEM-AP register addresses */
-//   MEM_AP_REG_CSW = 0x00,
-//   MEM_AP_REG_TAR = 0x04,
-//   MEM_AP_REG_TAR64 = 0x08, /* RW: Large Physical Address Extension */
-//   MEM_AP_REG_DRW = 0x0C,   /* RW: Data Read/Write register */
-//   MEM_AP_REG_BD0 = 0x10,   /* RW: Banked Data register 0-3 */
-//   MEM_AP_REG_BD1 = 0x14,
-//   MEM_AP_REG_BD2 = 0x18,
-//   MEM_AP_REG_BD3 = 0x1C,
-//   MEM_AP_REG_MBT = 0x20,    /* --: Memory Barrier Transfer register */
-//   MEM_AP_REG_BASE64 = 0xF0, /* RO: Debug Base Address (LA) register */
-//   MEM_AP_REG_CFG = 0xF4,    /* RO: Configuration register */
-//   MEM_AP_REG_BASE = 0xF8,   /* RO: Debug Base Address register */
-// } MEM_AP_REG;
 
 /* tap_move[i][j]: tap movement command to go from state i to state j
  * encodings of i and j are what tap_move_ndx() reports.

@@ -1,3 +1,14 @@
+/**
+* @Author: Nassim
+* @Date:   2016-12-14T17:22:42+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:49:54+01:00
+*/
+
+
+
 /*
  * Device.h
  *

@@ -1,3 +1,14 @@
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T11:33:28+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:47:57+01:00
+*/
+
+
+
 #include "Decoder.h"
 
 #include "interface/Producer.h"

@@ -1,3 +1,14 @@
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T11:01:37+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:49:16+01:00
+*/
+
+
+
 #include "superspeedjtag.h"
 
 #include "benchmark/Benchmark.h"

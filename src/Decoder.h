@@ -1,9 +1,13 @@
-/*
- * Decoder.h
- *
- *  Created on: Jul 12, 2016
- *      Author: Nassim Corteggiani
- */
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T10:58:16+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:49:01+01:00
+*/
+
+
 
 #ifndef DECODER_H_
 #define DECODER_H_

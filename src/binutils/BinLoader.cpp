@@ -1,3 +1,14 @@
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T10:17:27+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:51:23+01:00
+*/
+
+
+
 #include "BinLoader.h"
 #include <string>
 #include <fstream>

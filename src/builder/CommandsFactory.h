@@ -1,9 +1,13 @@
-/*
- * CommandsFactory.h
- *
- *  Created on: Jul 12, 2016
- *      Author: Nassim Corteggiani
- */
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T10:14:13+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:50:08+01:00
+*/
+
+
 
 #ifndef JTAG_COMMANDSFACTORY_H_
 #define JTAG_COMMANDSFACTORY_H_

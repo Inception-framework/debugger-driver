@@ -1,9 +1,13 @@
-/*
- * Interface.h
- *
- *  Created on: Jul 12, 2016
- *      Author: noname
- */
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T10:57:51+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:48:14+01:00
+*/
+
+
 
 #ifndef INTERFACE_H_
 #define INTERFACE_H_

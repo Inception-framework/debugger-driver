@@ -1,3 +1,14 @@
+/**
+* @Author: Nassim
+* @Date:   2016-12-16T19:11:27+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:48:42+01:00
+*/
+
+
+
 #include "Trace.h"
 
 Trace::Trace(Device::USBDevice *dev): stopped(false), device(dev) {}

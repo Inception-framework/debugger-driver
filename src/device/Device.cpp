@@ -1,3 +1,14 @@
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T09:52:22+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:49:53+01:00
+*/
+
+
+
 #include "Device.h"
 #include <cassert>
 

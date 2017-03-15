@@ -1,8 +1,14 @@
 /**
- *
- * @author Corteggiani Nassim <nassim.corteggiani@maximintegrated.com>
- * @version 0.0.1
- */
+* @Author: Nassim
+* @Date:   2017-01-04T11:07:29+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:49:21+01:00
+*/
+
+
+
 #ifndef __SUPERSPEEDJTAG__
 #define __SUPERSPEEDJTAG__
 

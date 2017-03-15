@@ -1,9 +1,13 @@
-/*
- * Command.h
- *
- *  Created on: Jul 12, 2016
- *      Author: noname
- */
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T09:50:45+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:50:20+01:00
+*/
+
+
 
 #ifndef JTAG_COMMAND_H_
 #define JTAG_COMMAND_H_

@@ -1,9 +1,13 @@
-/*
- * Consumer.h
- *
- *  Created on: Jul 12, 2016
- *      Author: noname
- */
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T10:58:57+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:48:07+01:00
+*/
+
+
 
 #ifndef CONSUMER_H_
 #define CONSUMER_H_

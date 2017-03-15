@@ -1,9 +1,13 @@
-/*
- * JTAGBuilder.cpp
- *
- *  Created on: Jul 12, 2016
- *  @author Corteggiani Nassim <nassim.corteggiani@maximintegrated.com>
- */
+/**
+* @Author: Nassim
+* @Date:   2017-03-15T10:34:17+01:00
+* @Email:  nassim.corteggiani@maximintegrated.com
+* @Project: Inception-commander
+* @Last modified by:   Nassim
+* @Last modified time: 2017-03-15T11:50:41+01:00
+*/
+
+
 
 #include "JTAGBuilder.h"
 
