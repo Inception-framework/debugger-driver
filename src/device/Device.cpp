@@ -4,13 +4,17 @@
 * @Email:  nassim.corteggiani@maximintegrated.com
 * @Project: Inception-commander
 * @Last modified by:   Nassim
-* @Last modified time: 2017-03-15T11:49:53+01:00
+* @Last modified time: 2017-03-15T15:21:37+01:00
 */
 
 
 
 #include "Device.h"
+
 #include <cassert>
+#include <iostream>
+#include <sstream>
+#include <iomanip>
 
 namespace Device {
 
@@ -45,7 +49,7 @@ void USBDevice::device_open() {
 
   for (idx = 0; idx < cnt; idx++) {
 
-    printf("idVendor = %02x and idProduct = %02x \n",descriptor.idVendor, descriptor.idProduct);
+    VVERBOSE("Device","Detecting device idVendor = %02x (Expected idProduct = %02x)",descriptor.idVendor, descriptor.idProduct);
 
     if (libusb_get_device_descriptor(devs[idx], &descriptor) != 0)
       continue;
@@ -200,6 +204,16 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
 }
 
 void USBDevice::download(uint8_t *data, uint32_t *size) {
+
+  std::stringstream info;
+
+  info << "0x" << std::hex << std::setfill('0');
+  for (unsigned int i = 0; i < *size; i++) {
+    info << std::setw(2) << static_cast<unsigned>(data[i]);
+    //VVERBOSE("JTAG", "%02x", data[i]);
+  }
+
+  VVERBOSE("JTAG", "%s", info.str().c_str());
 
   *size = this->io(0x01, data, *size);
 }

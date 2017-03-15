@@ -4,16 +4,14 @@
 * @Email:  nassim.corteggiani@maximintegrated.com
 * @Project: Inception-commander
 * @Last modified by:   Nassim
-* @Last modified time: 2017-03-15T11:50:12+01:00
+* @Last modified time: 2017-03-15T14:45:18+01:00
 */
-
-
-
 #include "CommandsFactory.h"
 
 #include "CommandsBuilder.h"
 
 #include "jtag/JTAGBuilder.h"
+#include "inception/InceptionBuilder.h"
 
 #include <assert.h>
 
@@ -37,7 +35,7 @@ void CommandsFactory::initProtocol(JTAG_PROTOCOL new_protocol) {
       CommandsFactory::builder = new JTAGBuilder();
       break;
     case INCEPTION:
-      // builder = new InceptionBuilder();
+      CommandsFactory::builder = new InceptionBuilder();
       break;
     default:
       throw std::runtime_error("CommandsFactory initialized with an unknown protocol ... \n");

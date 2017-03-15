@@ -4,7 +4,7 @@
 * @Email:  nassim.corteggiani@maximintegrated.com
 * @Project: Inception-commander
 * @Last modified by:   Nassim
-* @Last modified time: 2017-03-15T11:50:41+01:00
+* @Last modified time: 2017-03-15T15:00:05+01:00
 */
 
 
@@ -85,6 +85,8 @@ jtag::Command* JTAGBuilder::write(uint32_t datain, uint32_t address) {
 jtag::Command* JTAGBuilder::read(uint32_t address) {
 
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::READ);
+
+  VERBOSE("JTAGBuilder","Write command at address 0x%08x", address);
 
   // uint32_t header, csw_value;
 

@@ -4,7 +4,7 @@
 * @Email:  nassim.corteggiani@maximintegrated.com
 * @Project: Inception-commander
 * @Last modified by:   Nassim
-* @Last modified time: 2017-03-15T11:49:23+01:00
+* @Last modified time: 2017-03-15T14:28:18+01:00
 */
 
 
@@ -75,7 +75,7 @@ void System::reset() {
 
   std::vector<uint32_t> arg;
 
-  CommandsFactory::initProtocol(JTAG_PROTOCOL::JTAG);
+  CommandsFactory::initProtocol(JTAG_PROTOCOL::INCEPTION);
 
   Command *cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
 
