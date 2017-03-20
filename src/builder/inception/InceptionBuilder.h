@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: InceptionBuilder.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -41,7 +41,7 @@ public:
   InceptionBuilder();
   ~InceptionBuilder();
 
-  jtag::Command *write(uint32_t data, uint32_t address);
+  jtag::Command *write(uint32_t address, uint32_t data);
 
   jtag::Command *read(uint32_t address);
 

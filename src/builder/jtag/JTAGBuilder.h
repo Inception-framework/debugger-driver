@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: JTAGBuilder.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -43,7 +43,7 @@ public:
 
   ~JTAGBuilder();
 
-  jtag::Command *write(uint32_t data, uint32_t address);
+  jtag::Command *write(uint32_t addres, uint32_t data);
 
   jtag::Command *read(uint32_t address);
 
@@ -69,6 +69,8 @@ private:
   void active(jtag::Command *cmd);
 
   void select(jtag::Command *cmd, uint32_t bank_id);
+
+  void print_dr(uint8_t RnW, uint8_t address, uint64_t datain);
 
   bool first_io;
 };

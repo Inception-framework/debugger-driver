@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: CommandsBuilder.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -43,7 +43,7 @@ public:
 
   ~CommandsBuilder(){};
 
-  virtual Command *write(uint32_t data, uint32_t address) = 0;
+  virtual Command *write(uint32_t address, uint32_t data) = 0;
 
   virtual Command *read(uint32_t address) = 0;
 

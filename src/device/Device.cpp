@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: Device.cpp
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   noname
+    @Last modified time: 16-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -41,26 +41,26 @@ USBDevice::USBDevice(uint16_t p_vid, uint16_t p_pid, uint32_t p_interface) {
 
   interface = p_interface;
 
-  this->buffer_limit = 1024;
+  buffer_limit = 1024;
 
-  this->handle = NULL;
+  handle = NULL;
 }
 
 USBDevice::~USBDevice() {
   // TODO Auto-generated destructor stub
 }
 
-void USBDevice::close(void) { this->device_close(); }
+void USBDevice::close(void) { device_close(); }
 
 void USBDevice::device_open() {
 
   int cnt, idx, errCode;
   libusb_device **devs;
 
-  if (libusb_init(&this->context) < 0)
+  if (libusb_init(&context) < 0)
     return;
 
-  cnt = libusb_get_device_list(this->context, &devs);
+  cnt = libusb_get_device_list(context, &devs);
 
   for (idx = 0; idx < cnt; idx++) {
 
@@ -77,10 +77,10 @@ void USBDevice::device_open() {
 
     dev = devs[idx];
 
-    errCode = libusb_open(devs[idx], &this->handle);
+    errCode = libusb_open(devs[idx], &handle);
 
     if (errCode) {
-      this->handle = NULL;
+      handle = NULL;
       ALERT("Device", "libusb_open() failed with %s",
             libusb_error_name(errCode));
       continue;
@@ -94,9 +94,9 @@ void USBDevice::device_open() {
 
 void USBDevice::device_close() {
   /* Close device */
-  libusb_close(this->handle);
+  libusb_close(handle);
 
-  libusb_exit(this->context);
+  libusb_exit(context);
 }
 
 void USBDevice::init(void) {
@@ -105,7 +105,7 @@ void USBDevice::init(void) {
 
   device_open();
 
-  if (!this->handle) {
+  if (!handle) {
     ALERT("Device", "Avatar driver doesn't find device %04x:%04x \n", vid, pid);
     throw std::runtime_error("Avatar driver doesn't find device\n");
     return;
@@ -165,7 +165,7 @@ void USBDevice::init(void) {
           "Avatar driver was not able to claimed interface...\n");
       break;
     }
-    this->handle = NULL;
+    handle = NULL;
     return;
   }
 
@@ -182,7 +182,7 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
   int32_t attempt = 0;
 
   do {
-    if ((retval = libusb_bulk_transfer(this->handle, endpoint, buffer, size,
+    if ((retval = libusb_bulk_transfer(handle, endpoint, buffer, size,
                                        &transferred, 0)) != 0) {
       ALERT("Device", "%s", libusb_error_name(retval));
 
@@ -227,16 +227,16 @@ void USBDevice::download(uint8_t *data, uint32_t *size) {
   info << "0x" << std::hex << std::setfill('0');
   for (unsigned int i = 0; i < *size; i++) {
     info << std::setw(2) << static_cast<unsigned>(data[i]);
-    // VVERBOSE("JTAG", "%02x", data[i]);
+    info << " ";
   }
 
-  VVERBOSE("JTAG", "%s", info.str().c_str());
+  VVERBOSE("JTAG", ">%s", info.str().c_str());
 
-  *size = this->io(0x01, data, *size);
+  *size = io(0x01, data, *size);
 }
 
 void USBDevice::upload(uint8_t *data, uint32_t *size) {
 
-  *size = this->io(0x81, data, *size);
+  *size = io(0x81, data, *size);
 }
 }

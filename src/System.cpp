@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: System.cpp
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   noname
+    @Last modified time: 16-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -90,7 +90,7 @@ void System::reset() {
 
   std::vector<uint32_t> arg;
 
-  CommandsFactory::initProtocol(JTAG_PROTOCOL::INCEPTION);
+  CommandsFactory::initProtocol(JTAG_PROTOCOL::JTAG);
 
   Command *cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
 
@@ -115,7 +115,7 @@ std::string System::info() {
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::IDCODE, arg);
   producer->synchrone_process(cmd, &value);
 
-  this->idcode = (uint32_t)value;
+  idcode = (uint32_t)value;
 
   std::stringstream info;
 
@@ -137,7 +137,7 @@ std::string System::info() {
 
 void System::synchrone_process(Command *command, uint64_t *value) {
 
-  this->producer->synchrone_process(command, value);
+  producer->synchrone_process(command, value);
 }
 
 void System::write_u32(uint32_t value, uint32_t address) {
@@ -176,26 +176,26 @@ void System::halt() {
 
   if (!halted) {
 
-    this->write_u32(0xE000EDF0, 0xA05F0003);
+    write_u32(0xE000EDF0, 0xA05F0003);
     halted = true;
   }
 }
 
 void System::write_reg(uint32_t reg_id, uint32_t value) {
 
-  this->write_u32(value, 0xE000EDF8); // DCRDR
+  write_u32(value, 0xE000EDF8); // DCRDR
   // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-  this->write_u32(reg_id | 0x00010000, 0xE000EDF4); // DCRSR
+  write_u32(reg_id | 0x00010000, 0xE000EDF4); // DCRSR
   // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 }
 
 uint32_t System::read_reg(uint32_t reg_id) {
 
-  this->write_u32(reg_id, 0xE000EDF4);
+  write_u32(reg_id, 0xE000EDF4);
   // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-  uint32_t retVal = this->read_u32(0xE000EDF8);
+  uint32_t retVal = read_u32(0xE000EDF8);
 
   return retVal;
 }
@@ -208,7 +208,7 @@ void System::check_up() {
   // foreach (Test test in Enum.GetValues(typeof(Test))) { this->check(test); }
 
   for (auto i = 0; i < CHECK_DEVICE; i++) {
-    this->check(static_cast<Test>(i));
+    check(static_cast<Test>(i));
   }
 }
 
