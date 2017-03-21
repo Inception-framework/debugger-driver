@@ -90,7 +90,7 @@ void System::reset() {
 
   std::vector<uint32_t> arg;
 
-  CommandsFactory::initProtocol(JTAG_PROTOCOL::JTAG);
+  CommandsFactory::initProtocol(JTAG_PROTOCOL::FILEB);
 
   Command *cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::RESET, arg);
 

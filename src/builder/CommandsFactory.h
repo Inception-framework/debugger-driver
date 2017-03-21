@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: CommandsFactory.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -41,6 +41,7 @@ typedef enum JTAG_PROTOCOL {
   SWD = 0,
   JTAG = 1,
   INCEPTION = 2,
+  FILEB = 3,
 } JTAG_PROTOCOL;
 
 class CommandsFactory {

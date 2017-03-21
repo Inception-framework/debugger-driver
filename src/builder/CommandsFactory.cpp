@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: CommandsFactory.cpp
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -30,6 +30,7 @@
 
 #include "jtag/JTAGBuilder.h"
 #include "inception/InceptionBuilder.h"
+#include "file_builder/FileBuilder.h"
 
 #include <assert.h>
 
@@ -53,6 +54,8 @@ void CommandsFactory::initProtocol(JTAG_PROTOCOL new_protocol) {
     break;
   case INCEPTION:
     CommandsFactory::builder = new InceptionBuilder();
+  case FILEB:
+    CommandsFactory::builder = new FileBuilder();
     break;
   default:
     throw std::runtime_error(
