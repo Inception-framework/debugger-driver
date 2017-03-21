@@ -48,9 +48,9 @@ jtag::Command *JTAGBuilder::init() {
   for (int i = 0; i < 5; i++)
     add_command(cmd, 1, 0, 0, 0);
 
-  active(cmd);
-
-  select(cmd, 0);
+  // active(cmd);
+//
+  // select(cmd, 0);
 
   return cmd;
 }
@@ -69,11 +69,7 @@ jtag::Command *JTAGBuilder::write(uint32_t address, uint32_t datain) {
     // Set the correct JTAG-DP
     move_to(cmd, jtag::TAP_IRSHIFT);
 
-    VVERBOSE("JTAGBuilder", "New JTAG State : TAP_IRSHIFT");
-
     write_ir(cmd, APACC); // 1011 = APACC IR
-
-    VVERBOSE("JTAGBuilder", "New IR Value : 1011 b");
 
     // CSW register value
     // csw_value = CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG|
@@ -82,44 +78,34 @@ jtag::Command *JTAGBuilder::write(uint32_t address, uint32_t datain) {
     // set csw register value
     move_to(cmd, jtag::TAP_DRSHIFT);
 
-    VVERBOSE("JTAGBuilder", "New JTAG State : TAP_DRSHIFT");
-
     write_dr(cmd, DPAP_WRITE, CSW_ADDR,
              CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
     print_dr(DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
-    VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_DRPAUSE");
 
     move_to(cmd, jtag::TAP_IDLE);
     for (int i = 0; i < 20; i++)
       add_command(cmd, 0, 0, 0, 0);
-    VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_IDLE");
   }
 
   // set tar register value
   move_to(cmd, jtag::TAP_DRSHIFT);
-  VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_DRSHIFT");
 
   write_dr(cmd, DPAP_WRITE, TAR_ADDR, address);
   print_dr(DPAP_WRITE, TAR_ADDR, address);
-  VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_DRPAUSE");
 
   move_to(cmd, jtag::TAP_IDLE);
   for (int i = 0; i < 20; i++)
     add_command(cmd, 0, 0, 0, 0);
-  VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_IDLE");
 
   // set DRW register value
   move_to(cmd, jtag::TAP_DRSHIFT);
-  VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_DRSHIFT");
 
   write_dr(cmd, DPAP_WRITE, DRW_ADDR, datain);
   print_dr(DPAP_WRITE, DRW_ADDR, datain);
-  VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_DRPAUSE");
 
   move_to(cmd, jtag::TAP_IDLE);
   for (int i = 0; i < 20; i++)
     add_command(cmd, 0, 0, 0, 0);
-  VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_IDLE");
 
   return cmd;
 }
@@ -138,65 +124,51 @@ jtag::Command *JTAGBuilder::read(uint32_t address) {
     // SUCCESS("JTAGBuilder", "First IO here");
 
     move_to(cmd, jtag::TAP_IRSHIFT);
-    VVERBOSE("JTAGBuilder", "New JTAG State : TAP_IRSHIFT");
 
     write_ir(cmd, APACC); // 1011 = APACC IR
-    VVERBOSE("JTAGBuilder", "New IR Value : 1011 b");
 
     // set csw register value
     move_to(cmd, jtag::TAP_DRSHIFT);
-    VVERBOSE("JTAGBuilder", "New JTAG State : TAP_DRSHIFT");
 
     write_dr(cmd, DPAP_WRITE, CSW_ADDR,
              CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
     print_dr(DPAP_WRITE, CSW_ADDR, CSW_32BIT | CSW_ADDRINC_OFF | CSW_MASTER_DEBUG | CSW_HPROT);
-    VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_DRPAUSE");
 
     move_to(cmd, jtag::TAP_IDLE);
     for (int i = 0; i < 20; i++)
       add_command(cmd, 0, 0, 0, 0);
-    VVERBOSE("JTAGBuilder", "New JTAG State : TAP_IDLE");
 
   }
 
   // set tar register value
   move_to(cmd, jtag::TAP_DRSHIFT);
-  VVERBOSE("JTAGBuilder", "New JTAG State : TAP_DRSHIFT");
 
   write_dr(cmd, DPAP_WRITE, TAR_ADDR, address);
   print_dr(DPAP_WRITE, TAR_ADDR, address);
-  VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_DRPAUSE");
 
   move_to(cmd, jtag::TAP_IDLE);
   for (int i = 0; i < 20; i++)
     add_command(cmd, 0, 0, 0, 0);
-  VVERBOSE("JTAGBuilder", "New JTAG State : TAP_IDLE");
 
   // set drw register value
   move_to(cmd, jtag::TAP_DRSHIFT);
-  VVERBOSE("JTAGBuilder", "New JTAG State : TAP_DRSHIFT");
 
   write_dr(cmd, DPAP_READ, DRW_ADDR, 0);
   print_dr(DPAP_READ, DRW_ADDR, 0);
-  VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_DRPAUSE");
 
   move_to(cmd, jtag::TAP_IDLE);
   for (int i = 0; i < 20; i++)
     add_command(cmd, 0, 0, 0, 0);
-  VVERBOSE("JTAGBuilder", "New JTAG State : TAP_IDLE");
 
   // set drw register value
   move_to(cmd, jtag::TAP_DRSHIFT);
-  VVERBOSE("JTAGBuilder", "New JTAG State : TAP_DRSHIFT");
 
   write_dr(cmd, DPAP_READ, DRW_ADDR, 0);
   print_dr(DPAP_READ, DRW_ADDR, 0);
-  VVERBOSE("JTAGBuilder", "New JTAG State  : TAP_DRPAUSE");
 
   move_to(cmd, jtag::TAP_IDLE);
   for (int i = 0; i < 20; i++)
     add_command(cmd, 0, 0, 0, 0);
-  VVERBOSE("JTAGBuilder", "New JTAG State : TAP_IDLE");
 
   return cmd;
 }
@@ -226,6 +198,7 @@ void JTAGBuilder::active(jtag::Command *cmd) {
   move_to(cmd, jtag::TAP_DRSHIFT);
 
   write_dr(cmd, DPAP_WRITE, CTRL_STAT, 0x50000000);
+  print_dr(DPAP_WRITE, CTRL_STAT, 0x50000000);
 
   for (int i = 0; i < 30; i++)
     add_command(cmd, 0, 0, 0, 0);
@@ -268,8 +241,9 @@ void JTAGBuilder::move_to(jtag::Command *cmd, tap_state_t state) {
   int i;
   uint8_t byte;
 
-  // printf("From %s to %s ", Jtag::tap_state_name(Jtag::current_state),
-  //        Jtag::tap_state_name(state));
+  VVERBOSE("JTAGBuilder", "Move from %s to %s",
+    Jtag::tap_state_name(Jtag::current_state),
+    Jtag::tap_state_name(state));
 
   uint8_t tms_scan = Jtag::tap_get_tms_path(Jtag::current_state, state);
 
@@ -292,6 +266,8 @@ void JTAGBuilder::write_ir(jtag::Command *cmd, uint8_t ir) {
 
   uint32_t j;
   uint8_t byte;
+
+  VVERBOSE("JTAGBuilder", "New IR Value : %01x", ir);
 
   for (j = 0; j < 4; j++) {
 
@@ -342,11 +318,13 @@ void JTAGBuilder::wait(jtag::Command *cmd, uint32_t cycles) {
 void JTAGBuilder::print_dr(uint8_t RnW, uint8_t address, uint64_t datain) {
 
   uint64_t dr = 0;
+  uint64_t data = datain;
+  uint64_t addr = address;
 
-  dr = ((address >> 1) & 0x6) | (RnW & 0x1);
-  dr |= (datain << 3);
+  dr = (data << 3);
+  dr |= ((addr >> 1) & 0x6) | (RnW & 0x1);
 
-  VVERBOSE("JTAGBuilder", "New DR value  : 0x%016x -> datain 0x%016x", dr, datain);
+  VVERBOSE("JTAGBuilder", "New DR value  : 0x%016llX -> datain 0x%016x", dr, datain);
 }
 
 void JTAGBuilder::write_dr(jtag::Command *cmd, uint8_t RnW, uint8_t address,

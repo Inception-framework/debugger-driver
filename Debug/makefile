@@ -9,6 +9,7 @@ RM := rm -rf
 -include src/test/subdir.mk
 -include src/builder/jtag/subdir.mk
 -include src/builder/inception/subdir.mk
+-include src/builder/file_builder/subdir.mk
 -include src/builder/subdir.mk
 -include src/binutils/subdir.mk
 -include src/interface/subdir.mk

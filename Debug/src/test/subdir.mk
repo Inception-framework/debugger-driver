@@ -16,7 +16,7 @@ CPP_DEPS += \
 ./src/test/TestsFactory.d
 
 # Each subdirectory must supply rules for building sources it contributes
-src/%.o: ../src/%.cpp
+src/test/%.o: ../src/test/%.cpp
 	@echo 'Building file: $<'
 	@echo 'Invoking: GCC C++ Compiler'
 	g++ -std=c++1y -fpic -I-lpthread -I-lusb-1.0 -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@)" -o "$@" "$<"

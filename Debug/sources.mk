@@ -30,4 +30,7 @@ src/drivers/flash \
 src/device \
 src/interface \
 src/builder \
+src/builder/jtag \
+src/builder/inception \
+src/builder/file_builder \
 src/binutils
