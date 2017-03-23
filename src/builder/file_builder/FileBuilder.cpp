@@ -62,7 +62,7 @@ jtag::Command *FileBuilder::init() {
 
 void FileBuilder::process(jtag::Command* cmd) {
 
-  std::ifstream is ("inputs.txt", std::ifstream::binary);
+  std::ifstream is ("io/output.txt");
 
   if (is) {
     // get length of file:
@@ -80,18 +80,21 @@ void FileBuilder::process(jtag::Command* cmd) {
     if (is)
       INFO("FileBuilder", "All characters read successfully");
     else {
-      ALERT("FileBuilder", "Only %d Bytes could be read", is.gcount());
+      ALERT("FileBuilder", "Only %d Bytes could be read of %d", is.gcount(), length);
       throw std::runtime_error(
-          "A driver different than avatar driver has claimed the interface\n");
+        "A driver different than avatar driver has claimed the interface\n");
     }
 
     process_inputs(buffer, length, cmd);
 
     is.close();
 
-    // ...buffer contains the entire file...
-
     delete[] buffer;
+  }else
+  {
+    ALERT("FileBuilder", "Input.txt file not found");
+    throw std::runtime_error(
+        "Input.txt file not found\n");
   }
 }
 
@@ -113,7 +116,10 @@ void FileBuilder::process_inputs(char* buffer, unsigned size, jtag::Command* cmd
   unsigned tms = 0;
   unsigned tdi = 0;
 
+  INFO("FileBuilder", "Buffer %s", buffer);
+
   for(auto i=0; i<size ;i++) {
+    INFO("FileBuilder", "Buffer[%d]=%c", i, buffer[i]);
 
     switch(buffer[i]) {
       default :
