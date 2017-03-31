@@ -324,7 +324,7 @@ void JTAGBuilder::print_dr(uint8_t RnW, uint8_t address, uint64_t datain) {
   dr = (data << 3);
   dr |= ((addr >> 1) & 0x6) | (RnW & 0x1);
 
-  VVERBOSE("JTAGBuilder", "New DR value  : 0x%016llX -> datain 0x%016x", dr, datain);
+  VVERBOSE("JTAGBuilder", "New DR value  : 0x%016llX <- datain 0x%016x", dr, datain);
 }
 
 void JTAGBuilder::write_dr(jtag::Command *cmd, uint8_t RnW, uint8_t address,

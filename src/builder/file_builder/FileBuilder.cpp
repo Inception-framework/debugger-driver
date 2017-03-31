@@ -40,23 +40,26 @@ FileBuilder::FileBuilder() {}
 
 FileBuilder::~FileBuilder() {}
 
-jtag::Command *FileBuilder::reset() { return init(); }
+jtag::Command *FileBuilder::reset() {
+
+    INFO("FileBuilder", "Resetting JTAG debugger");
+
+    jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::RESET);
+
+    // for (int i = 0; i < 5; i++)
+      // add_command(cmd, 1, 0, 0, 0);
+
+    // active(cmd);
+  //
+    // select(cmd, 0);
+
+    process(cmd);
+
+    return cmd;
+}
 
 jtag::Command *FileBuilder::init() {
-
-  INFO("FileBuilder", "Resetting JTAG debugger");
-
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::RESET);
-
-  for (int i = 0; i < 5; i++)
-    add_command(cmd, 1, 0, 0, 0);
-
-  // active(cmd);
-//
-  // select(cmd, 0);
-
-  process(cmd);
-
   return cmd;
 }
 
@@ -117,13 +120,14 @@ void FileBuilder::process_inputs(char* buffer, unsigned size, jtag::Command* cmd
   unsigned tdi = 0;
 
   INFO("FileBuilder", "Buffer %s", buffer);
+  INFO("FileBuilder","");
 
   for(auto i=0; i<size ;i++) {
-    INFO("FileBuilder", "Buffer[%d]=%c", i, buffer[i]);
+    // INFO("FileBuilder", "Buffer[%d]=%c", i, buffer[i]);
 
     switch(buffer[i]) {
       default :
-        INFO("FileBuilder", "TMS: %d       TDI: %d", tms, tdi);
+        printf("TMS: %d       TDI: %d\n", tms, tdi);
         add_command(cmd, tms, tdi, 0, 0);
         continue;
       case '0':

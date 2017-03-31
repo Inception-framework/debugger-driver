@@ -59,6 +59,7 @@ private:
 
   void add_command(jtag::Command *cmd, uint32_t tms, uint32_t tdi,
                                 uint32_t trst, uint32_t srst);
+
 };
 }
 
