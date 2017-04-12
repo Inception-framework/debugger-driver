@@ -83,9 +83,13 @@ void Command::push_back(uint32_t data_in) {
 
   uint8_t* data = (uint8_t *)out_buffer.data();
 
-  uint32_t size = out_buffer.size();
+  // uint32_t size = out_buffer.size();
+  out_buffer.push_back(data_in >> 24);
+  out_buffer.push_back(data_in >> 16);
+  out_buffer.push_back(data_in >> 8);
+  out_buffer.push_back(data_in & 0xFF);
 
-  memcpy((void*)&data[size], (void*)&data_in, 4);
+  // memcpy((void*)&data[size], (void*)&data_in, 4);
 }
 
 void Command::add_tdo(uint64_t start, uint64_t end) { tdo.add(start, end); }

@@ -44,8 +44,8 @@ void Producer::synchrone_process(jtag::Command *cmd, uint64_t *value) {
 
     device->download(cmd->get_out_buffer(), &size);
 
-    // if( cmd->type == READ)
-    device->upload(cmd->get_in_buffer(), &size);
+    if( cmd->type == READ)
+      device->upload(cmd->get_in_buffer(), &size);
 
     if (cmd->get_type() == READ || cmd->get_type() == IDCODE)
       decoder->process(cmd, value);

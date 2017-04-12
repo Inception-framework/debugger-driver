@@ -40,13 +40,15 @@ jtag::Command *InceptionBuilder::write(uint32_t address, uint32_t data) {
 
   VERBOSE("InceptionBuilder", "Write command at address 0x%08x", address);
 
-  cmd->push_back((uint32_t) 0x14000001); // Write a word of 32bits
+  cmd->push_back((uint32_t) 0x14000001);
+  cmd->push_back((uint32_t) address);
+  cmd->push_back((uint32_t) data);
 
-  for (auto i = 3; i >= 0; i--)
-    cmd->push_back(address >> (8 * i));
+  // for (auto i = 3; i >= 0; i--)
+    // cmd->push_back(address >> (8 * i));
 
-  for (auto i = 3; i >= 0; i--)
-    cmd->push_back(data >> (8 * i));
+  // for (auto i = 3; i >= 0; i--)
+    // cmd->push_back(data >> (8 * i));
 
   return cmd;
 }
