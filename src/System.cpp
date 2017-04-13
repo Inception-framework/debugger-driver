@@ -183,9 +183,9 @@ uint32_t System::read_u32(uint32_t address) {
 
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ, arg);
 
-  // Benchmark::start();
+  Benchmark::start();
   producer->synchrone_process(cmd, &value);
-  // Benchmark::stop();
+  Benchmark::stop();
 
   return (uint32_t)value;
 }

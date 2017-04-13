@@ -60,7 +60,12 @@ int32_t InceptionDecoder::process(jtag::Command *cmd, uint64_t *value) {
       }
     } else {
 
-      memcpy(value, &buffer[4], 4);
+      // memcpy(value, &buffer[4], 4);
+      *value |= buffer[4] << 24;
+      *value |= buffer[5] << 16;
+      *value |= buffer[6] << 8;
+      *value |= buffer[7];
+
       return (uint32_t)*value;
     }
     break;

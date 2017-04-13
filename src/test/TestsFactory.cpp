@@ -177,7 +177,7 @@ void TestsFactory::benchmark_io(System *system, TestReport *report) {
 
   srand(time(NULL));
 
-  uint32_t addr = 0x20000000;
+  uint32_t addr = 0x2000C000;
   uint32_t val32 = rand() % 0xFFFFFFFF;
 
   for (int i = 0; i < /*100000*/ 65536; i++) {
@@ -213,8 +213,8 @@ void TestsFactory::benchmark_io(System *system, TestReport *report) {
       return;
     }
 
-    if( (addr + 4) < 0x20010000)
-      addr += 4;
+    // if( (addr + 4) < 0x20010000)
+      // addr += 4;
     val32 = rand() % 0xFFFFFFFF;
     // val32++;
   }
