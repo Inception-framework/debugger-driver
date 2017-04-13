@@ -226,6 +226,7 @@ void USBDevice::download(uint8_t *data, uint32_t *size) {
 
   std::stringstream info;
 
+  #ifdef DEBUG
   info << "0x" << std::hex << std::setfill('0');
   for (unsigned int i = 0; i < *size; i++) {
     info << std::setw(2) << static_cast<unsigned>(data[i]);
@@ -233,6 +234,7 @@ void USBDevice::download(uint8_t *data, uint32_t *size) {
   }
 
   VVERBOSE("JTAG", ">%s", info.str().c_str());
+  #endif
 
   *size = io(0x01, data, *size);
 }
@@ -243,12 +245,14 @@ void USBDevice::upload(uint8_t *data, uint32_t *size) {
 
   *size = io(0x81, data, *size);
 
+  #ifdef DEBUG
   info << "0x" << std::hex << std::setfill('0');
   for (unsigned int i = 0; i < *size; i++) {
     info << std::setw(2) << static_cast<unsigned>(data[i]);
     info << " ";
   }
-
   VVERBOSE("JTAG", "<%s", info.str().c_str());
+  #endif
+
 }
 }

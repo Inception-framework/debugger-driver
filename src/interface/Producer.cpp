@@ -39,8 +39,10 @@ void Producer::synchrone_process(jtag::Command *cmd, uint64_t *value) {
 
   if (cmd->type != EXIT) {
 
+    #ifdef DEBUG
     VVERBOSE("PRODUCER", "[*] Sending command %s %dB %d...", cmd->command_name(),
              cmd->get_out_buffer_size(), cmd->type);
+    #endif
 
     device->download(cmd->get_out_buffer(), &size);
 

@@ -38,7 +38,9 @@ jtag::Command *InceptionBuilder::write(uint32_t address, uint32_t data) {
 
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::WRITE);
 
+  #ifdef DEBUG
   VERBOSE("InceptionBuilder", "Write command at address 0x%08x", address);
+  #endif
 
   cmd->push_back((uint32_t) 0x14000001);
   cmd->push_back((uint32_t) address);
@@ -55,7 +57,9 @@ jtag::Command *InceptionBuilder::write(uint32_t address, uint32_t data) {
 
 jtag::Command *InceptionBuilder::read(uint32_t address) {
 
+  #ifdef DEBUG
   VERBOSE("InceptionBuilder", "Read command at address 0x%08x", address);
+  #endif
 
   jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::READ);
 

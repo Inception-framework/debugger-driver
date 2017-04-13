@@ -171,7 +171,9 @@ void TestsFactory::benchmark_io(System *system, TestReport *report) {
 
   uint64_t value;
 
+  #ifdef DEBUG
   VERBOSE("Command", "Creating 100 000 WRITE_U32 commands ...");
+  #endif
 
   Benchmark::init();
 
@@ -189,7 +191,9 @@ void TestsFactory::benchmark_io(System *system, TestReport *report) {
 
     value = system->read_u32(addr);
 
+    #ifdef DEBUG
     VERBOSE("Benchmark", "Wrote 0x%8x then read 0x%8x", val32, value);
+    #endif
 
     //std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
