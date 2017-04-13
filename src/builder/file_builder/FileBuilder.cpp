@@ -31,6 +31,7 @@
 #include <iostream>     // std::cout
 #include <fstream>      // std::ifstream
 #include <exception>
+#include <stdexcept>
 
 using namespace std;
 

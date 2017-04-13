@@ -36,6 +36,7 @@
 
 #include <iostream>
 #include <vector>
+#include <stdexcept>
 
 typedef enum JTAG_PROTOCOL {
   SWD = 0,

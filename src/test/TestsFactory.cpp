@@ -191,7 +191,7 @@ void TestsFactory::benchmark_io(System *system, TestReport *report) {
 
     VERBOSE("Benchmark", "Wrote 0x%8x then read 0x%8x", val32, value);
 
-    // std::this_thread::sleep_for(std::chrono::milliseconds(2));
+    //std::this_thread::sleep_for(std::chrono::milliseconds(2));
 
     // for(auto j=0;j<10000;j++);
 

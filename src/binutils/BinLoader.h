@@ -17,6 +17,8 @@
 #include <stdint.h>
 #define _LOG_ALL
 #include "../colored.h"
+#include <stdexcept>
+#include <stdexcept>
 
 class BinLoader{
 

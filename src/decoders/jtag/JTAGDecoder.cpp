@@ -25,7 +25,7 @@
 ********************************************************************************/
 
 #include "JTAGDecoder.h"
-
+#include <sstream>
 using namespace jtag;
 
 JTAGDecoder::JTAGDecoder(Producer *new_producer) : Decoder(new_producer) {}
