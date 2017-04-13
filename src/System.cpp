@@ -59,6 +59,7 @@ System::System() : halted(false) {
 
   INFO("Device", "Initializing jtag device ...");
   // fx3_jtag = new Device::USBDevice(0x0B6A, 0x0001, 0);
+  // fx3_jtag = new Device::USBDevice(0x04B4, 0x00F1, 0);
   fx3_jtag = new Device::USBDevice(0x04B4, 0x00F1, 0);
   fx3_jtag->init();
 
@@ -174,7 +175,7 @@ void System::write_u32(uint32_t value, uint32_t address) {
 
 uint32_t System::read_u32(uint32_t address) {
 
-  uint64_t value;
+  uint64_t value = 0;
   Command *cmd = NULL;
   std::vector<uint32_t> arg;
 
@@ -182,9 +183,9 @@ uint32_t System::read_u32(uint32_t address) {
 
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ, arg);
 
-  Benchmark::start();
+  // Benchmark::start();
   producer->synchrone_process(cmd, &value);
-  Benchmark::stop();
+  // Benchmark::stop();
 
   return (uint32_t)value;
 }

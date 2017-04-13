@@ -40,7 +40,7 @@ int32_t InceptionDecoder::process(jtag::Command *cmd, uint64_t *value) {
     case IDCODE:
     case RESET:
       return 0;
-
+      break;
     case READ:
 
     uint8_t* buffer = cmd->get_in_buffer();
@@ -49,7 +49,7 @@ int32_t InceptionDecoder::process(jtag::Command *cmd, uint64_t *value) {
 
       if( cmd->get_in_buffer_size() == 4 ) {
 
-        memcpy(value, &buffer[0], 32);
+        memcpy(value, &buffer[0], 4);
 
         ALERT("InceptionDecoder", "Failed to decode READ command with error code 0x%08x", value);
         throw std::runtime_error("Error : wring answer ");
@@ -60,8 +60,11 @@ int32_t InceptionDecoder::process(jtag::Command *cmd, uint64_t *value) {
       }
     } else {
 
-      memcpy(value, &buffer[4], 32);
+      memcpy(value, &buffer[4], 4);
       return (uint32_t)*value;
     }
+    break;
   }
+
+  return 0;
 }
