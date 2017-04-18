@@ -54,7 +54,7 @@ void benckmark_inc_nread(void);
 
 void benckmark_inc_nwrite(void);
 
-void load_binary_in_sdram(void *opaque, std::string file_path, uint32_t address);
+void load_binary_in_sdram(void *opaque, char* file_path, uint32_t address);
 
 #if defined(__cplusplus)
 }

@@ -59,14 +59,16 @@ void *jtag_init(void) {
   return (void *)sys;
 }
 
-void load_binary_in_sdram(void *opaque, std::string file_path, uint32_t address) {
+void load_binary_in_sdram(void *opaque, char* file_path, uint32_t address) {
+
+  std::string str(file_path);
 
   if (opaque == NULL)
-    return 0;
+    return;
 
   System *sys = (System *)opaque;
 
-  sys->load_binary_in_sdram(file_path, address);
+  sys->load_binary_in_sdram(str, address);
 }
 
 uint64_t jtag_read_u32(void *opaque, uint64_t address) {
