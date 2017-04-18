@@ -183,9 +183,9 @@ uint32_t System::read_u32(uint32_t address) {
 
   cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ, arg);
 
-  Benchmark::start();
+  // Benchmark::start();
   producer->synchrone_process(cmd, &value);
-  Benchmark::stop();
+  // Benchmark::stop();
 
   return (uint32_t)value;
 }
@@ -256,15 +256,15 @@ void System::check(Test test) {
   stop();
 }
 
-void System::load_binary_in_sdram(std::string file_path) {
+void System::load_binary_in_sdram(std::string file_path, uint32_t address) {
 
   BinLoader *bin_loader =
-      new BinLoader("/home/noname/workspacees06/stub/SLA/stub.bin");
+      new BinLoader(file_path);
 
   try {
 
     while (true)
-      bin_loader->next();
+      write_u32(address, bin_loader->next());
 
   } catch (std::runtime_error) {
 

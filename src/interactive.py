@@ -43,6 +43,7 @@ class Interactive(object):
         print("\t read_reg(id) : read a specific register")
         print("\t write_reg(id, value) : write a value into the specified register")
         print("\t show_dhcsr() : read the dhcsr register and cast content")
+        print("\t load_binary_in_sram() : load binary in sram");
 
     def __init__(self):
         self.help()
@@ -56,6 +57,8 @@ class Interactive(object):
         value = lib.jtag_read_u32(self.obj, address)
         print(hex(value))
 
+    def load_binary_in_sram(self, path, address):
+        load_binary_in_sram(path, address)
 
     def step(self):
         self.write(0xE000EDF0, (0xA05F << 16) | (1<<2) | (1 << 0))

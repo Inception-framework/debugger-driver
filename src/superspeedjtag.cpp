@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: superspeedjtag.cpp
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -57,6 +57,16 @@ void *jtag_init(void) {
   //INFO("Init", "%s", sys->info().c_str());
 
   return (void *)sys;
+}
+
+void load_binary_in_sdram(void *opaque, std::string file_path, uint32_t address) {
+
+  if (opaque == NULL)
+    return 0;
+
+  System *sys = (System *)opaque;
+
+  sys->load_binary_in_sdram(file_path, address);
 }
 
 uint64_t jtag_read_u32(void *opaque, uint64_t address) {

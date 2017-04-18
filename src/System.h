@@ -86,6 +86,8 @@ public:
 
   bool halted;
 
+  void load_binary_in_sdram(std::string file_path, uint32_t address);
+
 private:
 
   JTAG_PROTOCOL protocol;
@@ -99,8 +101,6 @@ private:
   Producer *producer;
 
   Decoder *decoder;
-
-  void load_binary_in_sdram(std::string file_path);
 
   flash::Flash *flash;
 

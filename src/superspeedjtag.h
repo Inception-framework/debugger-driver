@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: superspeedjtag.h
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -53,6 +53,8 @@ void benchmark_to_string(void);
 void benckmark_inc_nread(void);
 
 void benckmark_inc_nwrite(void);
+
+void load_binary_in_sdram(void *opaque, std::string file_path, uint32_t address);
 
 #if defined(__cplusplus)
 }
