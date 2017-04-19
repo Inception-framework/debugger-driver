@@ -59,7 +59,7 @@ class Interactive(object):
         print(hex(value))
 
     def load_binary_in_sram(self, path, address):
-        load_binary_in_sram(path, address)
+        lib.load_binary_in_sdram(self.obj, path, address)
 
     def step(self):
         self.write(0xE000EDF0, (0xA05F << 16) | (1<<2) | (1 << 0))
