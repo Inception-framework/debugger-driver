@@ -265,6 +265,7 @@ void System::load_binary_in_sdram(std::string file_path, uint32_t address) {
 
     while (true)
       write_u32(address, bin_loader->next());
+      address+=4;
 
   } catch (std::runtime_error) {
 
