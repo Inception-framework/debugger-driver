@@ -106,11 +106,12 @@ class Interactive(object):
 
             self.write(0xE000EDF4, reg)
 
-            reg = hex(self.read(0xE000EDF8))
+            #reg = hex(self.read(0xE000EDF8))
+            self.read(0xE000EDF8)
 
             # self.write(0xE000EDF8, DCB_DCRDR)
 
-            return reg
+            #return reg
 
     def write_reg(self, reg, value):
 
