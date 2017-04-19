@@ -51,6 +51,20 @@ class Interactive(object):
         self.obj = lib.jtag_init()
         code.InteractiveConsole(locals=locals()).interact()
 
+    def foo(self,path,address,value):
+        f=open(path,"rb")
+        for i in range(0,value):
+            lib.jtag_write(self.obj, address+i*4, int(struct.unpack("i",f.read(4))[0]), 32)
+        f.close()
+
+    def dump(self,path,address,value):
+        f=open(path,"wb")
+        for i in range(0,value):
+            value = lib.jtag_read_u32(self.obj, address+i*4)
+            f.write(struct.pack('1i',value))
+        f.close()  
+            
+
     def write(self, address, value):
         lib.jtag_write(self.obj, address, value, 32)
 
@@ -60,6 +74,15 @@ class Interactive(object):
 
     def load_binary_in_sram(self, path, address):
         lib.load_binary_in_sdram(self.obj, path, address)
+        #f=open(path,"rb")
+        #b = f.read(4)
+        #while(b!=""):
+        #    value = int(struct.unpack("i",b)[0])
+        #    self.write(address,value)
+        #    address = address + 4
+        #    print hex(address),hex(value)
+        #    b = f.read(4)
+        #f.close()
 
     def step(self):
         self.write(0xE000EDF0, (0xA05F << 16) | (1<<2) | (1 << 0))
