@@ -39,6 +39,7 @@ class Interactive(object):
         print("\t read(address) : AHB-AP memory read")
         print("\t step() : single step")
         print("\t halt() : halt the cpu")
+        print("\t resume() : exit debug state, start execution, exceptions activate according to exeption config rules")
         print("\t display_all_regs() :display all CPU registers")
         print("\t read_reg(id) : read a specific register")
         print("\t write_reg(id, value) : write a value into the specified register")
@@ -65,6 +66,9 @@ class Interactive(object):
 
     def halt(self):
         self.write(0xE000EDF0, (0xA05F << 16) | (1<<1) | (1 << 0))
+
+    def resume(self):
+        self.write(0xE000EDF0, (0xA05F << 16) | (0<<1) | (1 << 0))
 
     def enable_debug(self):
         self.write(0xE000EDF0, (0xA05F << 16) | (1 << 0))

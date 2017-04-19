@@ -58,8 +58,8 @@ System::System() : halted(false) {
   the trace device.");
 
   INFO("Device", "Initializing jtag device ...");
-  fx3_jtag = new Device::USBDevice(0x0B6A, 0x0001, 0);
-  // fx3_jtag = new Device::USBDevice(0x04B4, 0x00F1, 0);
+  //fx3_jtag = new Device::USBDevice(0x0B6A, 0x0001, 0);
+  fx3_jtag = new Device::USBDevice(0x04B4, 0x00F1, 0);
   //fx3_jtag = new Device::USBDevice(0x04B4, 0x00F1, 0);
   fx3_jtag->init();
 
@@ -74,7 +74,7 @@ System::System() : halted(false) {
   // trace = new Trace(fx3_trace);
   // trace->run();
 
-  select_protocol(JTAG_PROTOCOL::JTAG);
+  select_protocol(JTAG_PROTOCOL::INCEPTION);
 
   idcode = 0;
 
