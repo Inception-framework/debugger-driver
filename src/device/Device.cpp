@@ -33,7 +33,10 @@
 
 namespace Device {
 
-USBDevice::USBDevice(uint16_t p_vid, uint16_t p_pid, uint32_t p_interface) {
+USBDevice::USBDevice(uint16_t p_vid, uint16_t p_pid, uint32_t p_interface, uint8_t out, uint8_t in) {
+
+  entrypoint_download = out;
+  entrypoint_download = in;
 
   vid = p_vid;
 
@@ -236,7 +239,7 @@ void USBDevice::download(uint8_t *data, uint32_t *size) {
   VVERBOSE("JTAG", ">%s", info.str().c_str());
   #endif
 
-  *size = io(0x01, data, *size);
+  *size = io(entrypoint_download, data, *size);
 }
 
 void USBDevice::upload(uint8_t *data, uint32_t *size) {

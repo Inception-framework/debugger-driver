@@ -2,8 +2,8 @@
     @Author: Corteggiani Nassim <Corteggiani>
     @Email:  nassim.corteggiani@maximintegrated.com
     @Filename: Trace.cpp
-    @Last modified by:   Corteggiani                                 
-    @Last modified time: 15-Mar-2017                               
+    @Last modified by:   Corteggiani
+    @Last modified time: 15-Mar-2017
     @License: GPLv3
 
     Copyright (C) 2017 Maxim Integrated Products, Inc., All Rights Reserved.
@@ -47,11 +47,9 @@ void Trace::run() {
   // device->download((uint8_t*)&buffer, &size);
   // buffer[0] = 0;
 
-  while (true) {
+  while (stopped == false) {
 
     INFO("Trace", "Waiting Trace information");
-
-    // std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
     device->upload((uint8_t *)&buffer, &size);
 

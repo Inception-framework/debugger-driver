@@ -46,7 +46,7 @@ namespace Device {
 
 class USBDevice {
 public:
-  USBDevice(uint16_t vid, uint16_t pid, uint32_t interface);
+  USBDevice(uint16_t vid, uint16_t pid, uint32_t interface,  uint8_t out = 0x01, uint8_t in=0x81);
 
   virtual ~USBDevice();
 
@@ -91,6 +91,10 @@ private:
   uint32_t buffer_limit;
 
   uint8_t endpoint;
+
+  uint8_t entrypoint_download;
+
+  uint8_t entrypoint_upload;
 };
 
 } /* namespace JTAG */
