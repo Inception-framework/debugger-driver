@@ -40,7 +40,7 @@ bool USBDevice::initialized = false;
 USBDevice::USBDevice(uint16_t p_vid, uint16_t p_pid, uint32_t p_interface, uint8_t out, uint8_t in) {
 
   entrypoint_download = out;
-  entrypoint_download = in;
+  entrypoint_upload = in;
 
   vid = p_vid;
 
