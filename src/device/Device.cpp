@@ -249,11 +249,11 @@ void USBDevice::download(uint8_t *data, uint32_t *size) {
   *size = io(entrypoint_download, data, *size);
 }
 
-void USBDevice::upload(uint32_t endpoint, uint8_t *data, uint32_t *size) {
+void USBDevice::upload(uint8_t *data, uint32_t *size) {
 
   std::stringstream info;
 
-  *size = io(endpoint, data, *size);
+  *size = io(entrypoint_upload, data, *size);
 
   #ifdef DEBUG
   info << "0x" << std::hex << std::setfill('0');
