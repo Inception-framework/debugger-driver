@@ -33,6 +33,10 @@
 
 namespace Device {
 
+libusb_device_handle* USBDevice::handle = NULL;
+
+bool USBDevice::initialized = false;
+
 USBDevice::USBDevice(uint16_t p_vid, uint16_t p_pid, uint32_t p_interface, uint8_t out, uint8_t in) {
 
   entrypoint_download = out;
@@ -45,8 +49,6 @@ USBDevice::USBDevice(uint16_t p_vid, uint16_t p_pid, uint32_t p_interface, uint8
   interface = p_interface;
 
   buffer_limit = 1024;
-
-  handle = NULL;
 }
 
 USBDevice::~USBDevice() {
@@ -80,10 +82,10 @@ void USBDevice::device_open() {
 
     dev = devs[idx];
 
-    errCode = libusb_open(devs[idx], &handle);
+    errCode = libusb_open(devs[idx], &USBDevice::handle);
 
     if (errCode) {
-      handle = NULL;
+      USBDevice::handle = NULL;
       ALERT("Device", "libusb_open() failed with %s",
             libusb_error_name(errCode));
       continue;
@@ -97,24 +99,29 @@ void USBDevice::device_open() {
 
 void USBDevice::device_close() {
   /* Close device */
-  libusb_close(handle);
+  libusb_close(USBDevice::handle);
 
   libusb_exit(context);
 }
 
 void USBDevice::init(void) {
 
+  if(USBDevice::initialized)
+    return;
+
+  USBDevice::initialized = true;
+
   int32_t retval;
 
   device_open();
 
-  if (!handle) {
+  if (!USBDevice::handle) {
     ALERT("Device", "Avatar driver doesn't find device %04x:%04x \n", vid, pid);
     throw std::runtime_error("Avatar driver doesn't find device\n");
     return;
   }
 
-  dev = libusb_get_device(handle);
+  dev = libusb_get_device(USBDevice::handle);
 
   if (vid != descriptor.idVendor) {
 
@@ -133,7 +140,7 @@ void USBDevice::init(void) {
   busnum = libusb_get_bus_number(dev);
   devaddr = libusb_get_device_address(dev);
 
-  retval = libusb_claim_interface(handle, interface);
+  retval = libusb_claim_interface(USBDevice::handle, interface);
   if (retval == 0) {
     INFO("Device", "Avatar USB3 driver successfully claimed interface");
   } else {
@@ -168,7 +175,7 @@ void USBDevice::init(void) {
           "Avatar driver was not able to claimed interface...\n");
       break;
     }
-    handle = NULL;
+    USBDevice::handle = NULL;
     return;
   }
 
@@ -185,7 +192,7 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
   int32_t attempt = 0;
 
   do {
-    if ((retval = libusb_bulk_transfer(handle, endpoint, buffer, size,
+    if ((retval = libusb_bulk_transfer(USBDevice::handle, endpoint, buffer, size,
                                        &transferred, 2000)) != 0) {
       ALERT("Device", "%s", libusb_error_name(retval));
 

@@ -68,7 +68,7 @@ private:
 
   libusb_device *dev; /* USBDevice */
 
-  libusb_device_handle *handle; /* Handle */
+  static libusb_device_handle *handle; /* Handle */
 
   struct libusb_context *context;
 
@@ -90,11 +90,11 @@ private:
 
   uint32_t buffer_limit;
 
-  uint8_t endpoint;
-
   uint8_t entrypoint_download;
 
   uint8_t entrypoint_upload;
+
+  static bool initialized;
 };
 
 } /* namespace JTAG */
