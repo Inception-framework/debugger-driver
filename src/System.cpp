@@ -64,7 +64,7 @@ System::System() : halted(false) {
   fx3_jtag->init();
 
   INFO("Device", "Initializing trace device ...");
-  fx3_trace = new Device::USBDevice(0x04b4, 0x00f1, 0, 0x02, 0x82);
+  fx3_trace = new Device::USBDevice(0x04b4, 0x00f1, 0, 0x02, 0x82, 0);
   fx3_trace->init();
 
   VERBOSE("Interface", "Starting producer...");

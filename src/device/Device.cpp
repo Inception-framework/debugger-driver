@@ -37,7 +37,9 @@ libusb_device_handle* USBDevice::handle = NULL;
 
 bool USBDevice::initialized = false;
 
-USBDevice::USBDevice(uint16_t p_vid, uint16_t p_pid, uint32_t p_interface, uint8_t out, uint8_t in) {
+USBDevice::USBDevice(uint16_t p_vid, uint16_t p_pid, uint32_t p_interface, uint8_t out, uint8_t in, unsigned int timeout) {
+
+  this->timeout=timeout;
 
   entrypoint_download = out;
   entrypoint_upload = in;
@@ -193,7 +195,7 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
 
   do {
     if ((retval = libusb_bulk_transfer(USBDevice::handle, endpoint, buffer, size,
-                                       &transferred, 2000)) != 0) {
+                                       &transferred, timeout)) != 0) {
       ALERT("Device", "%s", libusb_error_name(retval));
 
       switch (retval) {
