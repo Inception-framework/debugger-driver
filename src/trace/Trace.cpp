@@ -51,7 +51,7 @@ void Trace::run() {
 
     INFO("Trace", "Waiting Trace information");
 
-    device->upload((uint8_t *)&buffer, &size);
+    device->upload(0x82,(uint8_t *)&buffer, &size);
 
     INFO("TRACE", "Received %d B", size);
 

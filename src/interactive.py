@@ -60,10 +60,19 @@ class Interactive(object):
     def dump(self,path,address,value):
         f=open(path,"wb")
         for i in range(0,value):
-            value = lib.jtag_read_u32(self.obj, address+i*4)
-            f.write(struct.pack('1i',value))
+            val = lib.jtag_read_u32(self.obj, address+i*4)
+            f.write(struct.pack('1i',val))
         f.close()  
-            
+
+    def dir_36(self,val):
+        lib.jtag_write(self.obj,0x400F4000+0x2000,val<<6,32)
+    def set_36(self):
+        lib.jtag_write(self.obj,0x400F4000+0x2200,1<<6,32)
+    def clear_36(self):
+        lib.jtag_write(self.obj,0x400F4000+0x2280,1<<6,32)            
+
+    def read_36(self):
+        print lib.jtag_read(self.obj,0x400F4000+0x2100) & (1<<6)            
 
     def write(self, address, value):
         lib.jtag_write(self.obj, address, value, 32)
@@ -84,8 +93,10 @@ class Interactive(object):
         #    b = f.read(4)
         #f.close()
 
-    def step(self):
-        self.write(0xE000EDF0, (0xA05F << 16) | (1<<2) | (1 << 0))
+    def step(self,val):
+        for i in range(0,val):
+            self.write(0xE000EDF0, (0xA05F << 16) | (1<<2) | (1 << 0))
+            self.read_reg(15)
 
     def halt(self):
         self.write(0xE000EDF0, (0xA05F << 16) | (1<<1) | (1 << 0))

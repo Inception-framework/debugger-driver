@@ -56,7 +56,7 @@ public:
 
   void download(uint8_t *data, uint32_t *size);
 
-  void upload(uint8_t *data, uint32_t *size);
+  void upload(uint32_t endpoint, uint8_t *data, uint32_t *size);
 
 private:
 
