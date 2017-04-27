@@ -47,7 +47,7 @@ public:
 
 private:
   // std::future task;
-
+  
   bool stopped;
 
   Device::USBDevice *device;

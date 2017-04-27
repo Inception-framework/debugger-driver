@@ -38,7 +38,7 @@ void Trace::stop() {
 }
 
 void Trace::run() {
-
+  uint32_t value=0;
   uint32_t size = 8;
 
   uint8_t buffer[8] = {0};
@@ -54,10 +54,32 @@ void Trace::run() {
     device->upload((uint8_t *)&buffer, &size);
 
     INFO("TRACE", "Received %d B", size);
+    if( size != 8 )  {
 
-    for (auto i = 0; i < size; i++) {
-      printf("%d", buffer[i]);
+      if( size == 4 ) {
+
+        memcpy((void*)&value, &buffer[0], 4);
+
+        ALERT("InceptionDecoder", "Failed to decode READ command with error code 0x%08x", value);
+        throw std::runtime_error("Error : wring answer ");
+      } else {
+
+        ALERT("InceptionDecoder", "Failed to decode READ command with unknown error code");
+        throw std::runtime_error("Error : wring answer ");
+      }
+    } else {
+
+      // memcpy(value, &buffer[4], 4);
+      value |= buffer[4] << 24;
+      value |= buffer[5] << 16;
+      value |= buffer[6] << 8;
+      value |= buffer[7];
+
+      printf("%d", (uint32_t)value);
     }
+    //for (auto i = 0; i < size; i++) {
+    //  printf("%d", buffer[i]);
+    //}
     printf("\n\r");
   }
 }
