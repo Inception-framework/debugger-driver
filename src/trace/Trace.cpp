@@ -32,11 +32,11 @@ Trace::Trace(Device::USBDevice *dev) : stopped(false), device(dev) { start();}
 
 void Trace::start() {
 
-   std::thread trace_thread (trace_th);
+  //  std::thread trace_thread (&Trace::run);
+//
+  //  trace_thread.detach();
 
-   trace_thread.detach();
-
-  //  std::async(&Trace::run, this);
+  std::async(&Trace::run, this);
 }
 
 void Trace::stop() {
