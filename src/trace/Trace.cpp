@@ -26,9 +26,18 @@
 
 #include "Trace.h"
 
-Trace::Trace(Device::USBDevice *dev) : stopped(false), device(dev) {}
+#include <thread>
 
-void Trace::start() { std::async(&Trace::run, this); }
+Trace::Trace(Device::USBDevice *dev) : stopped(false), device(dev) { start();}
+
+void Trace::start() {
+
+   std::thread trace_thread (trace_th);
+
+   trace_thread.detach();
+
+  //  std::async(&Trace::run, this);
+}
 
 void Trace::stop() {
 

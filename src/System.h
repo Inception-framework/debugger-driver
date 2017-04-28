@@ -94,7 +94,9 @@ private:
 
   Device::USBDevice *fx3_jtag;
 
+  Device::USBDevice *fx3_trace;
 
+  Trace* trace;
 
   Producer *producer;
 
