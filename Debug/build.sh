@@ -2,11 +2,11 @@
 
 name = avatar
 
-make clean
-if [ $? != 0 ]; then
-	echo "FAILED! make clean"
-        exit;
-fi
+#make clean
+#if [ $? != 0 ]; then
+#	echo "FAILED! make clean"
+#        exit;
+#fi
 
 make all
 if [ $? != 0 ]; then
