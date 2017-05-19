@@ -75,7 +75,7 @@ void Trace::run() {
       value |= buffer[6] << 8;
       value |= buffer[7];
 
-      printf("%d", (uint32_t)value);
+      printf("[Trace] Interrupt ID : %d\n", (uint32_t)value);
     }
     //for (auto i = 0; i < size; i++) {
     //  printf("%d", buffer[i]);
