@@ -51,6 +51,17 @@ using namespace std::placeholders;
 using namespace jtag;
 using namespace flash;
 
+void trace_th(){
+  Device::USBDevice *fx3_trace;
+  Trace *trace;
+  INFO("Device", "Initializing trace device ...");
+  fx3_trace = new Device::USBDevice(0x04b4, 0x00f1, 0, 0x02, 0x82, 0);
+  fx3_trace->init();
+  VERBOSE("Trace", "Starting trace...");
+  trace = new Trace(fx3_trace);
+  trace->run();
+}
+
 System::System() : halted(false) {
 
   WARNING("SYSTEM", "Please connect the jtag device first and then \
@@ -70,7 +81,9 @@ System::System() : halted(false) {
   VERBOSE("Interface", "Starting producer...");
   producer = new Producer(fx3_jtag);
   VERBOSE("Interface", "Starting trace...");
-  trace = new Trace(fx3_trace);
+  std::thread trace_thread (trace_th);
+  trace_thread.detach();
+  //trace = new Trace(fx3_trace);
 
   select_protocol(JTAG_PROTOCOL::INCEPTION);
 

@@ -72,7 +72,7 @@ class Interactive(object):
         lib.jtag_write(self.obj,0x400F4000+0x2280,1<<6,32)            
 
     def read_36(self):
-        print lib.jtag_read(self.obj,0x400F4000+0x2100) & (1<<6)            
+        print(lib.jtag_read(self.obj,0x400F4000+0x2100) & (1<<6))            
 
     def write(self, address, value):
         lib.jtag_write(self.obj, address, value, 32)

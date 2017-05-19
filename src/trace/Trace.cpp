@@ -26,18 +26,9 @@
 
 #include "Trace.h"
 
-#include <thread>
+Trace::Trace(Device::USBDevice *dev) : stopped(false), device(dev) {}
 
-Trace::Trace(Device::USBDevice *dev) : stopped(false), device(dev) { start();}
-
-void Trace::start() {
-
-  //  std::thread trace_thread (&Trace::run);
-//
-  //  trace_thread.detach();
-
-  std::async(&Trace::run, this);
-}
+void Trace::start() { std::async(&Trace::run, this); }
 
 void Trace::stop() {
 
@@ -60,7 +51,6 @@ void Trace::run() {
 
     INFO("Trace", "Waiting Trace information");
 
-    value = 0;
     device->upload((uint8_t *)&buffer, &size);
 
     INFO("TRACE", "Received %d B", size);
