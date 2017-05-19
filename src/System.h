@@ -88,6 +88,8 @@ public:
 
   void load_binary_in_sdram(std::string file_path, uint32_t address);
 
+  void addTraceWatcher(Watcher watcher);
+
 private:
 
   JTAG_PROTOCOL protocol;

@@ -56,6 +56,8 @@ void benckmark_inc_nwrite(void);
 
 void load_binary_in_sdram(void *opaque, char* file_path, uint32_t address);
 
+void trace_init(void *opaque, Watcher watcher);
+
 #if defined(__cplusplus)
 }
 #endif

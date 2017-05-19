@@ -24,6 +24,11 @@
 *                                                                              *
 ********************************************************************************/
 
+#ifndef WATCHER
+#define WATCHER
+typedef void (*Watcher)(int);
+#endif
+
 #ifndef MAIN_H_
 #define MAIN_H_
 

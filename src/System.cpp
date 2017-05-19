@@ -51,17 +51,6 @@ using namespace std::placeholders;
 using namespace jtag;
 using namespace flash;
 
-void trace_th(){
-  Device::USBDevice *fx3_trace;
-  Trace *trace;
-  INFO("Device", "Initializing trace device ...");
-  fx3_trace = new Device::USBDevice(0x04b4, 0x00f1, 0, 0x02, 0x82, 0);
-  fx3_trace->init();
-  VERBOSE("Trace", "Starting trace...");
-  trace = new Trace(fx3_trace);
-  trace->run();
-}
-
 System::System() : halted(false) {
 
   WARNING("SYSTEM", "Please connect the jtag device first and then \
@@ -70,20 +59,19 @@ System::System() : halted(false) {
   INFO("Device", "Initializing jtag device ...");
   //fx3_jtag = new Device::USBDevice(0x0B6A, 0x0001, 0);
   fx3_jtag = new Device::USBDevice(0x04B4, 0x00F1, 0);
-  //fx3_jtag = new Device::USBDevice(0x04B4, 0x00F1, 0);
   fx3_jtag->init();
 
   INFO("Device", "Initializing trace device ...");
   fx3_trace = new Device::USBDevice(0x04b4, 0x00f1, 0, 0x02, 0x82, 0);
   fx3_trace->init();
+
   VERBOSE("Trace", "Starting trace...");
+  trace = new Trace(fx3_trace);
+  std::thread trace_thread (&Trace::run, trace);
+  trace_thread.detach();
 
   VERBOSE("Interface", "Starting producer...");
   producer = new Producer(fx3_jtag);
-  VERBOSE("Interface", "Starting trace...");
-  std::thread trace_thread (trace_th);
-  trace_thread.detach();
-  //trace = new Trace(fx3_trace);
 
   select_protocol(JTAG_PROTOCOL::INCEPTION);
 
@@ -112,6 +100,10 @@ void System::stop() {
   fx3_jtag->close();
 
   // fx3_trace->close();
+}
+
+void System::addTraceWatcher(Watcher watcher) {
+
 }
 
 void System::select_protocol(JTAG_PROTOCOL new_protocol) {

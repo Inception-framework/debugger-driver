@@ -50,13 +50,22 @@ void benchmark_to_string() {
   INFO("Benchmark", "%s", c_str);
 }
 
-void *jtag_init(void) {
-
+void* init_trace(void) {
   System *sys = new System();
 
   //INFO("Init", "%s", sys->info().c_str());
 
   return (void *)sys;
+}
+
+void trace_init(void *opaque, Watcher watcher) {
+
+  if (opaque == NULL)
+    return;
+
+  System *sys = (System *)opaque;
+
+  sys->addTraceWatcher(watcher);
 }
 
 void load_binary_in_sdram(void *opaque, char* file_path, uint32_t address) {

@@ -25,10 +25,16 @@
 ********************************************************************************/
 
 #include "Trace.h"
+#include <thread>
 
-Trace::Trace(Device::USBDevice *dev) : stopped(false), device(dev) {}
+void watch(int id) {
+  printf("Watcher see : %d", id);
+}
 
-void Trace::start() { std::async(&Trace::run, this); }
+Trace::Trace(Device::USBDevice *dev) : stopped(false), device(dev) {
+
+  addWatcher(watch);
+}
 
 void Trace::stop() {
 
@@ -76,6 +82,8 @@ void Trace::run() {
       value |= buffer[7];
 
       printf("[Trace] Interrupt ID : %d\n", (uint32_t)value);
+
+      this->watcher((uint32_t)value);
     }
     //for (auto i = 0; i < size; i++) {
     //  printf("%d", buffer[i]);

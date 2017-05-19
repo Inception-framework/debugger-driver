@@ -28,9 +28,14 @@
 #define TRACE_H
 
 #include <chrono>
-#include <future>
+// #include <future>
 
 #include "../device/Device.h"
+
+#ifndef WATCHER
+#define WATCHER
+typedef void (*Watcher)(int);
+#endif
 
 class Trace {
 
@@ -39,15 +44,18 @@ public:
 
   ~Trace();
 
-  void start();
-
   void stop();
 
   void run();
 
+  void addWatcher(Watcher _watcher) {
+    watcher = _watcher;
+  }
+
 private:
   // std::future task;
-  
+  Watcher watcher;
+
   bool stopped;
 
   Device::USBDevice *device;
