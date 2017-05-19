@@ -50,7 +50,7 @@ void benchmark_to_string() {
   INFO("Benchmark", "%s", c_str);
 }
 
-void* init_trace(void) {
+void* jtag_init(void) {
   System *sys = new System();
 
   //INFO("Init", "%s", sys->info().c_str());
