@@ -103,7 +103,7 @@ void System::stop() {
 }
 
 void System::addTraceWatcher(Watcher watcher) {
-
+  trace->addWatcher(watcher);
 }
 
 void System::select_protocol(JTAG_PROTOCOL new_protocol) {
