@@ -71,6 +71,9 @@ int main(int argc, char *argv[]) {
       } else if (arg == "--TEST_AHB_AP_CSW") {
         sys->check(TEST_AHB_AP_CSW);
         return 0;
+      } else if (arg == "--INTERRUPT_STUB") {
+        sys->check(TEST_INTERRUPT_STUB);
+        return 0;
       } else if (arg == "--interractive") {
         FILE *pipe = popen("python interactive.py", "r");
         // ALERT("Command Argument", "interractive mode is not yet available");

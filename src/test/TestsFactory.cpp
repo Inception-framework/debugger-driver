@@ -68,6 +68,9 @@ std::map<enum Test, TestReport *> TestsFactory::testMap = {
     {TEST_AHB_AP_CSW,
      new TestReport("TEST_AHB_AP_CSW",
                     "Read Write and compare on AHB_AP CSW register", 0)},
+    {TEST_INTERRUPT_STUB,
+     new TestReport("TEST_INTERRUPT_STUB",
+                    "Wait interrupts comming from the stub", 0)},
 };
 
 TestsFactory::TestsFactory() {}
@@ -119,11 +122,22 @@ TestReport *TestsFactory::CreateTest(Test type, System *system) {
     report->gravity = 1;
     break;
 
+  case TEST_INTERRUPT_STUB:
+
+    TestsFactory::interrupt_stub(system, report);
+    report->gravity = 1;
+    break;
+
   default:
     break;
   }
 
   return report;
+}
+
+void TestsFactory::interrupt_stub(System *sys, TestReport *report) {
+
+  while(1);
 }
 
 void TestsFactory::trace(System *sys, TestReport *report) {

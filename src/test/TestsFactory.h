@@ -32,6 +32,7 @@ enum Test {
   TEST_FLASH,
   TEST_AHB_AP_SCS,
   TEST_AHB_AP_CSW,
+  TEST_INTERRUPT_STUB
 };
 
 // typedef struct EnumIter<BENCHMARK_IO, CHECK_WRITE_U32, CHECK_READ_U32, CHECK_DEVICE>  TestIterator;
@@ -65,6 +66,8 @@ public:
 private :
 
   static std::map<enum Test, TestReport*> testMap;
+
+  static void interrupt_stub(System *sys, TestReport *report);
 
   static void trace(System* sys, TestReport* report);
 
