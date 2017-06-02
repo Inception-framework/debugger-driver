@@ -44,10 +44,7 @@ void Trace::stop() {
 }
 
 void Trace::run() {
-  uint32_t value=0;
   uint32_t size = 8;
-
-  uint8_t buffer[8] = {0};
 
   // buffer[0] = 4;
   // device->download((uint8_t*)&buffer, &size);
@@ -55,11 +52,14 @@ void Trace::run() {
 
   while (stopped == false) {
 
-    INFO("Trace", "Waiting Trace information");
+     uint8_t buffer[8] = {0};
+     uint32_t value=0;
+
+    //INFO("Trace", "Waiting Trace information");
 
     device->upload((uint8_t *)&buffer, &size);
 
-    INFO("TRACE", "Received %d B", size);
+    //INFO("TRACE", "Received %d B", size);
     if( size != 8 )  {
 
       if( size == 4 ) {
@@ -88,6 +88,6 @@ void Trace::run() {
     //for (auto i = 0; i < size; i++) {
     //  printf("%d", buffer[i]);
     //}
-    printf("\n\r");
+    //printf("\n\r");
   }
 }
