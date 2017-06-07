@@ -81,6 +81,11 @@ class Interactive(object):
         value = lib.jtag_read_u32(self.obj, address)
         print(hex(value))
 
+    def read_csw(self):
+        value = lib.jtag_control(self.obj)
+        print(hex(value))
+
+
     def load_binary_in_sram(self, path, address):
         lib.load_binary_in_sdram(self.obj, path, address)
         #f=open(path,"rb")

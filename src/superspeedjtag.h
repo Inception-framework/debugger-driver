@@ -44,6 +44,8 @@ uint64_t jtag_read_u32(void *opaque, uint64_t address);
 
 void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size);
 
+int32_t jtag_control(void *opaque);
+
 void benchmark_start(void);
 
 void benchmark_stop(void);

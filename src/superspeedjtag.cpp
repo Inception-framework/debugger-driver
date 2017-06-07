@@ -110,3 +110,12 @@ void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size) {
 
   sys->write_u32(value, address);
 }
+
+int32_t jtag_control(void *opaque){
+  if(opaque==NULL)
+    return 0;
+  
+  System *sys = (System*)opaque;
+  
+  return sys->control();
+}

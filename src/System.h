@@ -63,6 +63,7 @@ public:
   void reset();
 
   uint32_t read_u32(uint32_t address);
+  uint32_t control(void);
 
   void write_u32(uint32_t value, uint32_t address);
 

@@ -193,6 +193,24 @@ uint32_t System::read_u32(uint32_t address) {
   return (uint32_t)value;
 }
 
+uint32_t System::control(void) {
+
+  uint64_t value = 0;
+  Command *cmd = NULL;
+  std::vector<uint32_t> arg;
+
+  arg.push_back(0);
+
+  cmd = CommandsFactory::CreateCommand(COMMAND_TYPE::READ, arg);
+
+  // Benchmark::start();
+  producer->synchrone_process(cmd, &value);
+  // Benchmark::stop();
+
+  return (uint32_t)value;
+}
+
+
 flash::Flash *System::get_flash() { return this->flash; }
 
 void System::halt() {
