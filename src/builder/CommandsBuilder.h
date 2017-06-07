@@ -52,6 +52,8 @@ public:
   virtual Command *idcode() = 0;
 
   virtual Command *init() = 0;
+
+  virtual Command *control() = 0;
 };
 }
 

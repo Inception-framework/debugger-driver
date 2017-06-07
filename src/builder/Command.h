@@ -50,6 +50,7 @@ typedef enum COMMAND_TYPE {
   WRITE_MULTI = 10,
   READ_CSW = 11,
   DAP_ABORT = 12,
+  CONTROL = 13
 } COMMAND_TYPE;
 
 static const struct command_name_mapping {
@@ -79,7 +80,9 @@ static const struct command_name_mapping {
     {EXIT, "UNTRACE"},
     {DAP_ABORT, "DAP_ABORT"},
     {READ_CSW, "READ_CSW"},
-    {WRITE_MULTI, "WRITE_MULTI"}};
+    {WRITE_MULTI, "WRITE_MULTI"},
+    {CONTROL, "CONTROL"}
+};
 
 namespace jtag {
 

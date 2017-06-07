@@ -94,5 +94,15 @@ jtag::Command *InceptionBuilder::idcode() {
   return cmd;
 }
 
+jtag::Command *InceptionBuilder::control() {
+
+  jtag::Command *cmd = new jtag::Command(COMMAND_TYPE::CONTROL);
+
+  cmd->push_back((uint32_t)0xB0000000);
+  cmd->push_back((uint32_t)0xB0000000);
+
+  return cmd;
+}
+
 jtag::Command *InceptionBuilder::init() {}
 }

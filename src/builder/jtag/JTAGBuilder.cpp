@@ -352,4 +352,5 @@ void JTAGBuilder::write_dr(jtag::Command *cmd, uint8_t RnW, uint8_t address,
 
   cmd->add_tdo(pos, (pos + 34));
 }
+
 }

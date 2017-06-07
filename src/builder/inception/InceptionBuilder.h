@@ -51,6 +51,8 @@ public:
 
   jtag::Command *init();
 
+  jtag::Command *control();
+
 protected:
 };
 }

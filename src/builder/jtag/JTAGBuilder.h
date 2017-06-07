@@ -53,6 +53,8 @@ public:
 
   jtag::Command *init();
 
+  jtag::Command *control() {};
+
 private:
   void wait(jtag::Command *cmd, uint32_t cycles);
 
