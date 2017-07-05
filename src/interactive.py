@@ -49,23 +49,23 @@ class Interactive(object):
     def __init__(self, lib_path='../Debug/libinception.so', interactive=True):
         self.lib = cdll.LoadLibrary(lib_path)
         self.obj = self.lib.jtag_init()
-        self.regs_dict = { "r0" : 0,
-            "r1" : 1,
-            "r2" : 2,
-            "r3" : 3,
-            "r4" : 4,
-            "r5" : 5,
-            "r6" : 7,
-            "r8" : 8,
-            "r9" : 9,
-            "r10" : 10,
-            "r11" : 11,
-            "SP" : 12,
-            "r13" : 13,
-            "r14" : 14,
-            "pc" : 15
-        }
-        self.regs = OrderedDict(regs_dict)
+        self.regs = OrderedDict()
+        self.regs.update({ "r0 " :  0 })
+        self.regs.update({ "r1 " :  1 })
+        self.regs.update({ "r2 " :  2 })
+        self.regs.update({ "r3 " :  3 })
+        self.regs.update({ "r4 " :  4 })
+        self.regs.update({ "r5 " :  5 })
+        self.regs.update({ "r6 " :  6 })
+        self.regs.update({ "r7 " :  7 })
+        self.regs.update({ "r8 " :  8 })
+        self.regs.update({ "r9 " :  9 })
+        self.regs.update({ "r10" : 10 })
+        self.regs.update({ "r11" : 11 })
+        self.regs.update({ "SP " : 12 })
+        self.regs.update({ "r13" : 13 })
+        self.regs.update({ "r14" : 14 })
+        self.regs.update({ "PC " : 15 })
         if(interactive==True):
             self.help()
             code.InteractiveConsole(locals=locals()).interact()
@@ -98,6 +98,8 @@ class Interactive(object):
 
     def read(self, address):
         value = self.lib.jtag_read_u32(self.obj, address)
+        if value < 0 :
+            value = value + 2**32
         print(hex(value))
 
     def read_csw(self):
@@ -133,7 +135,8 @@ class Interactive(object):
 
     def display_all_regs(self):
         for reg, id in self.regs.items():
-            print(reg+ " : " + self.read_reg(id))
+            print(reg+ " : ",end="")
+            self.read_reg(id)
 
     def interrupt(self, id):
 
