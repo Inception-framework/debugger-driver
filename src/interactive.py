@@ -9,6 +9,7 @@
 
 
 #!/usr/bin/python2.7
+import os
 import code
 from collections import OrderedDict
 from ctypes import cdll
@@ -51,9 +52,9 @@ class Interactive(object):
         self.obj = lib.jtag_init()
         code.InteractiveConsole(locals=locals()).interact()
 
-    def foo(self,path,address,value):
+    def load_binary_in_sram(self,path,address):
         f=open(path,"rb")
-        for i in range(0,value):
+        for i in range(0,os.path.getsize(path)/4):
             lib.jtag_write(self.obj, address+i*4, int(struct.unpack("i",f.read(4))[0]), 32)
         f.close()
 
@@ -86,8 +87,8 @@ class Interactive(object):
         print(hex(value))
 
 
-    def load_binary_in_sram(self, path, address):
-        lib.load_binary_in_sdram(self.obj, path, address)
+    #def load_binary_in_sram(self, path, address):
+        #lib.load_binary_in_sdram(self.obj, path, address)
         #f=open(path,"rb")
         #b = f.read(4)
         #while(b!=""):
