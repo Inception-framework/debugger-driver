@@ -48,14 +48,14 @@ class Interactive(object):
 
     def __init__(self, lib_path='../Debug/libinception.so', interactive=True):
         self.lib = cdll.LoadLibrary(lib_path)
-        self.help()
         self.obj = self.lib.jtag_init()
         if(interactive==True):
+            self.help()
             code.InteractiveConsole(locals=locals()).interact()
 
     def load_binary_in_sram(self,path,address):
         f=open(path,"rb")
-        for i in range(0,os.path.getsize(path)/4):
+        for i in range(0,int(os.path.getsize(path)/4)):
             self.lib.jtag_write(self.obj, address+i*4, int(struct.unpack("i",f.read(4))[0]), 32)
         f.close()
 
