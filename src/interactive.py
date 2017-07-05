@@ -8,7 +8,7 @@
 
 
 
-#!/usr/bin/python2.7
+#!/usr/bin/python3.5
 import os
 import code
 from collections import OrderedDict
@@ -170,13 +170,12 @@ class Interactive(object):
             return reg
 
     def show_dhcsr(self):
-
-            value = self.read(0xE000EDF0)
-
+            value = lib.jtag_read_u32(self.obj, 0xE000EDF0)
+            #value = self.read(0xE000EDF0)
+            #print(hex(value))
             if value < 0 :
                 value = value + 2**32
 
-            print(hex(value))
 
             DHCSR(value.to_bytes(4, byteorder='big')).show()
 
