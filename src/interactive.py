@@ -13,7 +13,6 @@ import os
 import code
 from collections import OrderedDict
 from ctypes import cdll
-lib = cdll.LoadLibrary('../Debug/libinception.so')
 
 class Interactive(object):
 
@@ -47,48 +46,50 @@ class Interactive(object):
         print("\t show_dhcsr() : read the dhcsr register and cast content")
         print("\t load_binary_in_sram() : load binary in sram");
 
-    def __init__(self):
+    def __init__(self, lib_path='../Debug/libinception.so', interactive=True):
+        self.lib = cdll.LoadLibrary(lib_path)
         self.help()
-        self.obj = lib.jtag_init()
-        code.InteractiveConsole(locals=locals()).interact()
+        self.obj = self.lib.jtag_init()
+        if(interactive==True):
+            code.InteractiveConsole(locals=locals()).interact()
 
     def load_binary_in_sram(self,path,address):
         f=open(path,"rb")
         for i in range(0,os.path.getsize(path)/4):
-            lib.jtag_write(self.obj, address+i*4, int(struct.unpack("i",f.read(4))[0]), 32)
+            self.lib.jtag_write(self.obj, address+i*4, int(struct.unpack("i",f.read(4))[0]), 32)
         f.close()
 
     def dump(self,path,address,value):
         f=open(path,"wb")
         for i in range(0,value):
-            val = lib.jtag_read_u32(self.obj, address+i*4)
+            val = self.lib.jtag_read_u32(self.obj, address+i*4)
             f.write(struct.pack('1i',val))
         f.close()  
 
     def dir_36(self,val):
-        lib.jtag_write(self.obj,0x400F4000+0x2000,val<<6,32)
+        self.lib.jtag_write(self.obj,0x400F4000+0x2000,val<<6,32)
     def set_36(self):
-        lib.jtag_write(self.obj,0x400F4000+0x2200,1<<6,32)
+        self.lib.jtag_write(self.obj,0x400F4000+0x2200,1<<6,32)
     def clear_36(self):
-        lib.jtag_write(self.obj,0x400F4000+0x2280,1<<6,32)            
+        self.lib.jtag_write(self.obj,0x400F4000+0x2280,1<<6,32)            
 
     def read_36(self):
-        print(lib.jtag_read(self.obj,0x400F4000+0x2100) & (1<<6))            
+        print(self.lib.jtag_read(self.obj,0x400F4000+0x2100) & (1<<6))            
 
     def write(self, address, value):
-        lib.jtag_write(self.obj, address, value, 32)
+        self.lib.jtag_write(self.obj, address, value, 32)
 
     def read(self, address):
-        value = lib.jtag_read_u32(self.obj, address)
+        value = self.lib.jtag_read_u32(self.obj, address)
         print(hex(value))
 
     def read_csw(self):
-        value = lib.jtag_control(self.obj)
+        value = self.lib.jtag_control(self.obj)
         print(hex(value))
 
 
     #def load_binary_in_sram(self, path, address):
-        #lib.load_binary_in_sdram(self.obj, path, address)
+        #self.lib.load_binary_in_sdram(self.obj, path, address)
         #f=open(path,"rb")
         #b = f.read(4)
         #while(b!=""):
@@ -170,7 +171,7 @@ class Interactive(object):
             return reg
 
     def show_dhcsr(self):
-            value = lib.jtag_read_u32(self.obj, 0xE000EDF0)
+            value = self.lib.jtag_read_u32(self.obj, 0xE000EDF0)
             #value = self.read(0xE000EDF0)
             #print(hex(value))
             if value < 0 :
