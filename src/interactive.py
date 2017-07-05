@@ -179,6 +179,10 @@ class Interactive(object):
             # self.write(0xE000EDF8, DCB_DCRDR)
 
             return reg
+    def clear_all_regs(self):
+            for reg,id in self.regs.items():
+                if(reg != "SP " and reg != "PC "):
+                    self.write_reg(id,0)
 
     def show_dhcsr(self):
             value = self.lib.jtag_read_u32(self.obj, 0xE000EDF0)
