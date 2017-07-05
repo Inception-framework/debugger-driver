@@ -50,22 +50,22 @@ class Interactive(object):
         self.lib = cdll.LoadLibrary(lib_path)
         self.obj = self.lib.jtag_init()
         self.regs = OrderedDict()
-        self.regs.update({ "r0 " :  0 })
-        self.regs.update({ "r1 " :  1 })
-        self.regs.update({ "r2 " :  2 })
-        self.regs.update({ "r3 " :  3 })
-        self.regs.update({ "r4 " :  4 })
-        self.regs.update({ "r5 " :  5 })
-        self.regs.update({ "r6 " :  6 })
-        self.regs.update({ "r7 " :  7 })
-        self.regs.update({ "r8 " :  8 })
-        self.regs.update({ "r9 " :  9 })
-        self.regs.update({ "r10" : 10 })
-        self.regs.update({ "r11" : 11 })
-        self.regs.update({ "r12" : 12 })
-        self.regs.update({ "SP " : 13 })
-        self.regs.update({ "r14" : 14 })
-        self.regs.update({ "PC " : 15 })
+        self.regs.update({ "R0" :  0 })
+        self.regs.update({ "R1" :  1 })
+        self.regs.update({ "R2" :  2 })
+        self.regs.update({ "R3" :  3 })
+        self.regs.update({ "R4" :  4 })
+        self.regs.update({ "R5" :  5 })
+        self.regs.update({ "R6" :  6 })
+        self.regs.update({ "R7" :  7 })
+        self.regs.update({ "R8" :  8 })
+        self.regs.update({ "R9" :  9 })
+        self.regs.update({ "R10" : 10 })
+        self.regs.update({ "R11" : 11 })
+        self.regs.update({ "R12" : 12 })
+        self.regs.update({ "SP" : 13 })
+        self.regs.update({ "LR" : 14 })
+        self.regs.update({ "PC" : 15 })
         if(interactive==True):
             self.help()
             code.InteractiveConsole(locals=locals()).interact()
@@ -181,7 +181,7 @@ class Interactive(object):
             return reg
     def clear_all_regs(self):
             for reg,id in self.regs.items():
-                if(reg != "SP " and reg != "PC "):
+                if(reg != "SP" and reg != "PC"):
                     self.write_reg(id,0)
 
     def show_dhcsr(self):
