@@ -62,8 +62,8 @@ class Interactive(object):
         self.regs.update({ "r9 " :  9 })
         self.regs.update({ "r10" : 10 })
         self.regs.update({ "r11" : 11 })
-        self.regs.update({ "SP " : 12 })
-        self.regs.update({ "r13" : 13 })
+        self.regs.update({ "r12" : 12 })
+        self.regs.update({ "SP " : 13 })
         self.regs.update({ "r14" : 14 })
         self.regs.update({ "PC " : 15 })
         if(interactive==True):
