@@ -49,6 +49,23 @@ class Interactive(object):
     def __init__(self, lib_path='../Debug/libinception.so', interactive=True):
         self.lib = cdll.LoadLibrary(lib_path)
         self.obj = self.lib.jtag_init()
+        self.regs_dict = { "r0" : 0,
+            "r1" : 1,
+            "r2" : 2,
+            "r3" : 3,
+            "r4" : 4,
+            "r5" : 5,
+            "r6" : 7,
+            "r8" : 8,
+            "r9" : 9,
+            "r10" : 10,
+            "r11" : 11,
+            "SP" : 12,
+            "r13" : 13,
+            "r14" : 14,
+            "pc" : 15
+        }
+        self.regs = OrderedDict(regs_dict)
         if(interactive==True):
             self.help()
             code.InteractiveConsole(locals=locals()).interact()
@@ -115,26 +132,7 @@ class Interactive(object):
         self.write(0xE000EDF0, (0xA05F << 16) | (1 << 0))
 
     def display_all_regs(self):
-        regs = { "r0" : 0,
-            "r1" : 1,
-            "r2" : 2,
-            "r3" : 3,
-            "r4" : 4,
-            "r5" : 5,
-            "r6" : 7,
-            "r8" : 8,
-            "r9" : 9,
-            "r10" : 10,
-            "r11" : 11,
-            "SP" : 12,
-            "r13" : 13,
-            "r14" : 14,
-            "pc" : 15
-        }
-
-        o_regs = OrderedDict(regs)
-
-        for reg, id in o_regs.items():
+        for reg, id in self.regs.items():
             print(reg+ " : " + self.read_reg(id))
 
     def interrupt(self, id):
