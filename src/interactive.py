@@ -138,6 +138,15 @@ class Interactive(object):
             print(reg+ " : ",end="")
             self.read_reg(id)
 
+    def dump_all_regs(self):
+        dumped_regs = OrderedDict()
+        for reg, id in self.regs.items():
+            self.lib.jtag_write(self.obj,0xE000EDF4,id,32)
+            val = self.lib.jtag_read_u32(self.obj,0xE000EDF8)
+            dumped_regs.update({reg : val})
+        return dumped_regs
+
+
     def interrupt(self, id):
 
             self.write(0xE000E200, id)
