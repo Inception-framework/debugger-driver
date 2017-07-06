@@ -135,9 +135,32 @@ TestReport *TestsFactory::CreateTest(Test type, System *system) {
   return report;
 }
 
+uint32_t id = 0;
+
+void watch_and_notify(int _id) {
+  printf("Watch_and_notify see : %d", id);
+
+  while(id!=0);
+
+  id = _id;
+}
+
+
 void TestsFactory::interrupt_stub(System *sys, TestReport *report) {
 
-  while(1);
+  Watcher watcher = &watch_and_notify;
+
+  sys->addTraceWatcher(watcher);
+
+  while(1) {
+
+    while(id==0);
+
+    if(id>1 && id < 64)
+      sys->write_u32(0, 0x20003000 + (id * 4));
+
+    id=0;
+  }
 }
 
 void TestsFactory::trace(System *sys, TestReport *report) {
