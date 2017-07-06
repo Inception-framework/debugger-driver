@@ -43,7 +43,6 @@ class Interactive(object):
         print("\t display_all_regs() :display all CPU registers")
         print("\t read_reg(id) : read a specific register")
         print("\t write_reg(id, value) : write a value into the specified register")
-        print("\t show_dhcsr() : read the dhcsr register and cast content")
         print("\t load_binary_in_sram() : load binary in sram");
 
     def __init__(self, lib_path='../Debug/libinception.so', interactive=True):
@@ -81,17 +80,17 @@ class Interactive(object):
         for i in range(0,value):
             val = self.lib.jtag_read_u32(self.obj, address+i*4)
             f.write(struct.pack('1i',val))
-        f.close()  
+        f.close()
 
     def dir_36(self,val):
         self.lib.jtag_write(self.obj,0x400F4000+0x2000,val<<6,32)
     def set_36(self):
         self.lib.jtag_write(self.obj,0x400F4000+0x2200,1<<6,32)
     def clear_36(self):
-        self.lib.jtag_write(self.obj,0x400F4000+0x2280,1<<6,32)            
+        self.lib.jtag_write(self.obj,0x400F4000+0x2280,1<<6,32)
 
     def read_36(self):
-        print(self.lib.jtag_read(self.obj,0x400F4000+0x2100) & (1<<6))            
+        print(self.lib.jtag_read(self.obj,0x400F4000+0x2100) & (1<<6))
 
     def write(self, address, value):
         self.lib.jtag_write(self.obj, address, value, 32)
@@ -183,65 +182,6 @@ class Interactive(object):
             for reg,id in self.regs.items():
                 if(reg != "SP" and reg != "PC"):
                     self.write_reg(id,0)
-
-    def show_dhcsr(self):
-            value = self.lib.jtag_read_u32(self.obj, 0xE000EDF0)
-            #value = self.read(0xE000EDF0)
-            #print(hex(value))
-            if value < 0 :
-                value = value + 2**32
-
-
-            DHCSR(value.to_bytes(4, byteorder='big')).show()
-
-import scapy
-from scapy.all import *
-
-class DHCSR(Packet):
-    name = "DHCSR Register\r\n"
-    fields_desc=[
-
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-
-        XBitField("S_RESET_ST_________", 0, size=1),
-        XBitField("S_RETIRE_ST________", 0, size=1),
-
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-
-        XBitField("S_LOCKUP___________", 0, size=1),
-        XBitField("S_SLEEP____________", 0, size=1),
-        XBitField("S_HALT_____________", 0, size=1),
-        XBitField("S_REGRDY___________", 0, size=1),
-
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-
-        XBitField("C_SNAPSTALL__________", 0, size=1),
-        XBitField("RESERVED", 0, size=1),
-
-        XBitField("C_MASKINTS___________", 0, size=1),
-        XBitField("C_STEP_______________", 0, size=1),
-        XBitField("C_HALT_______________", 0, size=1),
-        XBitField("C_DEBUGEN____________", 0, size=1),
-        # XShortField("DBGKEY", 0xA05F),
-    ]
-
 
 if __name__ == '__main__' :
     Interactive()
