@@ -13,6 +13,7 @@ import os
 import code
 from collections import OrderedDict
 from ctypes import cdll
+import struct
 
 class Interactive(object):
 
