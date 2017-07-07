@@ -66,7 +66,8 @@ class Interactive(object):
         self.regs.update({ "SP" : 13 })
         self.regs.update({ "LR" : 14 })
         self.regs.update({ "PC" : 15 })
-	self.regs.update({ "CPSR" : 16})
+        self.regs.update({ "CPSR" : 16})
+
         if(interactive==True):
             self.help()
             code.InteractiveConsole(locals=locals()).interact()
