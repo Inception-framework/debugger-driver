@@ -183,7 +183,7 @@ class Interactive(object):
             return reg
     def clear_all_regs(self):
             for reg,id in self.regs.items():
-                if(reg != "SP" and reg != "PC"):
+                if(reg != "SP" and reg != "PC" and reg != "CPSR"):
                     self.write_reg(id,0)
 
 if __name__ == '__main__' :
