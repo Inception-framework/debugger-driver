@@ -103,6 +103,7 @@ class Interactive(object):
         if value < 0 :
             value = value + 2**32
         print(hex(value))
+        return (hex(value))
 
     def read_csw(self):
         value = self.lib.jtag_control(self.obj)
@@ -145,6 +146,8 @@ class Interactive(object):
         for reg, id in self.regs.items():
             self.lib.jtag_write(self.obj,0xE000EDF4,id,32)
             val = self.lib.jtag_read_u32(self.obj,0xE000EDF8)
+            if val < 0 :
+                val = val + 2**32
             dumped_regs.update({reg : val})
         return dumped_regs
 
