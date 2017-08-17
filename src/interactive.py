@@ -103,7 +103,7 @@ class Interactive(object):
         if value < 0 :
             value = value + 2**32
         print(hex(value))
-        return (hex(value))
+        return (value)
 
     def read_csw(self):
         value = self.lib.jtag_control(self.obj)
