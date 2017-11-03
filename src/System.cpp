@@ -222,6 +222,15 @@ void System::halt() {
   }
 }
 
+void System::resume() {
+
+  if (halted) {
+
+    write_u32(0xE000EDF0, 0xA05F0001);
+    halted = false;
+  }
+}
+
 void System::write_reg(uint32_t reg_id, uint32_t value) {
 
   write_u32(value, 0xE000EDF8); // DCRDR

@@ -58,6 +58,10 @@ public:
 
   void stop();
 
+  void halt();
+
+  void resume();
+
   std::string info();
 
   void reset();
@@ -106,8 +110,6 @@ private:
   Decoder *decoder;
 
   flash::Flash *flash;
-
-  void halt();
 };
 
 #endif

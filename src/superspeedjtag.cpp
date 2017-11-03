@@ -119,3 +119,37 @@ int32_t jtag_control(void *opaque){
   
   return sys->control();
 }
+
+void jtag_halt(void *opaque) {
+  if (opaque == NULL)
+    return;
+  System *sys = (System *)opaque;
+  sys->halt();
+}
+
+void jtag_resume(void *opaque) {
+  if (opaque == NULL)
+    return;
+  System *sys = (System *)opaque;
+  sys->resume();
+}
+
+uint32_t jtag_read_reg(void *opaque, uint32_t reg_id) {
+
+  if (opaque == NULL)
+    return 0;
+
+  System *sys = (System *)opaque;
+
+  return sys->read_reg(reg_id);
+}
+
+void jtag_write_reg(void *opaque, uint32_t reg_id, uint32_t value) {
+  if (opaque == NULL)
+    return;
+
+  System *sys = (System *)opaque;
+
+  sys->write_reg(reg_id, value);
+}
+

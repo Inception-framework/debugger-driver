@@ -37,12 +37,20 @@ extern "C" {
 
 void *jtag_init(void);
 
+void jtag_halt(void *opaque);
+
+void jtag_resume(void *opaque);
+
 int32_t jtag_read(void *opaque, uint64_t address, uint64_t *value,
                   unsigned size);
 
 uint64_t jtag_read_u32(void *opaque, uint64_t address);
 
 void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size);
+
+void jtag_write_reg(void *opaque, uint32_t reg_id, uint32_t value);
+
+uint32_t jtag_read_reg(void *opaque, uint32_t reg_id);
 
 int32_t jtag_control(void *opaque);
 
