@@ -214,21 +214,13 @@ uint32_t System::control(void) {
 flash::Flash *System::get_flash() { return this->flash; }
 
 void System::halt() {
-
-  if (!halted) {
-
-    write_u32(0xE000EDF0, 0xA05F0003);
-    halted = true;
-  }
+  write_u32((0xA05F << 16) | (1 << 1) | (1 << 0), 0xE000EDF0);
+  halted = true;
 }
 
 void System::resume() {
-
-  if (halted) {
-
-    write_u32(0xE000EDF0, 0xA05F0001);
-    halted = false;
-  }
+  write_u32((0xA05F << 16) | (0 << 1) | (1 << 0), 0xE000EDF0);
+  halted = false;
 }
 
 void System::write_reg(uint32_t reg_id, uint32_t value) {
