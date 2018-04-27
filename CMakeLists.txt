@@ -27,7 +27,10 @@ src/trace/*.cpp
 src/binutils/*.cpp
 src/*.cpp)
 
-add_executable(inception-db-suite ${SOURCES})
+add_executable(inception-dbg-cli ${SOURCES})
 
-target_link_libraries(inception-db-suite pthread usb-1.0)
+add_library(inception-dbg-cli_stl STATIC ${SOURCES})
+add_library(inception-dbg-cli_shl SHARED ${SOURCES})
+
+target_link_libraries(inception-dbg-cli pthread usb-1.0)
 
