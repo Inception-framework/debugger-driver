@@ -24,7 +24,7 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "flash.h"
+#include "drivers/flash/flash.h"
 
 #include <iostream>
 #include <sstream>

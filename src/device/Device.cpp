@@ -24,7 +24,7 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "Device.h"
+#include "device/Device.h"
 
 #include <cassert>
 #include <iostream>

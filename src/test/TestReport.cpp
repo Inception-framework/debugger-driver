@@ -24,7 +24,7 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "TestReport.h"
+#include "test/TestReport.h"
 
 TestReport::TestReport(std::string name, std::string description,
                        uint8_t gravity)

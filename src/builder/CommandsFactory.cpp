@@ -24,13 +24,13 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "CommandsFactory.h"
+#include "builder/CommandsFactory.h"
 
-#include "CommandsBuilder.h"
+#include "builder/CommandsBuilder.h"
 
-#include "jtag/JTAGBuilder.h"
-#include "inception/InceptionBuilder.h"
-#include "file_builder/FileBuilder.h"
+#include "builder/jtag/JTAGBuilder.h"
+#include "builder/inception/InceptionBuilder.h"
+#include "builder/file_builder/FileBuilder.h"
 
 #include <assert.h>
 

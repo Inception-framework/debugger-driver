@@ -24,7 +24,7 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "Command.h"
+#include "builder/Command.h"
 
 namespace jtag {
 

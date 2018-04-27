@@ -24,10 +24,10 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "InceptionBuilder.h"
+#include "builder/inception/InceptionBuilder.h"
 
-#include "../Jtag.h"
-#include "../Command.h"
+#include "builder/Jtag.h"
+#include "builder/Command.h"
 
 namespace jtag {
 

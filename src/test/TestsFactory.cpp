@@ -24,16 +24,16 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "../test/TestsFactory.h"
+#include "test/TestsFactory.h"
 
-#include "../test/TestReport.h"
+#include "test/TestReport.h"
 
 #define _LOG_ALL
-#include "../colored.h"
-#include "../builder/Command.h"
-#include "../System.h"
-#include "../builder/CommandsFactory.h"
-#include "../benchmark/Benchmark.h"
+#include "colored.h"
+#include "builder/Command.h"
+#include "System.h"
+#include "builder/CommandsFactory.h"
+#include "benchmark/Benchmark.h"
 
 #include <time.h>
 #include <chrono>

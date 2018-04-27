@@ -24,10 +24,10 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "JTAGBuilder.h"
+#include "builder/jtag/JTAGBuilder.h"
 
-#include "../Jtag.h"
-#include "../Command.h"
+#include "builder/Jtag.h"
+#include "builder/Command.h"
 
 using namespace std;
 

@@ -24,10 +24,10 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "Decoder.h"
+#include "decoders/Decoder.h"
 
-#include "../interface/Producer.h"
-#include "../builder/TDO.h"
+#include "interface/Producer.h"
+#include "builder/TDO.h"
 
 Decoder::Decoder(Producer *new_producer) { producer = new_producer; }
 

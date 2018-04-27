@@ -13,6 +13,7 @@ import os
 import code
 from collections import OrderedDict
 from ctypes import cdll
+import ctypes
 import struct
 
 class Interactive(object):
@@ -102,7 +103,7 @@ class Interactive(object):
         value = self.lib.jtag_read_u32(self.obj, address)
         if value < 0 :
             value = value + 2**32
-        print(hex(value))
+        # print(hex(value))
         return (value)
 
     def read_csw(self):
@@ -138,7 +139,8 @@ class Interactive(object):
 
     def display_all_regs(self):
         for reg, id in self.regs.items():
-            print(reg+ " : ",end="")
+            print(reg+" : ")
+            #print(reg+ " : ",end="")
             self.read_reg(id)
 
     def dump_all_regs(self):
@@ -166,12 +168,12 @@ class Interactive(object):
 
             self.write(0xE000EDF4, reg)
 
-            #reg = hex(self.read(0xE000EDF8))
-            self.read(0xE000EDF8)
+            reg = self.read(0xE000EDF8)
+            #self.read(0xE000EDF8)
 
             # self.write(0xE000EDF8, DCB_DCRDR)
 
-            #return reg
+            return reg
 
     def write_reg(self, reg, value):
 

@@ -43,7 +43,7 @@
 *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
 *********************************maxim_write_code**************************/
 
-#include "max32550_flash_driver.h"
+#include "drivers/flash/max32550_flash_driver.h"
 
 #include <algorithm>
 #include <exception>
@@ -51,8 +51,8 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "../../builder/Command.h"
-#include "../../builder/CommandsFactory.h"
+#include "builder/Command.h"
+#include "builder/CommandsFactory.h"
 
 using namespace jtag;
 using namespace std;

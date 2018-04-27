@@ -24,14 +24,14 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "TDO.h"
+#include "builder/TDO.h"
 
 #include <iostream>
 #include <sstream>
 #include <iomanip>
 
 #define _LOG_ALL
-#include "../colored.h"
+#include "colored.h"
 
 namespace jtag {
 

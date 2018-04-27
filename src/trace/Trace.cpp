@@ -24,7 +24,7 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "Trace.h"
+#include "trace/Trace.h"
 #include <thread>
 
 void watch(int id) {

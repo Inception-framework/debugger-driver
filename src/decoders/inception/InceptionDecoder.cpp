@@ -24,7 +24,7 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "InceptionDecoder.h"
+#include "decoders/inception/InceptionDecoder.h"
 
 InceptionDecoder::InceptionDecoder(Producer* new_producer) : Decoder(new_producer) {}
 

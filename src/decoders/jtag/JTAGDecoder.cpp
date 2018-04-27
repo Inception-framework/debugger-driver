@@ -24,7 +24,7 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "JTAGDecoder.h"
+#include "decoders/jtag/JTAGDecoder.h"
 #include <sstream>
 using namespace jtag;
 

@@ -24,10 +24,10 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "FileBuilder.h"
+#include "builder/file_builder/FileBuilder.h"
 
-#include "../Jtag.h"
-#include "../Command.h"
+#include "builder/Jtag.h"
+#include "builder/Command.h"
 #include <iostream>     // std::cout
 #include <fstream>      // std::ifstream
 #include <exception>

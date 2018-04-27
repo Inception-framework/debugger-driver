@@ -24,7 +24,7 @@
 *                                                                              *
 ********************************************************************************/
 
-#include "Interface.h"
+#include "interface/Interface.h"
 
 Interface::Interface(Device::USBDevice *device) {
 
