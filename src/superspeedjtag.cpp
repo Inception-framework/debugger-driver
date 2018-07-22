@@ -114,9 +114,9 @@ void jtag_write(void *opaque, uint64_t address, uint64_t value, unsigned size) {
 int32_t jtag_control(void *opaque){
   if(opaque==NULL)
     return 0;
-  
+
   System *sys = (System*)opaque;
-  
+
   return sys->control();
 }
 
@@ -152,4 +152,3 @@ void jtag_write_reg(void *opaque, uint32_t reg_id, uint32_t value) {
 
   sys->write_reg(reg_id, value);
 }
-

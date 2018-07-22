@@ -42,8 +42,6 @@ bool DEBUG2 = false;
 
 #include "benchmark/Benchmark.h"
 
-#include "drivers/flash/max32550_flash_driver.h"
-
 #include "binutils/BinLoader.h"
 
 using namespace std::placeholders;
@@ -77,7 +75,8 @@ System::System() : halted(false) {
 
   idcode = 0;
 
-  flash = new MXFlash(this, 1048576, 0x10000000, 256);
+  flash = NULL;
+  // flash = new MXFlash(this, 1048576, 0x10000000, 256);
 }
 
 
