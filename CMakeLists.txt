@@ -25,12 +25,15 @@ src/interface/*.cpp
 src/test/*.cpp
 src/trace/*.cpp
 src/binutils/*.cpp
-src/*.cpp)
+src/System.cpp
+src/superspeedjtag.cpp
+src/Exception.cpp)
 
-add_executable(inception-dbg-cli ${SOURCES})
+add_library(inception STATIC ${SOURCES})
+target_link_libraries(inception pthread usb-1.0)
 
-add_library(inception-dbg-cli_stl STATIC ${SOURCES})
-add_library(inception-dbg-cli_shl SHARED ${SOURCES})
+#add_library(inception-dbg-cli SHARED ${SOURCES})
 
-target_link_libraries(inception-dbg-cli pthread usb-1.0)
+add_executable(inception-dbg-cli src/main.cpp)
 
+target_link_libraries(inception-dbg-cli pthread usb-1.0 inception)
