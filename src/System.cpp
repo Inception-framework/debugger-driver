@@ -141,7 +141,7 @@ std::string System::info() {
 
   std::stringstream info;
 
-  info << "    [*] Avatar gateway version 1.0\r\n";
+  info << "    [*] Inception debugger driver version 1.0\r\n";
   info << "            * Author  : Corteggiani Nassim\r\n";
   info << "            * Date    : 2016\r\n";
   info << "            * Company : Maxim Integrated\r\n";

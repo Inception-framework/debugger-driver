@@ -118,8 +118,8 @@ void USBDevice::init(void) {
   device_open();
 
   if (!USBDevice::handle) {
-    ALERT("Device", "Avatar driver doesn't find device %04x:%04x \n", vid, pid);
-    throw std::runtime_error("Avatar driver doesn't find device\n");
+    ALERT("Device", "Inception debugger driver doesn't find device %04x:%04x \n", vid, pid);
+    throw std::runtime_error("Inception debugger driver doesn't find device\n");
     return;
   }
 
@@ -144,7 +144,7 @@ void USBDevice::init(void) {
 
   retval = libusb_claim_interface(USBDevice::handle, interface);
   if (retval == 0) {
-    INFO("Device", "Avatar USB3 driver successfully claimed interface");
+    INFO("Device", "Inception debugger USB3 driver successfully claimed interface");
   } else {
 
     ALERT("ALERT", "Device %04x:%04x", vid, pid);
@@ -152,29 +152,29 @@ void USBDevice::init(void) {
     switch (retval) {
     case LIBUSB_ERROR_NOT_FOUND:
       ALERT("Device",
-            "The interface requested by avatar driver does not exist");
+            "The interface requested by Inception debugger driver does not exist");
       throw std::runtime_error(
-          "A driver different than avatar driver has claimed the interface\n");
+          "A driver different than Inception debugger driver has claimed the interface\n");
       break;
 
     case LIBUSB_ERROR_BUSY:
       ALERT("Device",
-            "A driver different than avatar driver has claimed the interface");
+            "A driver different than Inception debugger driver has claimed the interface");
       throw std::runtime_error(
-          "A driver different than avatar driver has claimed the interface\n");
+          "A driver different than Inception debugger driver has claimed the interface\n");
       break;
 
     case LIBUSB_ERROR_NO_DEVICE:
       ALERT("Device",
-            "Avatar driver detected that the device has been disconnected");
+            "Inception debugger driver detected that the device has been disconnected");
       throw std::runtime_error(
-          "Avatar driver detected that the device has been disconnected\n");
+          "Inception debugger driver detected that the device has been disconnected\n");
       break;
 
     default:
-      ALERT("Device", "Avatar driver was not able to claimed interface...");
+      ALERT("Device", "Inception debugger driver was not able to claimed interface...");
       throw std::runtime_error(
-          "Avatar driver was not able to claimed interface...\n");
+          "Inception debugger driver was not able to claimed interface...\n");
       break;
     }
     USBDevice::handle = NULL;
@@ -225,10 +225,10 @@ uint32_t USBDevice::io(uint8_t endpoint, uint8_t *buffer, uint32_t size) {
 
   if (attempt >= 5) {
     ALERT("Device",
-          "Avatar driver failed to communicate with device ... endpoint : %02x",
+          "Inception debugger driver failed to communicate with device ... endpoint : %02x",
           endpoint);
     throw std::runtime_error(
-        "Avatar driver failed to communicate with device ... endpoint\n");
+        "Inception debugger driver failed to communicate with device ... endpoint\n");
   }
 
   return transferred;
